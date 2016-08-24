@@ -19,8 +19,7 @@ void PlayerConnection::disconnect(ChatMessage* message) {
             writePacket(buffer);
             delete(buffer);
         }else if(getState() == PLAYING){
-            PacketPlayDisconnect disconnect(message);
-            writePacket(getClientVersion(),disconnect);
+            writePacket(getClientVersion(),new PacketPlayDisconnect(message));
         }
     closeChannel();
 }

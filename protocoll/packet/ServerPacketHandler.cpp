@@ -77,10 +77,8 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
                 ((ServerConnection*)connection)->getPlayerConnection()->writePacket(buffer->readBuffer(buffer->readableBytes()));
                 ((ServerConnection*)connection)->getPlayerConnection()->setState(ConnectionState::PLAYING);
             } else {
-                PacketPlayRespawn packet1(1,0,0,string("default"));
-                PacketPlayRespawn packet2(1,0,0,string("default"));
-                ((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(), packet1);
-                ((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(), packet2); //Needed send only once :D @md_5
+                ((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(), new PacketPlayRespawn(1,0,0,string("default")));
+                ((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(), new PacketPlayRespawn(1,0,0,string("default"))); //Needed send only once :D @md_5
             }
             break;
         case 0x03:
@@ -121,8 +119,7 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
             uint8_t diff = buffer->read();
             buffer->read(); //Tab list size
             string level = buffer->readString();
-            PacketPlayRespawn packet(dim, diff, gamemode, level);
-            ((ServerConnection *) connection)->getPlayerConnection()->writePacket( ((ServerConnection *) connection)->getPlayerConnection()->getClientVersion(), packet);
+            ((ServerConnection *) connection)->getPlayerConnection()->writePacket( ((ServerConnection *) connection)->getPlayerConnection()->getClientVersion(), new PacketPlayRespawn(dim, diff, gamemode, level));
         }
         if(del)
           return;

@@ -19,15 +19,15 @@ public:
             try {
                 if(handler->connection == NULL){
                     cout << "Invelid ptr";
-                    return;
+                    break;
                 }
                 if(handler->connection->getStream() == NULL){
                     cout << "Invalid stream" << endl;
-                    return;
+                    break;
                 }
                 if(handler->connection->getState() == ConnectionState::CLOSED){
                     cout << "Closed channel" << endl;
-                    return;
+                    break;
                 }
                 int packetLength = handler->connection->getStream()->readVarInt();
                 //cout << "Having packetr with length " << packetLength << endl;
@@ -79,6 +79,7 @@ public:
                 break;
             }
         }
+        handler->streamClosed();
     }
 
     PacketHandler(Connection* connection) : connection(connection){
@@ -86,6 +87,7 @@ public:
 
     virtual ~PacketHandler(){
         pthread_exit(&threadHandle);
+        //pthread_kill(threadHandle,SIGQUIT);
     }
 
     void startReader(){
@@ -112,6 +114,7 @@ protected:
     virtual void handlePacketPlay(int packetId,DataBuffer *buffer){
         throw new Exception("Not implemented methode!");
     }
+    virtual void streamClosed(){}
 
     pthread_t threadHandle;
     Connection* connection;

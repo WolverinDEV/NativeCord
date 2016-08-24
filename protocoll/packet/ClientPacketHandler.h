@@ -27,6 +27,11 @@ private:
     void handlePacketStatus(int packetId,DataBuffer* buffer);
     void handlePacketLogin(int packetId,DataBuffer *buffer);
     void handlePacketPlay(int packetId,DataBuffer *buffer);
+
+protected:
+    virtual void streamClosed() override;
+
+private:
     PlayerConnection* pconnection;
 };
 

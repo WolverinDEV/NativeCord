@@ -40,8 +40,9 @@ DataBuffer::DataBuffer(int bufferLength) {
 
 
 DataBuffer::~DataBuffer() {
-    if(buffer != NULL)
+    if(buffer != NULL) {
         delete buffer;
+    }
 }
 
 int DataBuffer::readableBytes() {
@@ -49,12 +50,19 @@ int DataBuffer::readableBytes() {
 }
 
 void DataBuffer::read(const char *buffer, int length) {
+    if(this->buffer == NULL){
+        throw Exception("Buffer is null");
+    }
     checkReadableBytes(length);
     memcpy((void *) buffer, (const void *) ((long int) (this->buffer) + readerindex), length);
     readerindex += length;
 }
 
 char DataBuffer::read() {
+    if(this->buffer == NULL){
+        cout << "Null buffer" << endl;
+        return 0;
+    }
     checkReadableBytes(1);
     readerindex++;
     return this->buffer[readerindex - 1];

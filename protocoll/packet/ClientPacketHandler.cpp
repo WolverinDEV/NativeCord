@@ -18,6 +18,11 @@ void ClientPacketHandler::forwardPacket(DataBuffer *buffer) {
     //connection->writePacket(buffer);
 }
 
+void ClientPacketHandler::streamClosed() {
+    if (pconnection->getCurrentTargetConnection() != NULL)
+        pconnection->getCurrentTargetConnection()->disconnect(NULL);
+}
+
 void ClientPacketHandler::handlePacketHandschake(const int packetId, DataBuffer *buffer) {
     PacketHandshake* handshake;
     switch (packetId) {

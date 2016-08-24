@@ -44,11 +44,17 @@ public:
         Connection::threadshold = threadshold;
     }
 
-    void writePacket(int clientVersion, Packet& packetData){
+    void writePacket(int clientVersion, Packet* packetData){
+        writePacket(clientVersion,packetData,true);
+    }
+
+    void writePacket(int clientVersion, Packet* packetData,bool del){
         DataBuffer* buffer = new DataBuffer();
-        buffer->writeVarInt(packetData.getPacketId(clientVersion));
-        packetData.write(clientVersion,buffer);
+        buffer->writeVarInt(packetData->getPacketId(clientVersion));
+        packetData->write(clientVersion,buffer);
         writePacket(buffer);
+        if(del)
+            delete packetData;
         delete buffer;
     }
 
@@ -91,7 +97,7 @@ public:
         }
     }
     void closeChannel(){
-
+        socket->closeSocket();
     }
 
 private:
