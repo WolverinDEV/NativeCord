@@ -78,7 +78,7 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
                 ((ServerConnection*)connection)->getPlayerConnection()->setState(ConnectionState::PLAYING);
             } else {
                 ((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(),new PacketRespawn(1,0,0,string("default")));
-                ((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(),new PacketRespawn(-1,0,0,string("default")));
+                ((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(),new PacketRespawn(-1,0,0,string("default"))); //Needed send only once :D @md_5
             }
             break;
         case 0x03:
@@ -95,10 +95,11 @@ void entityRewideServer(int packetId,DataBuffer* buffer,ServerConnection* connec
 
 void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
     int rindex = buffer->getReaderindex();
-    if(packetId == 0x23) { //TODO add 1.8 packets!
+    int clientVersion = ((ServerConnection*)connection)->getPlayerConnection()->getClientVersion();
+    if(packetId == 0x23 && clientVersion > 46 || packetId == 0x01 && clientVersion == 46) { //TODO add 1.8 packets!
         int playerId = buffer->readInt();
-        bool del = true;
-        if(((ServerConnection*)connection)->getPlayerConnection()->getPlayerId() == -1) {
+        bool del = true; //First time must send
+        if(((ServerConnection*)connection)->getPlayerConnection()->getPlayerId() == -1) { //player version isnt defined
             ((ServerConnection *) connection)->getPlayerConnection()->setPlayerId(playerId);
             del = false;
         }
@@ -107,16 +108,14 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
         cout << "Server entity id: " << playerId << endl;
         if(del) {
             //Dim Diff game type
-            char gamemode = buffer->readInt();
+            char gamemode = buffer->read();
             char dim = buffer->read();
             uint8_t diff = buffer->read();
             buffer->read(); //Tab list size
             string level = buffer->readString();
-            ((ServerConnection *) connection)->getPlayerConnection()->writePacket(
-                    ((ServerConnection *) connection)->getPlayerConnection()->getClientVersion(),
-                    new PacketRespawn(dim, diff, gamemode, level));
+
+            ((ServerConnection *) connection)->getPlayerConnection()->writePacket( ((ServerConnection *) connection)->getPlayerConnection()->getClientVersion(), new PacketRespawn(dim, diff, gamemode, level));
         }
-        //Other infos are shit :D
         if(del)
           return;
     }
