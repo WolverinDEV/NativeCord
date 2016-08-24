@@ -18,12 +18,12 @@ public:
         while (1) {
             try {
                 int packetLength = handler->connection->getStream()->readVarInt();
-                cout << "Having packetr with length " << packetLength << endl;
+                //cout << "Having packetr with length " << packetLength << endl;
                 DataBuffer *buffer = handler->connection->getStream()->readBuffer(packetLength);
                 if(handler->connection->getThreadshold() != -1){
-                    cout << "Decompile packet!" << endl;
+                    //cout << "Decompile packet!" << endl;
                     ulong outlength = buffer->readVarInt();
-                    cout << "Packet decompiled length: " << outlength << endl;
+                    //cout << "Packet decompiled length: " << outlength << endl;
                     if(outlength > 0) {
                         DataBuffer* out = new DataBuffer(outlength);
                         int state = uncompress((Bytef *) out->getBuffer(),
@@ -32,7 +32,7 @@ public:
                                                (ulong  ) buffer->getWriterindex());
                         switch (state) {
                             case Z_OK:
-                                cout << "Decompressed okey" << endl;
+                                //cout << "Decompressed okey" << endl;
                                 break;
                             case Z_BUF_ERROR:
                                 cout << "Buffer error" << endl;
@@ -48,9 +48,9 @@ public:
                         buffer = out;
                     }
                 }
-                cout << "Having packet: Packet length: " << packetLength << " PacketID: ";
-                cout << buffer->readVarInt() << endl;
-                buffer->setReaderindex(buffer->getReaderindex()-1);
+                //cout << "Having packet: Packet length: " << packetLength << " PacketID: ";
+                //cout << buffer->readVarInt() << endl;
+                //buffer->setReaderindex(buffer->getReaderindex()-1);
                 handler->handlePacket(buffer);
                 delete  buffer; //Memory cleanup
             } catch (Exception *ex) {

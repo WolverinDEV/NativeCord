@@ -9,7 +9,6 @@
 #include "../../connection/PlayerConnection.h"
 
 void ServerPacketHandler::handlePacket(DataBuffer *buffer) {
-    cout << "Having server packet" << endl;
     int packetId = buffer->readVarInt();
     switch (this->connection->getState()) {
         case ConnectionState ::HANDSHAKING:

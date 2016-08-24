@@ -30,6 +30,9 @@ public:
         PlayerConnection::handshake = handshake;
     }
 
+    void sendMessage(string message);
+    void sendMessage(ChatMessage* message);
+
     ServerConnection *getCurrentTargetConnection() const;
 
     void setCurrentTargetConnection(ServerConnection *currentTargetConnection);

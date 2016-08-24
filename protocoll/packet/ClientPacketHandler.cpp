@@ -8,6 +8,7 @@
 #include "../../connection/ServerConnection.h"
 #include "../../connection/Connection.h"
 #include "../../utils/TimeUtils.h"
+#include "../../utils/StringUtil.h"
 
 // for convenience
 using json = nlohmann::json;
@@ -111,6 +112,22 @@ void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
 }
 
 void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
+    if(pconnection->getClientVersion() >= 107 && packetId == 0x02 || pconnection->getClientVersion() == 47 && packetId == 0x01){
+        string message = buffer->readString();
+        vector<string> parts = StringUtils::split(message,' ');
+        cout << "Having chat message: " << message << " ("<<parts[0].c_str()<< ")" << endl;
+        if(strcmp(parts[0].c_str(),"/cbungee") == 0){
+            pconnection->sendMessage("§aNativeCord by WolverinDEV version 0.2-ALPHA");
+            return;
+        }
+        if(strcmp(parts[0].c_str(),"/server") == 0){
+            if(parts.size() == 2){
+
+            }
+            return;
+        }
+    }
+
     if(pconnection->getCurrentTargetConnection() != NULL){
         buffer->setReaderindex(buffer->getReaderindex()-1); //Packet id
         pconnection->getCurrentTargetConnection()->writePacket(buffer);

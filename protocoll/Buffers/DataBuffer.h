@@ -138,8 +138,9 @@ class DataBuffer {
             int length = readVarInt();
             if (length > 35000)
                 throw new Exception("Try to read a too long string!");
-            char* buffer = new char[length];
+            char* buffer = new char[length+1];
             read(buffer, length);
+            buffer[length] = '\0';
             return string(buffer);
         }
 
