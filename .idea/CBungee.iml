@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="CPP_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/test/BufferTest.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/connection/Socket.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/connection/ServerConnection.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/connection/Connection.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/connection/ConnectionState.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/connection/PlayerConnection.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/connection/ServerConnection.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/connection/Socket.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/connection/PlayerConnection.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/chat/HoverEvent.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/chat/ChatMessage.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/chat/ChatColor.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/chat/ChatMessage.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/time/TimeUtils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/StreamedDataBuffer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/DataBuffer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/DataBuffer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/StreamedDataBuffer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/protocoll/packet/ServerPacketHandler.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/protocoll/packet/ClientPacketHandler.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/protocoll/packet/Packets.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/protocoll/packet/PacketHandler.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/protocoll/packet/ServerPacketHandler.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/protocoll/packet/ClientPacketHandler.cpp" isTestSource="false" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library name="Header Search Paths">
+        <CLASSES>
+          <root url="file:///usr/include" />
+          <root url="file:///usr/local/include" />
+        </CLASSES>
+        <SOURCES>
+          <root url="file:///usr/include" />
+          <root url="file:///usr/local/include" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+  </component>
+</module>
