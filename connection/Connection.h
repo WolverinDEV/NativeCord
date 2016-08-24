@@ -8,7 +8,7 @@
 #include "Socket.h"
 #include "../protocoll/Buffers/StreamedDataBuffer.h"
 #include "ConnectionState.h"
-
+#include "../protocoll/packet/Packets.h"
 class Connection {
 public:
     Connection(Socket* socket) : socket(socket), stream(new StreamedDataBuffer(socket)){
@@ -41,8 +41,16 @@ public:
         Connection::threadshold = threadshold;
     }
 
+    void writePacket(int clientVersion, Packet* packetData){
+        DataBuffer* buffer = new DataBuffer();
+        buffer->writeVarInt(packetData->getPacketId(clientVersion));
+        packetData->write(clientVersion,buffer);
+        writePacket(buffer);
+        delete buffer;
+    }
+
     void writePacket(DataBuffer* packetData){
-        if(threadshold > -1){
+        if(threadshold != -1){
             if(packetData->getWriterindex() > threadshold){
                 cout << "Cant write compressed!";
             } else {

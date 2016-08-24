@@ -68,7 +68,7 @@ inline std::string &operator+(std::string &os, ChatColor c) {
     return os;
 }
 
-inline std::string &operator+(ChatColor &c, std::string os) {
+inline std::string &operator+(ChatColor &c, std::string &os) {
     char message = static_cast<char>(c);
     os.append("§").append(&message, 1);
     return os;

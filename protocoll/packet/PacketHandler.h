@@ -13,19 +13,21 @@
 
 class PacketHandler {
 public:
-    static void readerTask(void* handlerPtr){
+    static void readerTask(void* handlerPtr){ //TODO dont decompress full packet. First only to the packetID
         PacketHandler *handler = (PacketHandler *) handlerPtr;
         while (1) {
             try {
                 int packetLength = handler->connection->getStream()->readVarInt();
+                cout << "Having packetr with length " << packetLength << endl;
                 DataBuffer *buffer = handler->connection->getStream()->readBuffer(packetLength);
-                if(handler->connection->getThreadshold() != -1 && handler->connection->getThreadshold() < packetLength){
+                if(handler->connection->getThreadshold() != -1){
                     cout << "Decompile packet!" << endl;
                     ulong outlength = buffer->readVarInt();
+                    cout << "Packet decompiled length: " << outlength << endl;
                     if(outlength > 0) {
-                        DataBuffer *out = new DataBuffer(outlength);
-                        int state = uncompress((Bytef *) out,
-                                               (ulong *) outlength,
+                        DataBuffer* out = new DataBuffer(outlength);
+                        int state = uncompress((Bytef *) out->getBuffer(),
+                                               (ulong *) &outlength,
                                                (Bytef *) buffer->getBuffer()+buffer->getReaderindex(),
                                                (ulong  ) buffer->getWriterindex());
                         switch (state) {
@@ -48,7 +50,7 @@ public:
                 }
                 cout << "Having packet: Packet length: " << packetLength << " PacketID: ";
                 cout << buffer->readVarInt() << endl;
-                buffer->setReaderindex(0);
+                buffer->setReaderindex(buffer->getReaderindex()-1);
                 handler->handlePacket(buffer);
                 delete  buffer; //Memory cleanup
             } catch (Exception *ex) {
@@ -68,7 +70,7 @@ public:
     }
 
     void startReader(){
-        pthread_create(&threadHandle,NULL,(void* (*)(void*))&readerTask,(void*) this);
+        pthread_create(&threadHandle, NULL,(void* (*)(void*))&readerTask,(void*) this);
     }
 
     pthread_t getThreadHandle(){
@@ -77,7 +79,7 @@ public:
 
 protected:
     virtual void handlePacket(DataBuffer* buffer){
-        throw new Exception("Not implemented methode!");
+        throw new Exception("handlePacket() -> Not implemented methode!");
     }
     virtual void handlePacketHandschake(int packetId,DataBuffer* buffer){
         throw new Exception("Not implemented methode!");

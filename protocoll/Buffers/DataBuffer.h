@@ -225,6 +225,20 @@ class DataBuffer {
             DataBuffer::writerindex = writerindex;
         }
 
+        void resetReaderIndex(){
+            readerindex = markedReaderIndex;
+        }
+        void resetWriterIndex(){
+            writerindex = markedWriterIndex;
+        }
+
+        void markReaderIndex(){
+            markedReaderIndex = readerindex;
+        }
+
+        void markWriterIndex(){
+            markedWriterIndex = writerindex;
+        }
 private:
 
         virtual void checkReadableBytes(int bytes) {
@@ -257,6 +271,8 @@ private:
         bool fixedLength = false;
         int readerindex = 0;
         int writerindex = 0;
+        int markedReaderIndex = 0;
+        int markedWriterIndex = 0;
 };
 
 #endif /* DATABUFFER_H */

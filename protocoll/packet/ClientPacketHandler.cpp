@@ -7,7 +7,7 @@
 #include "../../json/json.hpp"
 #include "../../connection/ServerConnection.h"
 #include "../../connection/Connection.h"
-#include "../../time/TimeUtils.h"
+#include "../../utils/TimeUtils.h"
 
 // for convenience
 using json = nlohmann::json;
@@ -86,11 +86,21 @@ void ClientPacketHandler::handlePacketStatus(int packetId, DataBuffer *buffer) {
 
 void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
     ChatMessage* message;
+    Socket* target;
     switch (packetId) {
         case 0x00:
-            cout << "Disconnecting" << endl;
-            message = new ChatMessage(string("§cDu kannst leider momentan noch nicht §nconnecten§c!"));
-            pconnection->disconnect(message);
+            pconnection->setName(buffer->readString());
+            cout << "Player ["<<pconnection->getName()<<"] connecting" << endl;
+            cout << "Start connecting to an server" << endl;
+            target = SocketUtil::createTCPSocket("localhost", 25567);
+            if(target == NULL){
+                pconnection->disconnect(new ChatMessage(string("§cCant reach target server!")));
+                return;
+            }
+            pconnection->setCurrentTargetConnection(new ServerConnection(pconnection,target));
+            pconnection->getCurrentTargetConnection()->startConnect();
+            //message = new ChatMessage(string("§cDu kannst leider momentan noch nicht §nconnecten§c!"));
+            //pconnection->disconnect(message);
             break;
         default:
             std::cout << "Cant handle packet (" << packetId << ") at login! Disconnecting client!" << std::endl;

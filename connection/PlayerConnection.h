@@ -12,16 +12,17 @@
 #include "../chat/ChatMessage.h"
 #include "ConnectionState.h"
 #include "Connection.h"
-
+#include "../utils/SocketUtil.h"
+#include "ServerConnection.h"
+#include <vector>
 class PlayerConnection : public Connection{
 public:
     PlayerConnection(Socket* socket) : Connection(socket){
-
     }
     ~PlayerConnection();
 
     void disconnect(ChatMessage* message);
-    PacketHandshake *getHandshake() const {
+    PacketHandshake* getHandshake() const {
         return handshake;
     }
 
@@ -29,8 +30,24 @@ public:
         PlayerConnection::handshake = handshake;
     }
 
+    ServerConnection *getCurrentTargetConnection() const;
+
+    void setCurrentTargetConnection(ServerConnection *currentTargetConnection);
+    int getClientVersion(){
+        if(handshake == NULL)
+            return -1;
+        return handshake->getClientVersion();
+    }
+
+    const string &getName() const;
+
+    void setName(const string &name);
+
 private:
+    string name;
     PacketHandshake* handshake;
+    ServerConnection* currentTargetConnection = NULL;
+    vector<ServerConnection*> pendingConnections;
 };
 
 

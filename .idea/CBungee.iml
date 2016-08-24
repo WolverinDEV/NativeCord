@@ -16,7 +16,9 @@
       <sourceFolder url="file://$MODULE_DIR$/chat/ChatMessage.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/chat/ChatColor.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/chat/ChatMessage.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/time/TimeUtils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/SocketUtil.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/UUIDUtils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/TimeUtils.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/StreamedDataBuffer.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/DataBuffer.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/DataBuffer.h" isTestSource="false" />
@@ -32,10 +34,14 @@
     <orderEntry type="module-library">
       <library name="Header Search Paths">
         <CLASSES>
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
         </CLASSES>
         <SOURCES>
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
         </SOURCES>

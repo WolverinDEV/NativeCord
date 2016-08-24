@@ -155,9 +155,6 @@ int main(int argc, char** argv) {
         signal(SIGSEGV, handler);
         pthread_t threadHandle;
         pthread_create(&threadHandle,NULL,(void* (*)(void*)) &clientConnect,NULL);
-        //while (true){
-        //    usleep(1000000);
-        //}
         pthread_join(threadHandle,NULL);
     }catch(Exception* ex){
         cout << "Exception: " << ex->what() << endl;

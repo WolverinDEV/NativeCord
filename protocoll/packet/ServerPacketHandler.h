@@ -6,26 +6,29 @@
 #define CBUNGEE_SERVERPACKETHANDLER_H
 
 
-#include "../../connection/ServerConnection.h"
 #include "PacketHandler.h"
 
 class ServerConnection;
-class ServerPacketHandler : public PacketHandler{
+class ServerPacketHandler : public PacketHandler {
 public:
-    ServerPacketHandler(ServerConnection* connection) : PacketHandler((Connection*) connection), sconnection(connection){
+    ServerPacketHandler(ServerConnection *connection) : PacketHandler((Connection *) connection), sconnection(connection) {
 
     }
 
-    void connect();
 private:
-    void forwardPacket(DataBuffer* buffer);
+    void forwardPacket(DataBuffer *buffer);
 
-    void handlePacket(DataBuffer* buffer);
-    void handlePacketHandschake(int packetId,DataBuffer* buffer);
-    void handlePacketStatus(int packetId,DataBuffer* buffer);
-    void handlePacketLogin(int packetId,DataBuffer *buffer);
-    void handlePacketPlay(int packetId,DataBuffer *buffer);
-    ServerConnection* sconnection;
+    void handlePacket(DataBuffer *buffer);
+
+    void handlePacketHandschake(int packetId, DataBuffer *buffer) override;
+
+    void handlePacketStatus(int packetId, DataBuffer *buffer) override;
+
+    void handlePacketLogin(int packetId, DataBuffer *buffer) override;
+
+    void handlePacketPlay(int packetId, DataBuffer *buffer) override;
+
+    ServerConnection *sconnection;
 };
 
 

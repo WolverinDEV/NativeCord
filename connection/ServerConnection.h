@@ -7,20 +7,30 @@
 
 
 #include "Socket.h"
-#include "PlayerConnection.h"
+#include "Connection.h"
+#include "../protocoll/packet/PacketHandler.h"
+#include "../chat/ChatMessage.h"
 #include "../protocoll/packet/ServerPacketHandler.h"
 
+class PlayerConnection;
 class ServerConnection : public Connection{
 public:
-    ServerConnection(Socket* socket) : Connection(socket){
-
+    ServerConnection(PlayerConnection* player,Socket* socket) : Connection(socket), player(player){
+        phandler = new ServerPacketHandler(this);
     }
 
     virtual  ~ServerConnection(){
     }
-private:
-    //ServerPacketHandler* packetHandler = NULL;
-};
 
+    void startConnect();
+
+    PlayerConnection *getPlayerConnection() const {
+        return player;
+    }
+
+private:
+    PacketHandler* phandler;
+    PlayerConnection* player;
+};
 
 #endif //CBUNGEE_SERVERCONNECTION_H

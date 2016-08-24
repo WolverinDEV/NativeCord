@@ -29,6 +29,7 @@ DataBuffer::DataBuffer(const char *buffer, int bufferLength, bool copy) {
     }
     else
         this->buffer = buffer;
+    this->writerindex = bufferLength;
     this->bufferLength = bufferLength;
 }
 

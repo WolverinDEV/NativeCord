@@ -20,3 +20,19 @@ void PlayerConnection::disconnect(ChatMessage* message) {
         }
     closeChannel();
 }
+
+ServerConnection *PlayerConnection::getCurrentTargetConnection() const {
+    return currentTargetConnection;
+}
+
+void PlayerConnection::setCurrentTargetConnection(ServerConnection *currentTargetConnection) {
+    PlayerConnection::currentTargetConnection = currentTargetConnection;
+}
+
+const string &PlayerConnection::getName() const {
+    return name;
+}
+
+void PlayerConnection::setName(const string &name) {
+    PlayerConnection::name = name;
+}
