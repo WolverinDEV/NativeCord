@@ -44,10 +44,10 @@ public:
         Connection::threadshold = threadshold;
     }
 
-    void writePacket(int clientVersion, Packet* packetData){
+    void writePacket(int clientVersion, Packet& packetData){
         DataBuffer* buffer = new DataBuffer();
-        buffer->writeVarInt(packetData->getPacketId(clientVersion));
-        packetData->write(clientVersion,buffer);
+        buffer->writeVarInt(packetData.getPacketId(clientVersion));
+        packetData.write(clientVersion,buffer);
         writePacket(buffer);
         delete buffer;
     }

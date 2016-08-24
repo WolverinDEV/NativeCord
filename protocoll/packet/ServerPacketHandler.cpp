@@ -77,8 +77,10 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
                 ((ServerConnection*)connection)->getPlayerConnection()->writePacket(buffer->readBuffer(buffer->readableBytes()));
                 ((ServerConnection*)connection)->getPlayerConnection()->setState(ConnectionState::PLAYING);
             } else {
-                ((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(),new PacketRespawn(1,0,0,string("default")));
-                ((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(),new PacketRespawn(-1,0,0,string("default"))); //Needed send only once :D @md_5
+                PacketPlayRespawn packet1(1,0,0,string("default"));
+                PacketPlayRespawn packet2(1,0,0,string("default"));
+                ((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(), packet1);
+                ((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(), packet2); //Needed send only once :D @md_5
             }
             break;
         case 0x03:
@@ -90,13 +92,19 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
 }
 
 void entityRewideServer(int packetId,DataBuffer* buffer,ServerConnection* connection){ //TODO getRight rewrite
-    EntityRewrite::entityRewide210Server(packetId,buffer,connection->getPlayerId(),connection->getPlayerConnection()->getPlayerId());
+    int cversion = connection->getPlayerConnection()->getClientVersion();
+    if(cversion == 210)
+        EntityRewrite::entityRewide210Server(packetId,buffer,connection->getPlayerId(),connection->getPlayerConnection()->getPlayerId());
+    else if(cversion == 110 || cversion == 109 || cversion == 107)
+        EntityRewrite::entityRewide110Server(packetId,buffer,connection->getPlayerId(),connection->getPlayerConnection()->getPlayerId());
+    else if(cversion == 47)
+        EntityRewrite::entityRewide47Server(packetId,buffer,connection->getPlayerId(),connection->getPlayerConnection()->getPlayerId());
 }
 
 void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
     int rindex = buffer->getReaderindex();
     int clientVersion = ((ServerConnection*)connection)->getPlayerConnection()->getClientVersion();
-    if(packetId == 0x23 && clientVersion > 46 || packetId == 0x01 && clientVersion == 46) { //TODO add 1.8 packets!
+    if(packetId == 0x23 && clientVersion > 46 || packetId == 0x01 && clientVersion == 46) {
         int playerId = buffer->readInt();
         bool del = true; //First time must send
         if(((ServerConnection*)connection)->getPlayerConnection()->getPlayerId() == -1) { //player version isnt defined
@@ -113,8 +121,8 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
             uint8_t diff = buffer->read();
             buffer->read(); //Tab list size
             string level = buffer->readString();
-
-            ((ServerConnection *) connection)->getPlayerConnection()->writePacket( ((ServerConnection *) connection)->getPlayerConnection()->getClientVersion(), new PacketRespawn(dim, diff, gamemode, level));
+            PacketPlayRespawn packet(dim, diff, gamemode, level);
+            ((ServerConnection *) connection)->getPlayerConnection()->writePacket( ((ServerConnection *) connection)->getPlayerConnection()->getClientVersion(), packet);
         }
         if(del)
           return;

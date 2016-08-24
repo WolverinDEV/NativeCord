@@ -9,7 +9,7 @@
 
 void ServerConnection::startConnect() {
     ((ServerPacketHandler*)phandler)->startReader();
-    writePacket(getPlayerConnection()->getClientVersion(), getPlayerConnection()->getHandshake()); //handshake
+    writePacket(getPlayerConnection()->getClientVersion(), *(getPlayerConnection()->getHandshake())); //handshake
     DataBuffer* buffer = new DataBuffer();
     buffer->writeVarInt(0x00);
     buffer->writeString(getPlayerConnection()->getName());

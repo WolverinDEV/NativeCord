@@ -86,6 +86,10 @@ void ClientPacketHandler::handlePacketStatus(int packetId, DataBuffer *buffer) {
     }
 }
 
+bool isSupportedVersion(int ver){
+    return ver == 210 || ver == 110 || ver == 109 || ver == 108 || ver == 107 || ver == 47;
+}
+
 void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
     ChatMessage* message;
     Socket* target;
@@ -93,6 +97,11 @@ void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
         case 0x00:
             pconnection->setName(buffer->readString());
             cout << "Player ["<<pconnection->getName()<<"] connecting" << endl;
+            if(!isSupportedVersion(pconnection->getHandshake()->getClientVersion())){
+                pconnection->disconnect(new ChatMessage(string("§cNativecord dosnt support your minecraft version.")));
+                return;
+            }
+
             cout << "Start connecting to an server" << endl;
             target = SocketUtil::createTCPSocket("localhost", 25567);
             if(target == NULL){
@@ -110,6 +119,16 @@ void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
             //TODO memory clear
             break;
     }
+}
+
+void entityRewrite(int pid,DataBuffer* buffer,ClientPacketHandler* handler){
+    int cversion = handler->getPlayerConnection()->getClientVersion();
+    if(cversion == 210)
+        EntityRewrite::entityRewide210Client(pid,buffer,handler->getPlayerConnection()->getPlayerId(),handler->getPlayerConnection()->getCurrentTargetConnection()->getPlayerId());
+    else if(cversion == 110 || cversion == 109 || cversion == 108 || cversion == 107)
+        EntityRewrite::entityRewide210Client(pid,buffer,handler->getPlayerConnection()->getPlayerId(),handler->getPlayerConnection()->getCurrentTargetConnection()->getPlayerId());
+    else if(cversion == 47)
+        EntityRewrite::entityRewide47Client(pid,buffer,handler->getPlayerConnection()->getPlayerId(),handler->getPlayerConnection()->getCurrentTargetConnection()->getPlayerId());
 }
 
 void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
@@ -133,8 +152,9 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
             return;
         }
     }
-    if(pconnection->getCurrentTargetConnection() != NULL)
-        EntityRewrite::entityRewide210Client(packetId,buffer,pconnection->getPlayerId(),pconnection->getCurrentTargetConnection()->getPlayerId());
+    if(pconnection->getCurrentTargetConnection() != NULL){
+        entityRewrite(packetId,buffer,this);
+    }
     if(pconnection->getCurrentTargetConnection() != NULL){
         buffer->setReaderindex(buffer->getReaderindex()-DataBuffer::getVarIntSize(packetId)); //Packet id
         pconnection->getCurrentTargetConnection()->writePacket(buffer);

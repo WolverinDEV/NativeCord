@@ -147,12 +147,27 @@ void clientConnect(){
     }
 }
 
+class Test {
+public:
+    Test(){
+        cout << "Hello" << endl;
+    }
+    ~Test(){
+        cout << "Ade" << endl;
+    }
+};
+
+void test(Test& x){
+
+}
+
 /*
  * 
  */
 int main(int argc, char** argv) {
     try {
         signal(SIGSEGV, handler);
+
         pthread_t threadHandle;
         pthread_create(&threadHandle,NULL,(void* (*)(void*)) &clientConnect,NULL);
         pthread_join(threadHandle,NULL);

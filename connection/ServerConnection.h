@@ -20,6 +20,7 @@ public:
     }
 
     virtual  ~ServerConnection(){
+        delete phandler;
     }
 
     void startConnect();

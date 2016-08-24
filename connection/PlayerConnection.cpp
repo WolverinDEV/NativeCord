@@ -6,6 +6,8 @@
 
 PlayerConnection::~PlayerConnection(){
     delete (this->getSocket());
+    delete (this->handshake);
+    delete (this->currentTargetConnection);
 }
 
 void PlayerConnection::disconnect(ChatMessage* message) {
@@ -17,7 +19,8 @@ void PlayerConnection::disconnect(ChatMessage* message) {
             writePacket(buffer);
             delete(buffer);
         }else if(getState() == PLAYING){
-            //TODO
+            PacketPlayDisconnect disconnect(message);
+            writePacket(getClientVersion(),disconnect);
         }
     closeChannel();
 }
@@ -52,5 +55,6 @@ void PlayerConnection::sendMessage(ChatMessage* message) {
 
 void PlayerConnection::connect(Socket *target) {
     ServerConnection* c = new ServerConnection(this,target); //TODO add to pending
+    pendingConnections.push_back(c);
     c->startConnect();
 }

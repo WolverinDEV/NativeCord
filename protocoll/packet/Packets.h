@@ -6,6 +6,7 @@
 #define CBUNGEE_PACKETS_H
 
 #include "../Buffers/DataBuffer.h"
+#include "../../chat/ChatMessage.h"
 #include <string>
 
 class Packet {
@@ -88,13 +89,13 @@ private:
     int state = 0;
 };
 
-class PacketRespawn : public Packet {
+class PacketPlayRespawn : public Packet {
 public:
-    PacketRespawn() : Packet() {
+    PacketPlayRespawn() : Packet() {
 
     }
 
-    PacketRespawn(uint16_t dimension, char difficulty, char gamemode, string level) : dimension(dimension),
+    PacketPlayRespawn(uint16_t dimension, char difficulty, char gamemode, string level) : dimension(dimension),
                                                                                              difficulty(difficulty),
                                                                                              gamemode(gamemode),
                                                                                              level(level) {}
@@ -124,4 +125,29 @@ private:
     string level;
 };
 
+class PacketPlayDisconnect : public  Packet {
+public:
+    PacketPlayDisconnect(){
+
+    }
+    PacketPlayDisconnect(ChatMessage* message) : message(message){
+
+    }
+    ~PacketPlayDisconnect(){
+        delete(message);
+    }
+    virtual void read(int clientVersion, DataBuffer *buffer) override {
+        message = new ChatMessage(buffer->readString());
+    }
+
+    virtual void write(int clientVersion, DataBuffer *buffer) override {
+        buffer->writeString(message->toString());
+    }
+
+    virtual int getPacketId(int clientVersion) override {
+        return clientVersion > 46 ? 0x00 : 0x40;
+    }
+private:
+    ChatMessage* message;
+};
 #endif //CBUNGEE_PACKETS_H

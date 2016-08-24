@@ -15,6 +15,10 @@ public:
         this->pconnection = connection;
     }
 
+    PlayerConnection* getPlayerConnection(){
+        return pconnection;
+    }
+
 private:
     void forwardPacket(DataBuffer* buffer);
 
