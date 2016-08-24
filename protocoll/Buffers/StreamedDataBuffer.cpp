@@ -23,7 +23,10 @@ void StreamedDataBuffer::read(const char *buffer, int length) {
 }
 
 void StreamedDataBuffer::write(char byte) {
-    socket->writeBytes(&byte,1);
+    switch (socket->writeBytes(&byte,1)){
+        case -1:
+            throw new StreamClosedException();
+    }
 }
 
 void StreamedDataBuffer::write(const char *buffer, int length) {

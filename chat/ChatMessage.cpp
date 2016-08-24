@@ -6,20 +6,19 @@
 #include "../json/json.hpp"
 
 using namespace std;
-using json = nlohmann::json;
 std::string ChatMessage::toString() {
     json out;
     out["text"] = this->message.c_str();
     if(this->bold)
-        out["bold"] = 1;
+        out["bold"] = true;
     if(this->italic)
-        out["italic"] = 1;
+        out["italic"] = true;
     if(this->random)
-        out["obfuscated"] = 1;
+        out["obfuscated"] = true;
     if(this->strikethrough)
-        out["strikethrough"] = 1;
+        out["strikethrough"] = true;
     if(this->underlined)
-        out["underlined"] = 1;
+        out["underlined"] = true;
     switch (this->color){
         case ChatColor::BLACK:
             out["color"] = "black";
@@ -79,6 +78,70 @@ std::string ChatMessage::toString() {
            out["hoverEvent"] = {{"action",this->hover->getAction()},{"value",this->hover->getValue()}};
     }
     return out.dump();
+}
+
+ChatMessage::ChatMessage(json raw) {
+    if(raw.count("text") == 1)
+        message = raw["text"];
+    else
+        message = string("");
+
+    bold = raw.count("bold") == 1 && raw["bold"];
+    italic = raw.count("italic") == 1 && raw["italic"];
+    random = raw.count("obfuscated") == 1 && raw["obfuscated"];
+    underlined = raw.count("underlined") == 1 && raw["underlined"];
+    strikethrough = raw.count("strikethrough") == 1 && raw["strikethrough"];
+
+    if(raw.count("color") == 1){
+        string scolor = raw["color"];
+        const char* ccolor = scolor.c_str();
+        if(strcmp("black",ccolor) == 0)
+            color = ChatColor::BLACK;
+        else if(strcmp("dark_blue",ccolor) == 0)
+            color = ChatColor::DARK_BLUE;
+        else if(strcmp("dark_green",ccolor) == 0)
+            color = ChatColor::DARK_GREEN;
+        else if(strcmp("dark_aqua",ccolor) == 0)
+            color = ChatColor::DARK_CYAN;
+        else if(strcmp("dark_red",ccolor) == 0)
+            color = ChatColor::DARK_RED;
+        else if(strcmp("dark_purple",ccolor) == 0)
+            color = ChatColor::PURPLE;
+        else if(strcmp("gold",ccolor) == 0)
+            color = ChatColor::GOLD;
+        else if(strcmp("gray",ccolor) == 0)
+            color = ChatColor::GRAY;
+        else if(strcmp("dark_gray",ccolor) == 0)
+            color = ChatColor::DARK_GRAY;
+        else if(strcmp("blue",ccolor) == 0)
+            color = ChatColor::BLUE;
+        else if(strcmp("green",ccolor) == 0)
+            color = ChatColor::BRIGHT_GREEN;
+        else if(strcmp("aqua",ccolor) == 0)
+            color = ChatColor::CYAN;
+        else if(strcmp("red",ccolor) == 0)
+            color = ChatColor::RED;
+        else if(strcmp("light_purple",ccolor) == 0)
+            color = ChatColor::PINK;
+        else
+            color = ChatColor::WHITE;
+    }
+
+    if(raw.count("extra") == 1) {
+        vector<json> extras = raw["extra"];
+        for(std::vector<json>::iterator it = extras.begin(); it != extras.end(); ++it) {
+            this->cildren.push_back(new ChatMessage(*it));
+        }
+    }
+
+    if(raw.count("hoverEvent") == 1){
+        json hover = raw["hoverEvent"];
+        json j = hover["value"];
+        if(j.is_string())
+            this->hover = new HoverEvent(hover["action"],hover["value"]);
+        else
+            this->hover = new HoverEvent(hover["action"],j.dump());
+    }
 }
 // * black
 // * dark_blue

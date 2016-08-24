@@ -106,7 +106,7 @@ void clientConnect(){
             PlayerConnection *playerConnection = new PlayerConnection(connection);
             ClientPacketHandler* handler = new ClientPacketHandler(playerConnection);
             handler->startReader();
-            pthread_join((handler->getThreadHandle()),NULL);
+            //pthread_join((handler->getThreadHandle()),NULL);
         }
         //cout << "Packet length: " << playerConnection->getStream()->readVarInt() << endl;
         //cout << "Packet is: " <<  playerConnection->getStream()->readVarInt() << endl;

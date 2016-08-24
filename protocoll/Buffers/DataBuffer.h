@@ -257,8 +257,40 @@ class DataBuffer {
             markedReaderIndex = readerindex;
         }
 
-        void markWriterIndex(){
+        void markWriterIndex() {
             markedWriterIndex = writerindex;
+        }
+
+        void push(int num) {
+            if (num > 0) {
+                const char *oldBuffer = buffer;
+                if (writerindex + num >= bufferLength) {
+                    buffer = (const char *) malloc(writerindex + num);
+                    bufferLength = writerindex + num;
+                }
+                memset((void *) buffer, 0, bufferLength);
+                if (buffer != NULL)
+                    memcpy((void *) buffer + num, (const void *) oldBuffer, writerindex);
+                if (oldBuffer != NULL);
+                    delete oldBuffer;
+            } else {
+                if(buffer == NULL)
+                    return;
+                const char *oldBuffer = buffer;
+                int nindex = -num;
+                buffer = (const char *) malloc(writerindex-nindex);
+                memcpy((void *) buffer,(const void *) oldBuffer+nindex,writerindex-nindex);
+                bufferLength = writerindex-nindex;
+                if(writerindex-nindex < 0)
+                    writerindex = 0;
+                else
+                    writerindex = writerindex-nindex;
+                if(readerindex-nindex < 0)
+                    readerindex = 0;
+                else
+                    readerindex = readerindex-nindex;
+                delete  oldBuffer;
+            }
         }
 private:
 

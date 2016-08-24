@@ -16,9 +16,10 @@
       <sourceFolder url="file://$MODULE_DIR$/chat/HoverEvent.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/chat/ChatColor.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/chat/ChatMessage.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/UUIDUtils.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/utils/SocketUtil.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/utils/StringUtil.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/UUIDUtils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/EntityRewrite.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/utils/TimeUtils.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/StreamedDataBuffer.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/DataBuffer.cpp" isTestSource="false" />

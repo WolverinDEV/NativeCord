@@ -88,4 +88,40 @@ private:
     int state = 0;
 };
 
+class PacketRespawn : public Packet {
+public:
+    PacketRespawn() : Packet() {
+
+    }
+
+    PacketRespawn(uint16_t dimension, char difficulty, char gamemode, string level) : dimension(dimension),
+                                                                                             difficulty(difficulty),
+                                                                                             gamemode(gamemode),
+                                                                                             level(level) {}
+
+    virtual void read(int clientVersion, DataBuffer *buffer) override {
+        dimension = buffer->readInt();
+        difficulty = buffer->read();
+        gamemode = buffer->read();
+        level = buffer->readString();
+    }
+
+    virtual void write(int clientVersion, DataBuffer *buffer) override {
+        buffer->writeInt(dimension);
+        buffer->write(difficulty);
+        buffer->write(gamemode);
+        buffer->writeString(level);
+    }
+
+    virtual int getPacketId(int clientVersion) override {
+        return clientVersion > 46 ? 0x33 : 0x07;
+    }
+
+private:
+    uint16_t dimension;
+    char difficulty;
+    char gamemode;
+    string level;
+};
+
 #endif //CBUNGEE_PACKETS_H

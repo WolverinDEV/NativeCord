@@ -13,7 +13,9 @@
 #include "ChatColor.h"
 #include "HoverEvent.h"
 #include <algorithm>
+#include "../json/json.hpp"
 
+using json = nlohmann::json;
 class ChatMessage {
 public:
     ChatMessage() : ChatMessage(std::string("")){
@@ -22,6 +24,15 @@ public:
     }
     ChatMessage(const char* message) : message(string(message)){
     }
+    ChatMessage(json raw);
+
+    ~ChatMessage(){
+        delete hover;
+        for(std::vector<ChatMessage*>::iterator it = this->cildren.begin(); it != this->cildren.end(); ++it) {
+            delete *it;
+        }
+    }
+
     void addSibling(ChatMessage* message){
         this->cildren.push_back(message);
     }

@@ -33,6 +33,8 @@ public:
     void sendMessage(string message);
     void sendMessage(ChatMessage* message);
 
+    void connect(Socket* target);
+
     ServerConnection *getCurrentTargetConnection() const;
 
     void setCurrentTargetConnection(ServerConnection *currentTargetConnection);
@@ -46,7 +48,16 @@ public:
 
     void setName(const string &name);
 
+    int getPlayerId() const {
+        return playerId;
+    }
+
+    void setPlayerId(int playerId) {
+        PlayerConnection::playerId = playerId;
+    }
+
 private:
+    int playerId = -1;
     string name;
     PacketHandshake* handshake;
     ServerConnection* currentTargetConnection = NULL;

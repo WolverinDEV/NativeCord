@@ -15,6 +15,7 @@ DataBuffer* Socket::readBuffer(int length) {
 }
 
 int Socket::readBytes(char *buffer, int length) {
+    signal(SIGPIPE, SIG_IGN);
     //cout << "Read bytes: " << length << " from " << fd << " to buffer " << (void*) buffer << endl;
     return read(this->fd,buffer,length);
 }
@@ -24,6 +25,7 @@ int Socket::writeBuffer(DataBuffer &buffer) {
 }
 
 int Socket::writeBytes(char *buffer, int length) {
+    signal(SIGPIPE, SIG_IGN);
     //cout << "Write: " << (int) buffer[0] << " Length: " << length << endl;
     return write(this->fd,buffer,length);
 }

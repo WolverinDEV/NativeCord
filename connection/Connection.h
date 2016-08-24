@@ -7,8 +7,9 @@
 
 #include "Socket.h"
 #include "../protocoll/Buffers/StreamedDataBuffer.h"
-#include "ConnectionState.h"
 #include "../protocoll/packet/Packets.h"
+#include "../chat/ChatMessage.h"
+#include "ConnectionState.h"
 #include <zlib.h>
 
 class Connection {
@@ -50,6 +51,10 @@ public:
         writePacket(buffer);
         delete buffer;
     }
+
+    void disconnect(ChatMessage* message) {
+        closeChannel();
+    };
 
     void writePacket(DataBuffer* packetData){
         if(threadshold != -1){

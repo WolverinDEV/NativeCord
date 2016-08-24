@@ -9,6 +9,7 @@
 #include "../../connection/Connection.h"
 #include "../../utils/TimeUtils.h"
 #include "../../utils/StringUtil.h"
+#include "../../utils/EntityRewrite.h"
 
 // for convenience
 using json = nlohmann::json;
@@ -122,14 +123,20 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
         }
         if(strcmp(parts[0].c_str(),"/server") == 0){
             if(parts.size() == 2){
-
+                Socket* target = SocketUtil::createTCPSocket("localhost",25568);
+                pconnection->connect(target);
+                pconnection->sendMessage("§aConnected");
+                return;
             }
+            pconnection->sendMessage("§6Server list:");
+            pconnection->sendMessage("§6No config = no servers //TODO add config"); //TODO
             return;
         }
     }
-
+    if(pconnection->getCurrentTargetConnection() != NULL)
+        EntityRewrite::entityRewide210Client(packetId,buffer,pconnection->getPlayerId(),pconnection->getCurrentTargetConnection()->getPlayerId());
     if(pconnection->getCurrentTargetConnection() != NULL){
-        buffer->setReaderindex(buffer->getReaderindex()-1); //Packet id
+        buffer->setReaderindex(buffer->getReaderindex()-DataBuffer::getVarIntSize(packetId)); //Packet id
         pconnection->getCurrentTargetConnection()->writePacket(buffer);
     }
 } //TODO

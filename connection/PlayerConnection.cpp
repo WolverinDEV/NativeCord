@@ -49,3 +49,8 @@ void PlayerConnection::sendMessage(ChatMessage* message) {
     writePacket(buffer);
     delete(buffer);
 }
+
+void PlayerConnection::connect(Socket *target) {
+    ServerConnection* c = new ServerConnection(this,target); //TODO add to pending
+    c->startConnect();
+}

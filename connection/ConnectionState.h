@@ -9,7 +9,8 @@ enum ConnectionState {
     HANDSHAKING,
     LOGIN,
     PLAYING,
-    STATUS
+    STATUS,
+    CLOSED
 };
 
 #endif //CBUNGEE_CONNECTIONSTATE_H

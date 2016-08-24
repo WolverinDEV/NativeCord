@@ -17,6 +17,18 @@ public:
         PacketHandler *handler = (PacketHandler *) handlerPtr;
         while (1) {
             try {
+                if(handler->connection == NULL){
+                    cout << "Invelid ptr";
+                    return;
+                }
+                if(handler->connection->getStream() == NULL){
+                    cout << "Invalid stream" << endl;
+                    return;
+                }
+                if(handler->connection->getState() == ConnectionState::CLOSED){
+                    cout << "Closed channel" << endl;
+                    return;
+                }
                 int packetLength = handler->connection->getStream()->readVarInt();
                 //cout << "Having packetr with length " << packetLength << endl;
                 DataBuffer *buffer = handler->connection->getStream()->readBuffer(packetLength);
@@ -47,6 +59,12 @@ public:
                         delete buffer;
                         buffer = out;
                     }
+                    else{
+                        buffer->push(-DataBuffer::getVarIntSize(outlength));
+                        //buffer->setReaderindex(0);
+                        //buffer->setWriterindex(packetLength-DataBuffer::getVarIntSize(outlength));
+                        //cout << "Buffer: " << buffer->getWriterindex() << "/" << buffer->getBufferLength() << endl;
+                    }
                 }
                 //cout << "Having packet: Packet length: " << packetLength << " PacketID: ";
                 //cout << buffer->readVarInt() << endl;
@@ -67,6 +85,7 @@ public:
     }
 
     virtual ~PacketHandler(){
+        pthread_exit(&threadHandle);
     }
 
     void startReader(){

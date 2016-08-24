@@ -28,7 +28,15 @@ public:
         return player;
     }
 
+    int getPlayerId() const {
+        return playerId;
+    }
+
+    void setPlayerId(int playerId) {
+        ServerConnection::playerId = playerId;
+    }
 private:
+    int playerId = -1;
     PacketHandler* phandler;
     PlayerConnection* player;
 };

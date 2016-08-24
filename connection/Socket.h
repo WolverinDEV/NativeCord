@@ -5,8 +5,9 @@
 #ifndef CBUNGEE_SOCKET_H
 #define CBUNGEE_SOCKET_H
 
-
 #include "../protocoll/Buffers/DataBuffer.h"
+#include <stdio.h>
+#include <signal.h>
 
 class Socket {
 public:

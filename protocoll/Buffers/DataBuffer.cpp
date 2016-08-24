@@ -40,7 +40,8 @@ DataBuffer::DataBuffer(int bufferLength) {
 
 
 DataBuffer::~DataBuffer() {
-    delete buffer;
+    if(buffer != NULL)
+        delete buffer;
 }
 
 int DataBuffer::readableBytes() {
