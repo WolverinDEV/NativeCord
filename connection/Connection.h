@@ -9,6 +9,8 @@
 #include "../protocoll/Buffers/StreamedDataBuffer.h"
 #include "ConnectionState.h"
 #include "../protocoll/packet/Packets.h"
+#include <zlib.h>
+
 class Connection {
 public:
     Connection(Socket* socket) : socket(socket), stream(new StreamedDataBuffer(socket)){
@@ -52,7 +54,27 @@ public:
     void writePacket(DataBuffer* packetData){
         if(threadshold != -1){
             if(packetData->getWriterindex() > threadshold){
-                cout << "Cant write compressed!";
+                DataBuffer* target = new DataBuffer(compressBound(packetData->getWriterindex()));
+                ulong  size = target->getWriterindex();
+                int state = compress((Bytef *) target->getBuffer(),&size,(Bytef *) packetData->getBuffer(),packetData->getWriterindex());
+                switch (state) {
+                    case Z_OK:
+                        cout << "Decompressed okey" << endl;
+                        break;
+                    case Z_BUF_ERROR:
+                        cout << "Buffer error" << endl;
+                        break;
+                    case Z_DATA_ERROR:
+                        cout << "Invalid data!" << endl;
+                        break;
+                    default:
+                        cout << "Cant find state " << state << endl;
+                        break;
+                }
+                stream->writeVarInt(DataBuffer::getVarIntSize(packetData->getWriterindex())+target->getBufferLength()); //Write data of full packet
+                stream->writeVarInt(packetData->getWriterindex()); //Size of uncompressed packet
+                stream->write(target->getBuffer(),target->getBufferLength());
+                delete(target);
             } else {
                 stream->writeVarInt(packetData->getWriterindex()+1);
                 stream->writeVarInt(0);

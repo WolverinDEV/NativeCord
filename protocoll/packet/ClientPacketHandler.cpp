@@ -110,7 +110,12 @@ void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
     }
 }
 
-void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {} //TODO
+void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
+    if(pconnection->getCurrentTargetConnection() != NULL){
+        buffer->setReaderindex(buffer->getReaderindex()-1); //Packet id
+        pconnection->getCurrentTargetConnection()->writePacket(buffer);
+    }
+} //TODO
 
 void ClientPacketHandler::handlePacket(DataBuffer *buffer) {
     int packetId = buffer->readVarInt();
