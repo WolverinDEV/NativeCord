@@ -76,6 +76,10 @@ public:
                     cout << "Connection closed!" << endl;
                 }
                 cout << "Client reader exception: " << ex->what() << endl;
+                if(handler->connection->getState() != ConnectionState::CLOSED)
+                    handler->connection->closeChannel();
+                handler->onException(ex);
+                delete ex;
                 break;
             }
         }
@@ -115,6 +119,7 @@ protected:
         throw new Exception("Not implemented methode!");
     }
     virtual void streamClosed(){}
+    virtual void onException(Exception* ex){}
 
     pthread_t threadHandle;
     Connection* connection;

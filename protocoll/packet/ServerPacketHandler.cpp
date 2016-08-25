@@ -130,3 +130,13 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
 } //TODO
 
 void ServerPacketHandler::handlePacketStatus(int packetId, DataBuffer *buffer) {}
+
+void ServerPacketHandler::onException(Exception* ex) {
+    if(((ServerConnection *) connection)->getPlayerConnection()->getState() == ConnectionState::CLOSED || ((ServerConnection *) connection)->getState() == ConnectionState::CLOSED)
+        return;
+    if(((ServerConnection *) connection)->getPlayerConnection()->getState() == ConnectionState::LOGIN){
+        ((ServerConnection *) connection)->getPlayerConnection()->disconnect(new ChatMessage(string("§cAn exception was thrown.\n§6Message: §5")+ex->what()));
+    } else {
+        ((ServerConnection *) connection)->getPlayerConnection()->sendMessage(string("§cAn exception was thrown.\n§6Message: §5")+ex->what());
+    }
+}

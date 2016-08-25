@@ -20,9 +20,9 @@ class ChatMessage {
 public:
     ChatMessage() : ChatMessage(std::string("")){
     }
-    ChatMessage(std::string message) : message(message){
+    ChatMessage(std::string &message) : message(message){
     }
-    ChatMessage(const char* message) : message(string(message)){
+    ChatMessage(const char* message) : ChatMessage(string(message)){
     }
     ChatMessage(json raw);
 
@@ -109,15 +109,15 @@ public:
     }
 
 private:
-    std::string message;
+    std::string &message;
     std::vector<ChatMessage*> cildren;
     ChatColor color = ChatColor::WHITE;
     HoverEvent* hover = NULL;
-    bool random;
-    bool bold;
-    bool strikethrough;
-    bool italic;
-    bool underlined;
+    bool random = 0;
+    bool bold = 0;
+    bool strikethrough = 0;
+    bool italic = 0;
+    bool underlined = 0;
 };
 
 

@@ -141,7 +141,7 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
         string message = buffer->readString();
         vector<string> parts = StringUtils::split(message,' ');
         cout << "Having chat message: " << message << " ("<<parts[0].c_str()<< ")" << endl;
-        if(strcmp(parts[0].c_str(),"/cbungee") == 0){
+        if(strcmp(parts[0].c_str(),"/ncord") == 0){
             pconnection->sendMessage("§aNativeCord by WolverinDEV version 0.2-ALPHA");
             return;
         }
@@ -152,6 +152,44 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
                 pconnection->sendMessage("§aConnected");
                 return;
             }
+            if(parts.size() == 3){
+                if(strcmp(parts[1].c_str(),"direct") == 0){
+                    string targetAdress = parts[2];
+                    vector<string> aparts = StringUtils::split(targetAdress,':');
+                    if(aparts.size() != 2 && aparts.size() != 1){
+                        pconnection->sendMessage("§cInvalid target adress.");
+                        return;
+                    }
+                    string host = aparts[0];
+                    uint32_t port = aparts.size() == 2 ? atoi(aparts[1].c_str()) : 25565;
+                    if(port < 0 || port > 65535){
+                        pconnection->sendMessage("§cInvalid target port.");
+                        return;
+                    }
+                    Socket* target = SocketUtil::createTCPSocket(host.c_str(),port);
+                    if(*((int*) target) == -1){
+                        pconnection->sendMessage(string("§cAn error happend while connecting. (Cant create socket)"));
+                        delete(target);
+                        return;
+                    }
+                    if(*((int*) target) == -2){
+                        pconnection->sendMessage(string("§cAn error happend while connecting. (Cant resolve host)"));
+                        delete(target);
+                        return;
+                    }
+                    if(*((int*) target) == -3){
+                        pconnection->sendMessage("§cAn error happend while connecting. (Cant connect to target adress)");
+                        delete(target);
+                        return;
+                    }
+                    pconnection->connect(target);
+                    pconnection->sendMessage("§aConnecting to target server.");
+                    return;
+                }
+            }
+            pconnection->sendMessage("§6/server list");
+            pconnection->sendMessage("§6/server <servername>");
+            pconnection->sendMessage("§6/server direct <host[:port]>");
             pconnection->sendMessage("§6Server list:");
             pconnection->sendMessage("§6No config = no servers //TODO add config"); //TODO
             return;

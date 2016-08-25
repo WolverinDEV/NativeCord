@@ -47,6 +47,7 @@ void PlayerConnection::sendMessage(ChatMessage* message) {
     DataBuffer* buffer = new DataBuffer();
     buffer->writeVarInt(getClientVersion() == 46 ? 0x02 : 0x0F);
     buffer->writeString(message->toString());
+    cout << "Message: " << message->toString() << endl;
     buffer->writeVarInt(0);
     writePacket(buffer);
     delete(buffer);

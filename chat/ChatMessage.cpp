@@ -80,9 +80,11 @@ std::string ChatMessage::toString() {
     return out.dump();
 }
 
-ChatMessage::ChatMessage(json raw) {
-    if(raw.count("text") == 1)
-        message = raw["text"];
+ChatMessage::ChatMessage(json raw) : ChatMessage(){
+    if(raw.count("text") == 1) {
+        string m = raw["text"];
+        message = m;
+    }
     else
         message = string("");
 

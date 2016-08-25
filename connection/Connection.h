@@ -98,6 +98,7 @@ public:
     }
     void closeChannel(){
         socket->closeSocket();
+        state = ConnectionState::CLOSED;
     }
 
 private:

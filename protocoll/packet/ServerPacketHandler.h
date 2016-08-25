@@ -16,6 +16,11 @@ public:
     }
 
 private:
+protected:
+    virtual void onException(Exception* ex) override;
+
+private:
+
     void forwardPacket(DataBuffer *buffer);
 
     void handlePacket(DataBuffer *buffer);
