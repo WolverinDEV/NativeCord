@@ -129,11 +129,14 @@ void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
 void entityRewrite(int pid,DataBuffer* buffer,ClientPacketHandler* handler){
     int cversion = handler->getPlayerConnection()->getClientVersion();
     if(cversion == 210)
-        EntityRewrite::entityRewide210Client(pid,buffer,handler->getPlayerConnection()->getPlayerId(),handler->getPlayerConnection()->getCurrentTargetConnection()->getPlayerId());
+        EntityRewrite::entityRewrite210Client(pid, buffer, handler->getPlayerConnection()->getPlayerId(),
+                                              handler->getPlayerConnection()->getCurrentTargetConnection()->getPlayerId());
     else if(cversion == 110 || cversion == 109 || cversion == 108 || cversion == 107)
-        EntityRewrite::entityRewide210Client(pid,buffer,handler->getPlayerConnection()->getPlayerId(),handler->getPlayerConnection()->getCurrentTargetConnection()->getPlayerId());
+        EntityRewrite::entityRewrite110Client(pid, buffer, handler->getPlayerConnection()->getPlayerId(),
+                                              handler->getPlayerConnection()->getCurrentTargetConnection()->getPlayerId());
     else if(cversion == 47)
-        EntityRewrite::entityRewide47Client(pid,buffer,handler->getPlayerConnection()->getPlayerId(),handler->getPlayerConnection()->getCurrentTargetConnection()->getPlayerId());
+        EntityRewrite::entityRewrite47Client(pid, buffer, handler->getPlayerConnection()->getPlayerId(),
+                                             handler->getPlayerConnection()->getCurrentTargetConnection()->getPlayerId());
 }
 
 void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {

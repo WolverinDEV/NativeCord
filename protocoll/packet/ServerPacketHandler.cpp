@@ -89,14 +89,17 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
     }
 }
 
-void entityRewideServer(int packetId,DataBuffer* buffer,ServerConnection* connection){ //TODO getRight rewrite
+void entityRewriteServer(int packetId, DataBuffer *buffer, ServerConnection *connection){ //TODO getRight rewrite
     int cversion = connection->getPlayerConnection()->getClientVersion();
     if(cversion == 210)
-        EntityRewrite::entityRewide210Server(packetId,buffer,connection->getPlayerId(),connection->getPlayerConnection()->getPlayerId());
+        EntityRewrite::entityRewrite210Server(packetId, buffer, connection->getPlayerId(),
+                                              connection->getPlayerConnection()->getPlayerId());
     else if(cversion == 110 || cversion == 109 || cversion == 107)
-        EntityRewrite::entityRewide110Server(packetId,buffer,connection->getPlayerId(),connection->getPlayerConnection()->getPlayerId());
+        EntityRewrite::entityRewrite110Server(packetId, buffer, connection->getPlayerId(),
+                                              connection->getPlayerConnection()->getPlayerId());
     else if(cversion == 47)
-        EntityRewrite::entityRewide47Server(packetId,buffer,connection->getPlayerId(),connection->getPlayerConnection()->getPlayerId());
+        EntityRewrite::entityRewrite47Server(packetId, buffer, connection->getPlayerId(),
+                                             connection->getPlayerConnection()->getPlayerId());
 }
 
 void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
@@ -124,7 +127,7 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
         if(del)
           return;
     }
-    entityRewideServer(packetId,buffer,(ServerConnection*)connection);
+    entityRewriteServer(packetId, buffer, (ServerConnection *) connection);
     buffer->setReaderindex(rindex-1); //Packet id
     ((ServerConnection*)connection)->getPlayerConnection()->writePacket(buffer->readBuffer(buffer->readableBytes()));
 } //TODO
