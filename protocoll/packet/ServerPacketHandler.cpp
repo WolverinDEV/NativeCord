@@ -67,7 +67,7 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
             if(old != NULL && old != connection && old->getState() != ConnectionState::CLOSED){
                 old->disconnect(NULL);
                 old->setState(ConnectionState::CLOSED);
-                //delete old;
+                delete old;
             }
             ((ServerConnection*)connection)->getPlayerConnection()->setCurrentTargetConnection((ServerConnection*) connection);
 
@@ -83,7 +83,7 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
             break;
         case 0x03:
             int t = buffer->readVarInt();
-            cout << "Setting threadshold to " << t << endl;
+            cout << "Setting server packet threadshold to " << t << endl;
             connection->setThreadshold(t);
             break;
     }

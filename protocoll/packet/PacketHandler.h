@@ -90,7 +90,8 @@ public:
     }
 
     virtual ~PacketHandler(){
-        pthread_exit(&threadHandle);
+        pthread_cancel(threadHandle);
+        pthread_join(threadHandle, NULL);
         //pthread_kill(threadHandle,SIGQUIT);
     }
 

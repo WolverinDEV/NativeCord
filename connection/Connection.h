@@ -59,18 +59,19 @@ public:
     }
 
     void disconnect(ChatMessage* message) {
+        delete message;
         closeChannel();
     };
 
     void writePacket(DataBuffer* packetData){
         if(threadshold != -1){
             if(packetData->getWriterindex() > threadshold){
-                DataBuffer* target = new DataBuffer(compressBound(packetData->getWriterindex()));
-                ulong  size = target->getWriterindex();
-                int state = compress((Bytef *) target->getBuffer(),&size,(Bytef *) packetData->getBuffer(),packetData->getWriterindex());
+                uLong compSize = compressBound(packetData->getWriterindex());
+                DataBuffer* target = new DataBuffer(compSize);
+                int state = compress((Bytef *) target->getBuffer(),&compSize,(Bytef *) packetData->getBuffer(),packetData->getWriterindex());
                 switch (state) {
                     case Z_OK:
-                        cout << "Decompressed okey" << endl;
+                        //cout << "Compressed okey" << endl;
                         break;
                     case Z_BUF_ERROR:
                         cout << "Buffer error" << endl;

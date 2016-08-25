@@ -150,4 +150,24 @@ public:
 private:
     ChatMessage* message;
 };
+
+class PacketThreadshold : public  Packet {
+public:
+    PacketThreadshold(int toggle) : toggle(toggle){
+
+    }
+    virtual void read(int clientVersion, DataBuffer *buffer) override {
+        toggle = buffer->readVarInt();
+    }
+
+    virtual void write(int clientVersion, DataBuffer *buffer) override {
+        buffer->writeVarInt(toggle);
+    }
+
+    virtual int getPacketId(int clientVersion) override {
+        return 0x03;
+    }
+private:
+    int toggle;
+};
 #endif //CBUNGEE_PACKETS_H

@@ -8,6 +8,10 @@ PlayerConnection::~PlayerConnection(){
     delete (this->getSocket());
     delete (this->handshake);
     delete (this->currentTargetConnection);
+    for(std::vector<ServerConnection*>::iterator it = this->pendingConnections.begin(); it != this->pendingConnections.end(); ++it) {
+        (*it)->disconnect(NULL);
+        delete *it;
+    }
 }
 
 void PlayerConnection::disconnect(ChatMessage* message) {

@@ -107,6 +107,9 @@ void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
                 return;
             }
 
+            pconnection->writePacket(-1, new PacketThreadshold(255));
+            pconnection->setThreadshold(255);
+
             cout << "Start connecting to an server" << endl;
             target = SocketUtil::createTCPSocket("localhost", 25567);
             if(target == NULL){
@@ -115,13 +118,12 @@ void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
             }
             pconnection->setCurrentTargetConnection(new ServerConnection(pconnection,target));
             pconnection->getCurrentTargetConnection()->startConnect();
-            //message = new ChatMessage(string("§cDu kannst leider momentan noch nicht §nconnecten§c!"));
-            //pconnection->disconnect(message);
             break;
         default:
             std::cout << "Cant handle packet (" << packetId << ") at login! Disconnecting client!" << std::endl;
-            connection->getSocket()->closeSocket();
+            connection->disconnect(new ChatMessage("Invalid packet."));
             //TODO memory clear
+            delete connection;
             break;
     }
 }
