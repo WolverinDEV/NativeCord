@@ -46,12 +46,15 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
             message->addSibling(new ChatMessage(reason));
             if(((ServerConnection*)connection)->getPlayerConnection()->getState() == LOGIN){
                 ((ServerConnection*)connection)->getPlayerConnection()->disconnect(message);
+                removeFromPending();
                 return;
             }
             ((ServerConnection*)connection)->getPlayerConnection()->sendMessage(message);
+            removeFromPending();
             delete message;
             break;
         case 0x01:
+            removeFromPending();
             throw  new Exception("Server is in online mode!");
         case 0x02:
             buffer->markReaderIndex();
@@ -71,6 +74,8 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
             }
             ((ServerConnection*)connection)->getPlayerConnection()->setCurrentTargetConnection((ServerConnection*) connection);
 
+            removeFromPending();
+
             if(((ServerConnection*)connection)->getPlayerConnection()->getState() == LOGIN){
                 buffer->resetReaderIndex();
                 buffer->setReaderindex(buffer->getReaderindex()-1); //Packet id
@@ -78,8 +83,10 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
                 ((ServerConnection*)connection)->getPlayerConnection()->setState(ConnectionState::PLAYING);
             } else {
                 ((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(), new PacketPlayRespawn(1,0,0,string("default")));
-                ((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(), new PacketPlayRespawn(1,0,0,string("default"))); //Needed send only once :D @md_5
+                //((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(), new PacketPlayRespawn(-1,0,0,string("default"))); need only one send. the second will send when server spawn the entity. May by send if server slow?
             }
+            ((ServerConnection*)connection)->getPlayerConnection()->getTabManager()->resetTab();
+            ((ServerConnection*)connection)->getPlayerConnection()->getScoreboardManager()->resetScoreboard();
             break;
         case 0x03:
             int t = buffer->readVarInt();
@@ -127,6 +134,12 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
         if(del)
           return;
     }
+    if(packetId == 0x2D && clientVersion > 46 || packetId == 0x38 && clientVersion == 46) {
+        ((ServerConnection *) connection)->getPlayerConnection()->getTabManager()->handleTabPacket(buffer);
+    }
+    if(packetId == 0x3F && clientVersion > 46 || packetId == 0x3B && clientVersion == 46) {
+        ((ServerConnection *) connection)->getPlayerConnection()->getScoreboardManager()->handleObjectivePacket(buffer);
+    }
     entityRewriteServer(packetId, buffer, (ServerConnection *) connection);
     buffer->setReaderindex(rindex-1); //Packet id
     ((ServerConnection*)connection)->getPlayerConnection()->writePacket(buffer->readBuffer(buffer->readableBytes()));
@@ -141,5 +154,17 @@ void ServerPacketHandler::onException(Exception* ex) {
         ((ServerConnection *) connection)->getPlayerConnection()->disconnect(new ChatMessage(string("§cAn exception was thrown.\n§6Message: §5")+ex->what()));
     } else {
         ((ServerConnection *) connection)->getPlayerConnection()->sendMessage(string("§cAn exception was thrown.\n§6Message: §5")+ex->what());
+    }
+}
+
+void ServerPacketHandler::removeFromPending() {
+    vector<ServerConnection*> temp;
+    vector<ServerConnection*> v = (((ServerConnection*)connection)->getPlayerConnection()->getPendingConnection());
+    for (std::vector<ServerConnection *>::iterator it = v.begin(); it != v.end(); ++it) {
+        if ((ServerConnection*) connection == *it)
+            temp.push_back(*it);
+    }
+    for (std::vector<ServerConnection *>::iterator it = temp.begin(); it != temp.end(); ++it) {
+        v.erase(std::find(v.begin(),v.end(),*it));
     }
 }

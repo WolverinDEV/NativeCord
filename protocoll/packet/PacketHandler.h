@@ -76,9 +76,9 @@ public:
                     cout << "Connection closed!" << endl;
                 }
                 cout << "Client reader exception: " << ex->what() << endl;
+                handler->onException(ex);
                 if(handler->connection->getState() != ConnectionState::CLOSED)
                     handler->connection->closeChannel();
-                handler->onException(ex);
                 delete ex;
                 break;
             }

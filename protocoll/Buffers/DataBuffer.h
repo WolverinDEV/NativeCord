@@ -144,9 +144,8 @@ class DataBuffer {
             return string(buffer);
         }
 
-        uuid_t *readUUID() {
-            uuid_t * out = (uuid_t * )
-            new char[16];
+        uuid_t* readUUID() {
+            uuid_t* out = (unsigned char (*)[16]) new uuid_t();
             read((const char *) out, 16);
             return out;
         }

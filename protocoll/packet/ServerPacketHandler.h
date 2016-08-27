@@ -33,6 +33,8 @@ private:
 
     void handlePacketPlay(int packetId, DataBuffer *buffer) override;
 
+    void removeFromPending();
+
     ServerConnection *sconnection;
 };
 

@@ -8,10 +8,13 @@ PlayerConnection::~PlayerConnection(){
     delete (this->getSocket());
     delete (this->handshake);
     delete (this->currentTargetConnection);
+    delete (this->tabManager);
+    delete (this->scoreManager);
     for(std::vector<ServerConnection*>::iterator it = this->pendingConnections.begin(); it != this->pendingConnections.end(); ++it) {
         (*it)->disconnect(NULL);
         delete *it;
     }
+    pendingConnections.clear();
 }
 
 void PlayerConnection::disconnect(ChatMessage* message) {
@@ -58,7 +61,8 @@ void PlayerConnection::sendMessage(ChatMessage* message) {
 }
 
 void PlayerConnection::connect(Socket *target) {
-    ServerConnection* c = new ServerConnection(this,target); //TODO add to pending
+    ServerConnection* c = new ServerConnection(this,target);
     pendingConnections.push_back(c);
+    cout << "Add: " << c << endl;
     c->startConnect();
 }

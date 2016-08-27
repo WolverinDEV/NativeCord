@@ -20,7 +20,7 @@ public:
             return;
         if(DataBuffer::getVarIntSize(old) != DataBuffer::getVarIntSize(_new)){
             if(DataBuffer::getVarIntSize(old) > DataBuffer::getVarIntSize(_new)){
-                cout << "Push -1" << endl;
+                //cout << "Push -1" << endl;
                 buffer->push(-1);
                 buffer->setWriterindex(0);
                 buffer->writeVarInt(pid);
@@ -28,7 +28,7 @@ public:
                 buffer->setWriterindex(buffer->getBufferLength());
                 return;
             } else {
-                cout << "Push 1" << endl;
+                //cout << "Push 1" << endl;
                 buffer->push(1);
                 buffer->setWriterindex(0);
                 buffer->writeVarInt(pid);
@@ -37,7 +37,7 @@ public:
                 return;
             }
         }
-        cout << "Change " << old << " to " << _new << endl;
+        //cout << "Change " << old << " to " << _new << endl;
         buffer->setWriterindex(0);
         buffer->writeVarInt(pid);
         buffer->writeVarInt(_new);

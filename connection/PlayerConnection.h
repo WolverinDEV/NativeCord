@@ -14,6 +14,8 @@
 #include "Connection.h"
 #include "../utils/SocketUtil.h"
 #include "ServerConnection.h"
+#include "../server/TabManager.h"
+#include "../server/ScoreboardManager.h"
 #include <vector>
 class PlayerConnection : public Connection{
 public:
@@ -56,12 +58,26 @@ public:
         PlayerConnection::playerId = playerId;
     }
 
+    vector<ServerConnection*> getPendingConnection(){
+        return pendingConnections;
+    }
+
+    TabManager* getTabManager(){
+        return tabManager;
+    }
+
+    ScoreboardManager* getScoreboardManager(){
+        return scoreManager;
+    }
+
 private:
     int playerId = -1;
     string name;
-    PacketHandshake* handshake;
+    PacketHandshake* handshake = NULL;
     ServerConnection* currentTargetConnection = NULL;
     vector<ServerConnection*> pendingConnections;
+    TabManager* tabManager = new TabManager(this);
+    ScoreboardManager* scoreManager = new ScoreboardManager(this);
 };
 
 
