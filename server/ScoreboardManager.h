@@ -15,7 +15,7 @@ using namespace std;
 
 class ScoreboardManager {
 public:
-    ScoreboardManager(PlayerConnection* con) : connection(connection){
+    ScoreboardManager(PlayerConnection* con) : connection(con){
 
     }
     ~ScoreboardManager(){

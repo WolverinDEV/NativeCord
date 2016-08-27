@@ -41,8 +41,10 @@ public:
 
     void setCurrentTargetConnection(ServerConnection *currentTargetConnection);
     int getClientVersion(){
-        if(handshake == NULL)
+        if(nullptr == handshake){
+            cout << "Handshake null?" << endl;
             return -1;
+        }
         return handshake->getClientVersion();
     }
 
@@ -73,8 +75,8 @@ public:
 private:
     int playerId = -1;
     string name;
-    PacketHandshake* handshake = NULL;
-    ServerConnection* currentTargetConnection = NULL;
+    PacketHandshake* handshake = nullptr;
+    ServerConnection* currentTargetConnection = nullptr;
     vector<ServerConnection*> pendingConnections;
     TabManager* tabManager = new TabManager(this);
     ScoreboardManager* scoreManager = new ScoreboardManager(this);
