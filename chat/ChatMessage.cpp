@@ -6,9 +6,14 @@
 #include "../json/json.hpp"
 
 using namespace std;
+
+string ChatMessage::DEFAULT = string("");
+
 std::string ChatMessage::toString() {
     json out;
-    out["text"] = this->message.c_str();
+    if(this->message != NULL)
+        out["text"] = (const char*) this->message;
+    cout << "Message " << message << endl;
     if(this->bold)
         out["bold"] = true;
     if(this->italic)
@@ -83,10 +88,8 @@ std::string ChatMessage::toString() {
 ChatMessage::ChatMessage(json raw) : ChatMessage(){
     if(raw.count("text") == 1) {
         string m = raw["text"];
-        message = m;
+        setMessage(m);
     }
-    else
-        message = string("");
 
     bold = raw.count("bold") == 1 && raw["bold"];
     italic = raw.count("italic") == 1 && raw["italic"];

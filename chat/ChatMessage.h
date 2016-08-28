@@ -16,108 +16,120 @@
 #include "../json/json.hpp"
 
 using json = nlohmann::json;
+
 class ChatMessage {
-public:
-    ChatMessage() : ChatMessage(std::string("")){
-    }
-    ChatMessage(std::string &message) : message(message){
-    }
-    ChatMessage(const char* message) : ChatMessage(string(message)){
-    }
-    ChatMessage(json raw);
+    public:
+        static string DEFAULT;
 
-    ~ChatMessage(){
-        delete hover;
-        for(std::vector<ChatMessage*>::iterator it = this->cildren.begin(); it != this->cildren.end(); ++it) {
-            delete *it;
+        ChatMessage() {}
+
+        ChatMessage(std::string message) {
+            setMessage(message);
         }
-    }
 
-    void addSibling(ChatMessage* message){
-        this->cildren.push_back(message);
-    }
-    void removeSibling(ChatMessage* message){
-        auto it = std::find(cildren.begin(), cildren.end(), message);
-        if(it != cildren.end())
-            cildren.erase(it);
-    }
+        ChatMessage(const char *message) : ChatMessage(string(message)) {
 
-    std::string toString();
+        }
 
-    ChatColor getColor() const {
-        return color;
-    }
+        ChatMessage(json raw);
 
-    void setColor(ChatColor color) {
-        ChatMessage::color = color;
-    }
+        ~ChatMessage() {
+            delete hover;
+            delete message;
+            for (std::vector<ChatMessage *>::iterator it = this->cildren.begin(); it != this->cildren.end(); ++it) {
+                delete *it;
+            }
+        }
 
-    bool isRandom() const {
-        return random;
-    }
+        void addSibling(ChatMessage *message) {
+            this->cildren.push_back(message);
+        }
 
-    void setRandom(bool random) {
-        ChatMessage::random = random;
-    }
+        void removeSibling(ChatMessage *message) {
+            auto it = std::find(cildren.begin(), cildren.end(), message);
+            if (it != cildren.end())
+                cildren.erase(it);
+        }
 
-    bool isBold() const {
-        return bold;
-    }
+        std::string toString();
 
-    void setBold(bool bold) {
-        ChatMessage::bold = bold;
-    }
+        ChatColor getColor() const {
+            return color;
+        }
 
-    bool isStrikethrough() const {
-        return strikethrough;
-    }
+        void setColor(ChatColor color) {
+            ChatMessage::color = color;
+        }
 
-    void setStrikethrough(bool strikethrough) {
-        ChatMessage::strikethrough = strikethrough;
-    }
+        bool isRandom() const {
+            return random;
+        }
 
-    bool isItalic() const {
-        return italic;
-    }
+        void setRandom(bool random) {
+            ChatMessage::random = random;
+        }
 
-    void setItalic(bool italic) {
-        ChatMessage::italic = italic;
-    }
+        bool isBold() const {
+            return bold;
+        }
 
-    bool isUnderlined() const {
-        return underlined;
-    }
+        void setBold(bool bold) {
+            ChatMessage::bold = bold;
+        }
 
-    void setUnderlined(bool underlined) {
-        ChatMessage::underlined = underlined;
-    }
+        bool isStrikethrough() const {
+            return strikethrough;
+        }
 
-    const string &getMessage() const {
-        return message;
-    }
+        void setStrikethrough(bool strikethrough) {
+            ChatMessage::strikethrough = strikethrough;
+        }
 
-    void setMessage(const string &message) {
-        ChatMessage::message = message;
-    }
+        bool isItalic() const {
+            return italic;
+        }
 
-    HoverEvent *getHover() const {
-        return hover;
-    }
+        void setItalic(bool italic) {
+            ChatMessage::italic = italic;
+        }
 
-    void setHover(HoverEvent *hover) {
-        ChatMessage::hover = hover;
-    }
+        bool isUnderlined() const {
+            return underlined;
+        }
 
-private:
-    std::string &message;
-    std::vector<ChatMessage*> cildren;
-    ChatColor color = ChatColor::WHITE;
-    HoverEvent* hover = NULL;
-    bool random = 0;
-    bool bold = 0;
-    bool strikethrough = 0;
-    bool italic = 0;
-    bool underlined = 0;
+        void setUnderlined(bool underlined) {
+            ChatMessage::underlined = underlined;
+        }
+
+        const string getMessage() const {
+            return string(message);
+        }
+
+        void setMessage(const string &m) {
+            if(message != NULL)
+                delete message;
+            message = (char*) malloc(m.length()+1);
+            memcpy(message,m.c_str(),m.length()+1);
+        }
+
+        HoverEvent *getHover() const {
+            return hover;
+        }
+
+        void setHover(HoverEvent *hover) {
+            ChatMessage::hover = hover;
+        }
+
+    private:
+        char* message = NULL;
+        std::vector<ChatMessage *> cildren;
+        ChatColor color = ChatColor::WHITE;
+        HoverEvent *hover = NULL;
+        bool random = 0;
+        bool bold = 0;
+        bool strikethrough = 0;
+        bool italic = 0;
+        bool underlined = 0;
 };
 
 

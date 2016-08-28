@@ -18,16 +18,18 @@ PlayerConnection::~PlayerConnection(){
 }
 
 void PlayerConnection::disconnect(ChatMessage* message) {
-    if(message != NULL)
-        if(getState() == LOGIN){
-            DataBuffer* buffer = new DataBuffer();
+    if(message != NULL) {
+        cout << "Disconnect: " << message->toString() << endl;
+        if (getState() == LOGIN) {
+            DataBuffer *buffer = new DataBuffer();
             buffer->writeVarInt(0x00);
             buffer->writeString(message->toString());
             writePacket(buffer);
-            delete(buffer);
-        }else if(getState() == PLAYING){
-            writePacket(getClientVersion(),new PacketPlayDisconnect(message));
+            delete (buffer);
+        } else if (getState() == PLAYING) {
+            writePacket(getClientVersion(), new PacketPlayDisconnect(message));
         }
+    }
     closeChannel();
 }
 

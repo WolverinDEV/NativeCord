@@ -10,6 +10,7 @@
 #include "../../utils/TimeUtils.h"
 #include "../../utils/StringUtil.h"
 #include "../../utils/EntityRewrite.h"
+#include "../../config/Configuration.h"
 
 // for convenience
 using json = nlohmann::json;
@@ -54,6 +55,9 @@ void ClientPacketHandler::handlePacketHandschake(const int packetId, DataBuffer 
     }
 }
 
+bool isSupportedVersion(int ver){
+    return ver == 210 || ver == 110 || ver == 109 || ver == 108 || ver == 107 || ver == 47;
+}
 
 void ClientPacketHandler::handlePacketStatus(int packetId, DataBuffer *buffer) {
     DataBuffer* rbuffer = NULL;
@@ -65,12 +69,12 @@ void ClientPacketHandler::handlePacketStatus(int packetId, DataBuffer *buffer) {
             rbuffer = new DataBuffer();
             rbuffer->writeVarInt(0x00);
             response = new json();
-            (*response)["version"] = {{"name", "NativeCord [1.8.X-1.10.X] by WolverinDEV"},{"protocol",pconnection->getHandshake()->getClientVersion()}};
-            (*response)["players"] = {{"max",100},{"online",1000}};
+            (*response)["version"] = {{"name", "NativeCord [1.8.X-1.10.X] by WolverinDEV"},{"protocol",isSupportedVersion(pconnection->getHandshake()->getClientVersion()) ? pconnection->getHandshake()->getClientVersion() : -1}};
+            (*response)["players"] = {{"max",Configuration::instance->config["ping"]["visible_player_limit"].as<int>()},{"online",1000}};
             //for(int i = 0;i<100;i++){
             //    (*response)["players"]["sample"][i] = {{"name",string("WolverinDEV [").append(to_string(i)).append("]")},{"id","456ee69f-c907-48ee-8d71-d7ba5aa00d20"}};
             //}
-            (*response)["description"] = {"§aNativecord says hello\n§4Mady with love by §c§lWolverinDEV"};
+            (*response)["description"] = StringUtils::replaceAll(Configuration::instance->config["ping"]["motd"].as<string>(),string("&"),string("§"));
             rbuffer->writeString(string(response->dump()));
             connection->writePacket(rbuffer);
             delete rbuffer;
@@ -89,10 +93,6 @@ void ClientPacketHandler::handlePacketStatus(int packetId, DataBuffer *buffer) {
             connection->getSocket()->closeSocket();
             //TODO memory clear
     }
-}
-
-bool isSupportedVersion(int ver){
-    return ver == 210 || ver == 110 || ver == 109 || ver == 108 || ver == 107 || ver == 47;
 }
 
 void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {

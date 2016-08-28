@@ -4,13 +4,12 @@
 
 #include "ServerPacketHandler.h"
 #include "../../utils/UUIDUtils.h"
-#include "../../chat/ChatMessage.h"
-#include "../../protocoll/packet/Packets.h"
 #include "../../connection/PlayerConnection.h"
 #include "../../utils/EntityRewrite.h"
 
 void ServerPacketHandler::handlePacket(DataBuffer *buffer) {
     int packetId = buffer->readVarInt();
+    cout << "Handle packet " << packetId << " at " << connection->getState() << endl;
     switch (this->connection->getState()) {
         case ConnectionState ::HANDSHAKING:
             handlePacketHandschake(packetId, buffer);
@@ -41,9 +40,9 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
     switch (packetId) {
         case 0x00:
             reason = buffer->readString();
-            cout << "Login denided! Reason: " << buffer->readString().c_str() << endl;
-            message = new ChatMessage("§cTarget server denided login!\nReason: ");
-            message->addSibling(new ChatMessage(reason));
+            cout << "Login denided! Reason: " << reason.c_str() << endl;
+            message = new ChatMessage(string("§cTarget server denided login!\nReason: "));
+            message->addSibling(new ChatMessage(json::parse(reason)));
             if(((ServerConnection*)connection)->getPlayerConnection()->getState() == LOGIN){
                 ((ServerConnection*)connection)->getPlayerConnection()->disconnect(message);
                 removeFromPending();

@@ -16,11 +16,12 @@ using namespace std;
 class ScoreboardManager {
 public:
     ScoreboardManager(PlayerConnection* con) : connection(con){
-
     }
+
     ~ScoreboardManager(){
         objects.clear();
     }
+
     void resetScoreboard();
 
     void handleObjectivePacket(DataBuffer* buffer){

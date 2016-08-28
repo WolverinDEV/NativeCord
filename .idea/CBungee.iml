@@ -2,7 +2,6 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/test/BufferTest.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/connection/Socket.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/connection/ServerConnection.h" isTestSource="false" />
@@ -12,10 +11,13 @@
       <sourceFolder url="file://$MODULE_DIR$/connection/ServerConnection.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/connection/Socket.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/connection/PlayerConnection.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/config/Configuration.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/config/Configuration.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/chat/ChatMessage.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/chat/HoverEvent.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/chat/ChatColor.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/chat/ChatMessage.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/NativeCord.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/server/ScoreboardManager.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/server/TabManager.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/server/ScoreboardManager.cpp" isTestSource="false" />

@@ -1,15 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   BufferTest.cpp
- * Author: wolverindev
- *
- * Created on August 12, 2016, 12:07 AM
- */
+//
+// Created by wolverindev on 28.08.16.
+//
 
 #include <cstdlib>
 #include <algorithm>
@@ -21,14 +12,11 @@
 #include <netinet/in.h>
 #include <execinfo.h>
 #include <signal.h>
-#include "../protocoll/Buffers/DataBuffer.h"
-#include "../connection/Socket.h"
-#include "../connection/PlayerConnection.h"
-#include "../protocoll/packet/ClientPacketHandler.h"
-#include "../chat/ChatColor.h"
-#include "../chat/ChatMessage.h"
-#include "../protocoll/packet/PacketHandler.h"
-#include "../json/json.hpp"
+#include "config/Configuration.h"
+#include "protocoll/Buffers/DataBuffer.h"
+#include "utils/SocketUtil.h"
+#include "connection/PlayerConnection.h"
+#include "protocoll/packet/ClientPacketHandler.h"
 
 using namespace std;
 
@@ -90,12 +78,25 @@ void clientConnect(){
     }
 }
 
-
-/*
- * 
- */
 int main(int argc, char** argv) {
     try {
+        string filename = string("config.yml");
+        Configuration::instance = new Configuration(filename);
+        Configuration::instance->loadConfig();
+        cout << "Loading configuration" << endl;
+        if(!Configuration::instance->isValid()){
+            cout << "Configuration not valid!" << endl;
+            vector<string> errors = Configuration::instance->getErrors();
+            if(errors.size() == 1)
+                cout << "Error: ";
+            else
+                cout << "Errors (" << errors.size() << "):" << endl;
+            for(vector<string>::iterator it = errors.begin();it!=errors.end();it++){
+                cout << (errors.size() != 1 ? " - " : "") << *it << endl;
+            }
+            return 0;
+        }
+        cout << "Configuration valid!" << endl;
         pthread_t threadHandle;
         pthread_create(&threadHandle,NULL,(void* (*)(void*)) &clientConnect,NULL);
         pthread_join(threadHandle,NULL);
