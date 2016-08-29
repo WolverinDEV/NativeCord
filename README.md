@@ -13,6 +13,14 @@ Compiler relequipments:
 - zlib lib (sudo apt-get install zlib1g-dev)
 - yaml-cpp lib (https://github.com/jbeder/yaml-cpp)
 
+Compile/Install
+1. git clone https://github.com/WolverinDEV/NativeCord.git
+2. cd NativeCord
+3. cmake .
+4. make
+5. cd .. && mkdir nbungee
+6. cp NativeCord/NativeCord nbungee/
+7. Redy to launch NativeCord. Run it with ./NativeCord
 
 TODO List:
 - Implement ip_uuid_forward
