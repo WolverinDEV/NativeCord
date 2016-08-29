@@ -32,7 +32,7 @@ void ServerPacketHandler::handlePacketHandschake(int packetId, DataBuffer *buffe
 }
 
 
-
+Packet* dim1 = new PacketPlayRespawn(1,0,0,string("default"));
 void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
     string username;
     ChatMessage* message;
@@ -84,7 +84,7 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
                 ((ServerConnection*)connection)->getPlayerConnection()->setState(ConnectionState::PLAYING);
                 PlayerConnection::activeConnections.push_back(((ServerConnection*)connection)->getPlayerConnection());
             } else {
-                ((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(), new PacketPlayRespawn(1,0,0,string("default")));
+                ((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(), dim1, false);
                 //((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(), new PacketPlayRespawn(-1,0,0,string("default"))); need only one send. the second will send when server spawn the entity. May by send if server slow?
             }
             ((ServerConnection*)connection)->getPlayerConnection()->getTabManager()->resetTab();

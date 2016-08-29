@@ -58,8 +58,9 @@ class Connection {
         }
 
         void disconnect(ChatMessage *message) {
-            delete message;
             closeChannel();
+            if(message)
+                delete message;
         };
 
         void writePacket(DataBuffer *packetData) {
@@ -98,7 +99,8 @@ class Connection {
         }
 
         virtual void closeChannel() {
-            socket->closeSocket();
+            if(socket != nullptr)
+                socket->closeSocket();
             state = ConnectionState::CLOSED;
         }
 

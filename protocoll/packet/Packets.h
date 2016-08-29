@@ -100,7 +100,6 @@ public:
                                                                                              difficulty(difficulty),
                                                                                              gamemode(gamemode),
                                                                                              level(level) {
-        cout << "Level: " << level << endl;
     }
 
     ~PacketPlayRespawn(){

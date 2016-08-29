@@ -10,20 +10,25 @@
 #include <signal.h>
 
 class Socket {
-public:
-    Socket(int fd){
-        this->fd = fd;
-    }
+    public:
+        Socket(int fd) {
+            this->fd = fd;
+        }
 
         ~Socket();
 
-    int writeBytes(char* buffer,int length);
-    int writeBuffer(DataBuffer& buffer);
-    int readBytes(char* buffer,int length);
-    void closeSocket();
-    DataBuffer* readBuffer(int length);
-private:
-    int fd;
+        int writeBytes(char *buffer, int length);
+
+        int writeBuffer(DataBuffer &buffer);
+
+        int readBytes(char *buffer, int length);
+
+        void closeSocket();
+
+        DataBuffer *readBuffer(int length);
+
+    private:
+        int fd;
 };
 
 

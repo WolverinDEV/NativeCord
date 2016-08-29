@@ -15,7 +15,12 @@ PlayerConnection::~PlayerConnection(){
     delete (this->packetHandler);
     delete (this->adress);
     for(std::vector<ServerConnection*>::iterator it = this->pendingConnections.begin(); it != this->pendingConnections.end(); ++it) {
-        (*it)->disconnect(NULL);
+        if ((*it)->getState() == ConnectionState::CLOSED) {
+            //delete *it;
+            continue;
+        }
+        if(*it != NULL)
+            (*it)->disconnect(nullptr);
         delete *it;
     }
     pendingConnections.clear();
@@ -69,6 +74,8 @@ void PlayerConnection::sendMessage(ChatMessage* message) {
 }
 
 void PlayerConnection::connect(Socket *target) {
+    for(vector<ServerConnection*>::iterator it = pendingConnections.begin();it != pendingConnections.end();it++){
+    }
     ServerConnection* c = new ServerConnection(this,target);
     pendingConnections.push_back(c);
     cout << "Add: " << c << endl;
