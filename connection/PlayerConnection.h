@@ -117,7 +117,7 @@ class PlayerConnection : public Connection {
             if(dimswitch)
                 return;
             dimswitch = true;
-            writePacket(getClientVersion() ,new PacketPlayRespawn(1,0,0,string("default")));
+            writePacket(getClientVersion() , new PacketPlayRespawn(1,0,0,string("default")));
         }
 
         void setDimswitch(bool flag){

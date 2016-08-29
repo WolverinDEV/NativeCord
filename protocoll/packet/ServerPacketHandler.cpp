@@ -156,8 +156,9 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
             ChatMessage* message = new ChatMessage("§cYou have been kicked.\n§6Reason: §f");
             message->addSibling(disconnect->getMessage());
             ((ServerConnection*)connection)->getPlayerConnection()->sendMessage(message);
-            delete  message;
+            delete message;
             delete disconnect;
+            ((ServerConnection*)connection)->closeChannel();
             return;
         }
     }

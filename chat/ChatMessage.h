@@ -40,6 +40,7 @@ class ChatMessage {
             delete hover;
             if(click != NULL)
             delete click;
+            if(message != NULL)
             free(message);
             for (std::vector<ChatMessage *>::iterator it = this->cildren.begin(); it != this->cildren.end(); ++it) {
                 delete *it;

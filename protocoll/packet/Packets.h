@@ -144,7 +144,7 @@ public:
         delete(message);
     }
     virtual void read(int clientVersion, DataBuffer *buffer) override {
-        message = new ChatMessage(buffer->readString());
+        message = new ChatMessage(json::parse(buffer->readString()));
     }
 
     virtual void write(int clientVersion, DataBuffer *buffer) override {

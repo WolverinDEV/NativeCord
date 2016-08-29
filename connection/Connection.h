@@ -74,12 +74,13 @@ class Connection {
             pthread_mutex_lock(&mutex);
             if(getState() == ConnectionState::CLOSED)
                 return;
+            DataBuffer *target = nullptr;
             try{
                 cout << "Write -> [threadshold=" << threadshold << ", packetData->getWriterindex()=" << packetData->getWriterindex() << endl;
                 if (threadshold != -1) {
                     if (packetData->getWriterindex() > threadshold) {
                         uLong compSize = compressBound(packetData->getWriterindex());
-                        DataBuffer *target = new DataBuffer(compSize);
+                        target = new DataBuffer(compSize);
                         int state = compress((Bytef *) target->getBuffer(), &compSize, (Bytef *) packetData->getBuffer(), packetData->getWriterindex());
                         switch (state) {
                             case Z_OK:
@@ -99,6 +100,7 @@ class Connection {
                         stream->writeVarInt(packetData->getWriterindex()); //Size of uncompressed packet
                         stream->write(target->getBuffer(), target->getBufferLength());
                         delete target;
+                        target = nullptr;
                     } else {
                         stream->writeVarInt(packetData->getWriterindex() + 1);
                         stream->writeVarInt(0);
@@ -113,6 +115,8 @@ class Connection {
                 closeChannel();
                 delete ex;
             }
+            if(target != nullptr)
+                delete target;
             pthread_mutex_unlock(&mutex);
         }
 
