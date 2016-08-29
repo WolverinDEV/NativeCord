@@ -40,12 +40,12 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
     switch (packetId) {
         case 0x00:
             reason = buffer->readString();
-            message = new ChatMessage(string("§cCant connect to ").append(((ServerConnection*)connection)->getServerInfo()->getName()).append("\nReason: "));
+            message = new ChatMessage(string("§c§l» §7Cant connect to ").append(((ServerConnection*)connection)->getServerInfo()->getName()).append("\n§6§l» §7Reason: §f"));
             message->addSibling(new ChatMessage(json::parse(reason)));
             if(((ServerConnection*)connection)->getPlayerConnection()->getState() == LOGIN){
                 removeFromPending();
                 if(((ServerConnection*)connection)->getPlayerConnection()->getFallbackServers().empty()){
-                    ((ServerConnection*)connection)->getPlayerConnection()->disconnect(new ChatMessage(string("§cNo fallback server found.")));
+                    ((ServerConnection*)connection)->getPlayerConnection()->disconnect(new ChatMessage(string("§fNative-Proxy:\n§cNo avariable fallback server found.")));
                     return;
                 }
                 return;
@@ -153,7 +153,7 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
             ((ServerConnection*)connection)->getPlayerConnection()->sendDimswitch();
             PacketPlayDisconnect* disconnect = new PacketPlayDisconnect();
             disconnect->read(((ServerConnection *) connection)->getPlayerConnection()->getClientVersion(), buffer);
-            ChatMessage* message = new ChatMessage("§cYou have been kicked.\n§6Reason: §f");
+            ChatMessage* message = new ChatMessage("§6§l» §7You have been kicked.\n§6§l» §7Reason: §f");
             message->addSibling(disconnect->getMessage());
             ((ServerConnection*)connection)->getPlayerConnection()->sendMessage(message);
             delete message;
@@ -180,9 +180,9 @@ void ServerPacketHandler::onException(Exception* ex) {
         return;
     if(((ServerConnection *) connection)->getPlayerConnection()->getState() == ConnectionState::LOGIN){
         if(((ServerConnection *) connection)->getPlayerConnection()->getFallbackServers().empty())
-            ((ServerConnection *) connection)->getPlayerConnection()->disconnect(new ChatMessage(string("§cAn exception was thrown.\n§6Message: §5")+ex->what()));
+            ((ServerConnection *) connection)->getPlayerConnection()->disconnect(new ChatMessage(string("§fNative-Proxy:\n§cAn exception was thrown.\n§l» §7Message: §5")+ex->what()));
     } else {
-        ((ServerConnection *) connection)->getPlayerConnection()->sendMessage(string("§cAn exception was thrown.\n§6Message: §5")+ex->what());
+        ((ServerConnection *) connection)->getPlayerConnection()->sendMessage(string("§c§l» §7An exception was thrown.\n§6§l» §7Message: §f")+ex->what());
     }
 }
 
@@ -205,7 +205,7 @@ void ServerPacketHandler::streamClosed() {
     }
     if(((ServerConnection*)connection)->getPlayerConnection()->getCurrentTargetConnection() == NULL || ((ServerConnection*)connection)->getPlayerConnection()->getCurrentTargetConnection()->getState() == ConnectionState::CLOSED){
         if(((ServerConnection*)connection)->getPlayerConnection()->getFallbackServers().empty())
-            ((ServerConnection*)connection)->getPlayerConnection()->disconnect(new ChatMessage("§cCant connect to target server."));
+            ((ServerConnection*)connection)->getPlayerConnection()->disconnect(new ChatMessage("§fNative-Proxy:\n§cCant connect to target server."));
         return;
     }
 }

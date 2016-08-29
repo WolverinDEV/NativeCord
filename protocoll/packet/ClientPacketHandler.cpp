@@ -105,7 +105,7 @@ void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
             pconnection->setName(buffer->readString());
             cout << "Player ["<<pconnection->getName()<<"] connecting" << endl;
             if(!isSupportedVersion(pconnection->getHandshake()->getClientVersion())){
-                pconnection->disconnect(new ChatMessage(string("§cNativecord dosnt support your minecraft version.")));
+                pconnection->disconnect(new ChatMessage(string("§fNative-Proxy:\n§cNativecord dosnt support your minecraft version.")));
                 return;
             }
 
@@ -113,7 +113,7 @@ void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
             pconnection->setThreadshold(Configuration::instance->config["network"]["compression_threshold"].as<int>());
 
             if(pconnection->getFallbackServers().empty()){
-                pconnection->disconnect(new ChatMessage(string("§cNo fallback server found.")));
+                pconnection->disconnect(new ChatMessage(string("§fNative-Proxy:\n§cNo fallback server found.")));
                 return;
             }
             target = pconnection->getFallbackServers().front();
@@ -145,7 +145,7 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
         vector<string> parts = StringUtils::split(message,' ');
         cout << "Having chat message: " << message << " ("<<parts[0].c_str()<< ")" << endl;
         if(strcmp(parts[0].c_str(),"/ncord") == 0){
-            pconnection->sendMessage("§aNativeCord by WolverinDEV version 0.2-ALPHA");
+            pconnection->sendMessage("§5§l» §7NativeCord by WolverinDEV version 0.3-ALPHA");
             return;
         }
         if(strcmp(parts[0].c_str(),"/server") == 0){
@@ -154,33 +154,33 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
                     string targetAdress = parts[2];
                     vector<string> aparts = StringUtils::split(targetAdress,':');
                     if(aparts.size() != 2 && aparts.size() != 1){
-                        pconnection->sendMessage("§cInvalid target adress.");
+                        pconnection->sendMessage("§c§l» §7Invalid target adress.");
                         return;
                     }
                     string host = aparts[0];
                     uint32_t port = aparts.size() == 2 ? atoi(aparts[1].c_str()) : 25565;
                     if(port < 0 || port > 65535){
-                        pconnection->sendMessage("§cInvalid target port.");
+                        pconnection->sendMessage("§c§l» §7Invalid target port.");
                         return;
                     }
                     Socket* target = SocketUtil::createTCPSocket(host.c_str(),port);
                     if(*((int*) target) == -1){
-                        pconnection->sendMessage(string("§cAn error happend while connecting. (Cant create socket)"));
+                        pconnection->sendMessage(string("§c§l» §7An error happend while connecting. (Cant create socket)"));
                         delete(target);
                         return;
                     }
                     if(*((int*) target) == -2){
-                        pconnection->sendMessage(string("§cAn error happend while connecting. (Cant resolve host)"));
+                        pconnection->sendMessage(string("§c§l» §7An error happend while connecting. (Cant resolve host)"));
                         delete(target);
                         return;
                     }
                     if(*((int*) target) == -3){
-                        pconnection->sendMessage("§cAn error happend while connecting. (Cant connect to target adress)");
+                        pconnection->sendMessage("§c§l» §7An error happend while connecting. (Cant connect to target adress)");
                         delete(target);
                         return;
                     }
                     //pconnection->connect(target);
-                    pconnection->sendMessage("§aConnecting to target server.");
+                    pconnection->sendMessage("§a§l» §7Connecting to target server.");
                     return;
                 }
             }
@@ -201,10 +201,10 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
             else if(parts.size() == 2){
                 ServerInfo* info = ServerInfo::getServerInfo(parts[1]);
                 if(info == NULL){
-                    pconnection->sendMessage("§cCant find target server configuration.");
+                    pconnection->sendMessage("§c§l» §7Cant find target server configuration.");
                     return;
                 }
-                pconnection->sendMessage("§aConnecting to target server.");
+                pconnection->sendMessage("§a§l» §7Connecting to target server.");
                 pconnection->connect(info);
                 return;
             }

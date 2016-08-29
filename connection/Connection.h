@@ -76,7 +76,6 @@ class Connection {
                 return;
             DataBuffer *target = nullptr;
             try{
-                cout << "Write -> [threadshold=" << threadshold << ", packetData->getWriterindex()=" << packetData->getWriterindex() << endl;
                 if (threadshold != -1) {
                     if (packetData->getWriterindex() > threadshold) {
                         uLong compSize = compressBound(packetData->getWriterindex());

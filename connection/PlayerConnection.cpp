@@ -83,13 +83,13 @@ void* connectMethode(void* parm){
         else {
             if(cparms->getPlayerConnection()->getCurrentTargetConnection() == NULL || cparms->getPlayerConnection()->getCurrentTargetConnection()->getState() == ConnectionState::CLOSED){
                 if(cparms->getPlayerConnection()->getPendingConnection().empty())
-                    cparms->getPlayerConnection()->disconnect(new ChatMessage("§cCant connect to target server."));
+                    cparms->getPlayerConnection()->disconnect(new ChatMessage("§fNative-Proxy:\n§7Cant connect to target server and your last server kicked you."));
                 else
                     cparms->getPlayerConnection()->sendDimswitch();
                 return nullptr;
             }
             else
-                cparms->getPlayerConnection()->sendMessage("§cCant connect to target server.");
+                cparms->getPlayerConnection()->sendMessage("§c§l» §7Cant connect to target server.");
         }
         cparms->getPacketHandler()->removeFromPending();
         return nullptr;
@@ -101,10 +101,15 @@ void* connectMethode(void* parm){
 void PlayerConnection::connect(ServerInfo *target, bool sync) {
     for(vector<ServerConnection*>::iterator it = pendingConnections.begin();it != pendingConnections.end();it++){
         if((*it)->getServerInfo()->getName().compare(target->getName()) == 0){
-            sendMessage("§cYou alredy connecting to this server.");
+            sendMessage("§c§l» §7You alredy connecting to this server.");
             return;
         }
     }
+    if(getCurrentTargetConnection() != NULL && getCurrentTargetConnection()->getState() != ConnectionState::CLOSED)
+        if(target->getName().compare(getCurrentTargetConnection()->getServerInfo()->getName()) == 0){
+            sendMessage("§c§l» §7You are alredy connected to the server.");
+            return;
+        }
     ServerConnection* c = new ServerConnection(this, target, false);
     getPendingConnection().push_back(c);
     pthread_t threadHandle;
