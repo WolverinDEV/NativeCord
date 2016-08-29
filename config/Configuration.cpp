@@ -60,6 +60,14 @@ void Configuration::loadConfig() {
         saveConfig = true;
         config["network"]["online_mode"] = false; //TODO change it to true when implemented
     }
+    if (!config["network"]["host"].IsDefined()) {
+        saveConfig = true;
+        config["network"]["host"] = "localhost"; //TODO change it to true when implemented
+    }
+    if (!config["network"]["port"].IsDefined()) {
+        saveConfig = true;
+        config["network"]["port"] = 25565; //TODO change it to true when implemented
+    }
 
     /**
      * MOTD
@@ -190,6 +198,10 @@ void Configuration::loadConfig() {
         }
     }
 
+    if (gethostbyname(config["network"]["host"].as<string>().c_str()) == NULL)
+        errors.push_back("Invalid network host");
+    if(!checkNumberValid(config["network"]["port"],1,65535))
+        errors.push_back(string("Invalid port. (Expression rule: 1 <= port(").append(config["network"]["port"].as<string>()).append(") <= 65535)"));
     if(!checkNumberValid(config["network"]["timeout"],50,30000))
         errors.push_back(string("Invalid timeout. (Expression rule: 50 <= timeout(").append(config["network"]["timeout"].as<string>()).append(") <= 30000)"));
     if(!checkNumberValid(config["network"]["player_limit"],1,10000, true))

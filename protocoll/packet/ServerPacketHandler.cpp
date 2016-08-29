@@ -41,11 +41,14 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
     switch (packetId) {
         case 0x00:
             reason = buffer->readString();
-            message = new ChatMessage(string("§cTarget server denided login!\nReason: "));
+            message = new ChatMessage(string("§cCant connect to ").append(((ServerConnection*)connection)->getServerInfo()->getName()).append("\nReason: "));
             message->addSibling(new ChatMessage(json::parse(reason)));
             if(((ServerConnection*)connection)->getPlayerConnection()->getState() == LOGIN){
                 removeFromPending();
-                ((ServerConnection*)connection)->getPlayerConnection()->disconnect(message);
+                if(((ServerConnection*)connection)->getPlayerConnection()->getFallbackServers().empty()){
+                    ((ServerConnection*)connection)->getPlayerConnection()->disconnect(new ChatMessage(string("§cNo fallback server found.")));
+                    return;
+                }
                 return;
             }
             ((ServerConnection*)connection)->getPlayerConnection()->sendMessage(message);
@@ -89,6 +92,7 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
             }
             ((ServerConnection*)connection)->getPlayerConnection()->getTabManager()->resetTab();
             ((ServerConnection*)connection)->getPlayerConnection()->getScoreboardManager()->resetScoreboard();
+            ((ServerConnection *) connection)->getPlayerConnection()->resetFallbackQueue();
             break;
         case 0x03:
             int t = buffer->readVarInt();
@@ -152,7 +156,8 @@ void ServerPacketHandler::onException(Exception* ex) {
     if(((ServerConnection *) connection)->getPlayerConnection()->getState() == ConnectionState::CLOSED || ((ServerConnection *) connection)->getState() == ConnectionState::CLOSED)
         return;
     if(((ServerConnection *) connection)->getPlayerConnection()->getState() == ConnectionState::LOGIN){
-        ((ServerConnection *) connection)->getPlayerConnection()->disconnect(new ChatMessage(string("§cAn exception was thrown.\n§6Message: §5")+ex->what()));
+        if(((ServerConnection *) connection)->getPlayerConnection()->getFallbackServers().empty())
+            ((ServerConnection *) connection)->getPlayerConnection()->disconnect(new ChatMessage(string("§cAn exception was thrown.\n§6Message: §5")+ex->what()));
     } else {
         ((ServerConnection *) connection)->getPlayerConnection()->sendMessage(string("§cAn exception was thrown.\n§6Message: §5")+ex->what());
     }
@@ -167,5 +172,12 @@ void ServerPacketHandler::removeFromPending() {
     }
     for (std::vector<ServerConnection *>::iterator it = temp.begin(); it != temp.end(); ++it) {
         v.erase(std::find(v.begin(),v.end(),*it));
+    }
+}
+
+void ServerPacketHandler::streamClosed() {
+    PacketHandler::streamClosed();
+    if(((ServerConnection*)connection)->getPlayerConnection()->getState() == ConnectionState::LOGIN) {
+        ((ServerConnection *) connection)->getPlayerConnection()->connectToNextFallback();
     }
 }

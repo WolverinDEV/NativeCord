@@ -9,32 +9,37 @@
 #include "PacketHandler.h"
 
 class ServerConnection;
+
 class ServerPacketHandler : public PacketHandler {
-public:
-    ServerPacketHandler(ServerConnection *connection) : PacketHandler((Connection *) connection), sconnection(connection) {
-    }
+    public:
+        ServerPacketHandler(ServerConnection *connection) : PacketHandler((Connection *) connection), sconnection(connection) {
+        }
 
-private:
-protected:
-    virtual void onException(Exception* ex) override;
+        void removeFromPending();
 
-private:
+    private:
+    protected:
+        virtual void onException(Exception *ex) override;
 
-    void forwardPacket(DataBuffer *buffer);
+    private:
+    protected:
+        virtual void streamClosed() override;
 
-    void handlePacket(DataBuffer *buffer);
+    private:
 
-    void handlePacketHandschake(int packetId, DataBuffer *buffer) override;
+        void forwardPacket(DataBuffer *buffer);
 
-    void handlePacketStatus(int packetId, DataBuffer *buffer) override;
+        void handlePacket(DataBuffer *buffer);
 
-    void handlePacketLogin(int packetId, DataBuffer *buffer) override;
+        void handlePacketHandschake(int packetId, DataBuffer *buffer) override;
 
-    void handlePacketPlay(int packetId, DataBuffer *buffer) override;
+        void handlePacketStatus(int packetId, DataBuffer *buffer) override;
 
-    void removeFromPending();
+        void handlePacketLogin(int packetId, DataBuffer *buffer) override;
 
-    ServerConnection *sconnection;
+        void handlePacketPlay(int packetId, DataBuffer *buffer) override;
+
+        ServerConnection *sconnection;
 };
 
 

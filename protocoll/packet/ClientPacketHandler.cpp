@@ -99,7 +99,7 @@ void ClientPacketHandler::handlePacketStatus(int packetId, DataBuffer *buffer) {
 
 void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
     ChatMessage* message;
-    Socket* target;
+    ServerInfo*  target;
     switch (packetId) {
         case 0x00:
             pconnection->setName(buffer->readString());
@@ -112,14 +112,22 @@ void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
             pconnection->writePacket(-1, new PacketThreadshold(255));
             pconnection->setThreadshold(255);
 
-            cout << "Start connecting to an server" << endl;
-            target = SocketUtil::createTCPSocket("localhost", 25567);
-            if(target == NULL){
-                pconnection->disconnect(new ChatMessage(string("§cCant reach target server!")));
+            if(pconnection->getFallbackServers().empty()){
+                pconnection->disconnect(new ChatMessage(string("§cNo fallback server found.")));
                 return;
             }
-            pconnection->setCurrentTargetConnection(new ServerConnection(pconnection,target));
-            pconnection->getCurrentTargetConnection()->startConnect();
+            target = pconnection->getFallbackServers().front();
+            pconnection->removeFirstFallback();
+            pconnection->connect(target);
+            cout << "Start connecting to an server" << endl;
+
+            //target = SocketUtil::createTCPSocket("localhost", 25567);
+            //if(target == NULL){
+            //    pconnection->disconnect(new ChatMessage(string("§cCant reach target server!")));
+            //    return;
+            //}
+            //pconnection->setCurrentTargetConnection(new ServerConnection(pconnection,target));
+            //pconnection->getCurrentTargetConnection()->startConnect();
             break;
         default:
             std::cout << "Cant handle packet (" << packetId << ") at login! Disconnecting client!" << std::endl;
@@ -133,14 +141,11 @@ void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
 void entityRewrite(int pid,DataBuffer* buffer,ClientPacketHandler* handler){
     int cversion = handler->getPlayerConnection()->getClientVersion();
     if(cversion == 210)
-        EntityRewrite::entityRewrite210Client(pid, buffer, handler->getPlayerConnection()->getPlayerId(),
-                                              handler->getPlayerConnection()->getCurrentTargetConnection()->getPlayerId());
+        EntityRewrite::entityRewrite210Client(pid, buffer, handler->getPlayerConnection()->getPlayerId(), handler->getPlayerConnection()->getCurrentTargetConnection()->getPlayerId());
     else if(cversion == 110 || cversion == 109 || cversion == 108 || cversion == 107)
-        EntityRewrite::entityRewrite110Client(pid, buffer, handler->getPlayerConnection()->getPlayerId(),
-                                              handler->getPlayerConnection()->getCurrentTargetConnection()->getPlayerId());
+        EntityRewrite::entityRewrite110Client(pid, buffer, handler->getPlayerConnection()->getPlayerId(), handler->getPlayerConnection()->getCurrentTargetConnection()->getPlayerId());
     else if(cversion == 47)
-        EntityRewrite::entityRewrite47Client(pid, buffer, handler->getPlayerConnection()->getPlayerId(),
-                                             handler->getPlayerConnection()->getCurrentTargetConnection()->getPlayerId());
+        EntityRewrite::entityRewrite47Client(pid, buffer, handler->getPlayerConnection()->getPlayerId(), handler->getPlayerConnection()->getCurrentTargetConnection()->getPlayerId());
 }
 
 void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
@@ -153,12 +158,6 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
             return;
         }
         if(strcmp(parts[0].c_str(),"/server") == 0){
-            if(parts.size() == 2){
-                Socket* target = SocketUtil::createTCPSocket("localhost",25568);
-                pconnection->connect(target);
-                pconnection->sendMessage("§aConnected");
-                return;
-            }
             if(parts.size() == 3){
                 if(strcmp(parts[1].c_str(),"direct") == 0){
                     string targetAdress = parts[2];
@@ -189,18 +188,30 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
                         delete(target);
                         return;
                     }
-                    pconnection->connect(target);
+                    //pconnection->connect(target);
                     pconnection->sendMessage("§aConnecting to target server.");
                     return;
                 }
-                else if(strcmp(parts[1].c_str(),"list") == 0){
-                    pconnection->sendMessage("§6Server list:");
-                    for(vector<ServerInfo*>::iterator it = ServerInfo::servers.begin();it != ServerInfo::servers.end();it++){
-                        if((*it)->isVisible())
-                            pconnection->sendMessage(string(" §7- ").append((*it)->getName()));
-                    }
-                }
             }
+            else if(parts.size() == 2 && strcmp(parts[1].c_str(),"list") == 0){
+                pconnection->sendMessage("§6Server list:");
+                for(vector<ServerInfo*>::iterator it = ServerInfo::servers.begin();it != ServerInfo::servers.end();it++){
+                    if((*it)->isVisible())
+                        pconnection->sendMessage(string(" §7- ").append((*it)->getName()));
+                }
+                return;
+            }
+            else if(parts.size() == 2){
+                ServerInfo* info = ServerInfo::getServerInfo(parts[1]);
+                if(info == NULL){
+                    pconnection->sendMessage("§cCant find target server configuration.");
+                    return;
+                }
+                pconnection->sendMessage("§aConnecting to target server.");
+                pconnection->connect(info);
+                return;
+            }
+
             pconnection->sendMessage("§6/server list");
             pconnection->sendMessage("§6/server <servername>");
             pconnection->sendMessage("§6/server direct <host[:port]>");

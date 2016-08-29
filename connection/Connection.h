@@ -14,13 +14,20 @@
 
 class Connection {
     public:
-        Connection(Socket *socket) : socket(socket), stream(new StreamedDataBuffer(socket)) {
+        Connection(Socket *socket) : socket(socket), stream(socket != nullptr ? new StreamedDataBuffer(socket) : nullptr) {
 
         }
 
         virtual ~Connection() {
             delete (stream);
             delete (socket);
+        }
+
+        void setSocket(Socket* socket){
+            if(nullptr != this->socket)
+                throw new Exception("Cant init socket twice!");
+            this->socket = socket;
+            this->stream = new StreamedDataBuffer(socket);
         }
 
         virtual Socket *getSocket() {
@@ -64,6 +71,8 @@ class Connection {
         };
 
         void writePacket(DataBuffer *packetData) {
+            if(getState() == ConnectionState::CLOSED)
+                return;
             if (threadshold != -1) {
                 if (packetData->getWriterindex() > threadshold) {
                     uLong compSize = compressBound(packetData->getWriterindex());
@@ -105,8 +114,8 @@ class Connection {
         }
 
     private:
-        Socket *socket;
-        StreamedDataBuffer *stream;
+        Socket *socket = nullptr;
+        StreamedDataBuffer *stream = nullptr;
         ConnectionState state = ConnectionState::HANDSHAKING;
         int threadshold = -1;
 };

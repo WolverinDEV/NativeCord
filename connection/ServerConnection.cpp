@@ -17,3 +17,7 @@ void ServerConnection::startConnect() {
     writePacket(buffer);
     delete(buffer);
 }
+
+ServerInfo *ServerConnection::getServerInfo() const {
+    return serverInfo;
+}

@@ -18,12 +18,20 @@
 #include "connection/PlayerConnection.h"
 #include "protocoll/packet/ClientPacketHandler.h"
 #include "server/ServerInfo.h"
+#include <stdlib.h>
 
 using namespace std;
 
 void error(const char* message){
     cerr << message << endl;
     exit(-1);
+}
+
+int ssockfd = 0;
+
+void shutdownHook(void){
+    cout << "Closing socket" << endl;
+    close(ssockfd);
 }
 
 void clientConnect(){
@@ -54,18 +62,15 @@ void clientConnect(){
         */
 
 
-        int sockfd = SocketUtil::createTCPServerSocket(25566);
-        if(sockfd < 0){
-            sockfd = SocketUtil::createTCPServerSocket(25565);
-            if(sockfd < 0) {
-                error("Cant create socket.");
-            }
+        ssockfd = SocketUtil::createTCPServerSocket(Configuration::instance->config["network"]["port"].as<int>());
+        if(ssockfd < 0){
+            error("Cant create socket.");
         }
         sockaddr_in* cli_addr = nullptr;
         while (1){
             cli_addr = new sockaddr_in();
             socklen_t clilen = sizeof(*cli_addr);
-            int newsockfd = accept(sockfd, (struct sockaddr *) cli_addr, &clilen);
+            int newsockfd = accept(ssockfd, (struct sockaddr *) cli_addr, &clilen);
             if (newsockfd < 0)
                 error("ERROR on accept");
 
@@ -80,6 +85,7 @@ void clientConnect(){
 }
 
 int main(int argc, char** argv) {
+    atexit(shutdownHook);
     try {
         string filename = string("config.yml");
         Configuration::instance = new Configuration(filename);

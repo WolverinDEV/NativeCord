@@ -73,13 +73,36 @@ void PlayerConnection::sendMessage(ChatMessage* message) {
     delete(buffer);
 }
 
-void PlayerConnection::connect(Socket *target) {
-    for(vector<ServerConnection*>::iterator it = pendingConnections.begin();it != pendingConnections.end();it++){
+void* connectMethode(void* parm){
+    ServerConnection* cparms = (ServerConnection*) parm;
+    cout << "Info: " << cparms->getSocket() << endl;
+    cparms->setSocket(cparms->getServerInfo()->createSocket()); //May by take some seconds to connect
+    if(!cparms->isSocketValid()){
+        if(cparms->getPlayerConnection()->getState() == ConnectionState::LOGIN){
+            cparms->getPlayerConnection()->connectToNextFallback();
+        }
+        else {
+            cparms->getPlayerConnection()->sendMessage("§cCant connect to target server.");
+        }
+        cparms->getPacketHandler()->removeFromPending();
+        return nullptr;
     }
-    ServerConnection* c = new ServerConnection(this,target);
-    pendingConnections.push_back(c);
-    cout << "Add: " << c << endl;
-    c->startConnect();
+    cparms->startConnect();
+    return nullptr;
+}
+
+void PlayerConnection::connect(ServerInfo *target) { //TODO check if alredy connecting
+    for(vector<ServerConnection*>::iterator it = pendingConnections.begin();it != pendingConnections.end();it++){
+        if((*it)->getServerInfo()->getName().compare(target->getName()) == 0){
+            sendMessage("§cYou alredy connecting to this server.");
+            return;
+        }
+    }
+    ServerConnection* c = new ServerConnection(this, target, false);
+    getPendingConnection().push_back(c);
+    pthread_t threadHandle;
+    pthread_create(&threadHandle,NULL,connectMethode,(void*) c);
+    //pthread_join(threadHandle, NULL); Make sync
 }
 
 void* runlater(void* conn){
@@ -96,4 +119,8 @@ void PlayerConnection::closeChannel() {
         PlayerConnection::activeConnections.erase(rit);
     pthread_t  thread;
     pthread_create(&thread,NULL,&runlater,this);
+}
+
+const vector<ServerInfo *> PlayerConnection::getFallbackServers() const {
+    return fallbackServers;
 }

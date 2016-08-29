@@ -44,7 +44,7 @@ class PlayerConnection : public Connection {
 
         void sendMessage(ChatMessage *message);
 
-        void connect(Socket *target);
+        void connect(ServerInfo *target);
 
         ServerConnection *getCurrentTargetConnection() const;
 
@@ -88,6 +88,26 @@ class PlayerConnection : public Connection {
             packetHandler->startReader();
         }
 
+        const vector<ServerInfo *> getFallbackServers() const;
+
+        void resetFallbackQueue(){
+            fallbackServers.clear();
+            fallbackServers = ServerInfo::buildDefaultServerQueue();
+        }
+
+        void removeFirstFallback(){
+            fallbackServers.erase(fallbackServers.begin());
+        }
+
+        void connectToNextFallback(){
+            if (getFallbackServers().empty()) {
+                disconnect(new ChatMessage(string("§cNo fallback server found.")));
+                return;
+            }
+            ServerInfo* target = getFallbackServers().front();
+            removeFirstFallback();
+            connect(target);
+        }
     private:
         int playerId = -1;
         string name;
@@ -98,6 +118,7 @@ class PlayerConnection : public Connection {
         vector<ServerConnection *> pendingConnections;
         TabManager *tabManager = new TabManager(this);
         ScoreboardManager *scoreManager = new ScoreboardManager(this);
+        vector<ServerInfo*> fallbackServers = ServerInfo::buildDefaultServerQueue();
 };
 
 

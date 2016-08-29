@@ -11,35 +11,50 @@
 #include "../protocoll/packet/PacketHandler.h"
 #include "../chat/ChatMessage.h"
 #include "../protocoll/packet/ServerPacketHandler.h"
+#include "../server/ServerInfo.h"
 
 class PlayerConnection;
-class ServerConnection : public Connection{
-public:
-    ServerConnection(PlayerConnection* player,Socket* socket) : Connection(socket), player(player){
-        phandler = new ServerPacketHandler(this);
-    }
 
-    virtual  ~ServerConnection(){
-        delete phandler;
-    }
+class ServerConnection : public Connection {
+    public:
+        ServerConnection(PlayerConnection *player, ServerInfo *target, bool sockCreate = true) : Connection(sockCreate ? target->createSocket() : nullptr), serverInfo(target), player(player) {
+            phandler = new ServerPacketHandler(this);
+        }
 
-    void startConnect();
+        bool isSocketValid() {
+            int state = *((int *) getSocket());
+            return state != -1 && state != -2 && state != -3;
+        }
 
-    PlayerConnection *getPlayerConnection() const {
-        return player;
-    }
+        virtual  ~ServerConnection() {
+            delete phandler;
+        }
 
-    int getPlayerId() const {
-        return playerId;
-    }
+        void startConnect();
 
-    void setPlayerId(int playerId) {
-        ServerConnection::playerId = playerId;
-    }
-private:
-    int playerId = -1;
-    PacketHandler* phandler;
-    PlayerConnection* player;
+        PlayerConnection *getPlayerConnection() const {
+            return player;
+        }
+
+        int getPlayerId() const {
+            return playerId;
+        }
+
+        void setPlayerId(int playerId) {
+            ServerConnection::playerId = playerId;
+        }
+
+        ServerInfo *getServerInfo() const;
+
+        ServerPacketHandler *getPacketHandler() {
+            return (ServerPacketHandler*) phandler;
+        }
+
+    private:
+        ServerInfo *serverInfo;
+        int playerId = -1;
+        PacketHandler *phandler;
+        PlayerConnection *player;
 };
 
 #endif //CBUNGEE_SERVERCONNECTION_H
