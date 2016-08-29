@@ -5,13 +5,13 @@
 #include "StreamedDataBuffer.h"
 
 char StreamedDataBuffer::read() {
-    char* buffer = new char[1];
-    int readedBytes = socket->readBytes(buffer,1);
+    char buffer;
+    int readedBytes = socket->readBytes(&buffer,1);
     if(readedBytes == -1)
         throw new StreamClosedException();
     if(readedBytes == 0)
         throw  new OEFException();
-    return buffer[0];
+    return buffer;
 }
 
 void StreamedDataBuffer::read(const char *buffer, int length) {

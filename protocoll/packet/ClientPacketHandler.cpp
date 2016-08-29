@@ -11,6 +11,8 @@
 #include "../../utils/StringUtil.h"
 #include "../../utils/EntityRewrite.h"
 #include "../../config/Configuration.h"
+#include "../../server/ServerInfo.h"
+#include "../../connection/PlayerConnection.h"
 
 // for convenience
 using json = nlohmann::json;
@@ -70,7 +72,7 @@ void ClientPacketHandler::handlePacketStatus(int packetId, DataBuffer *buffer) {
             rbuffer->writeVarInt(0x00);
             response = new json();
             (*response)["version"] = {{"name", "NativeCord [1.8.X-1.10.X] by WolverinDEV"},{"protocol",isSupportedVersion(pconnection->getHandshake()->getClientVersion()) ? pconnection->getHandshake()->getClientVersion() : -1}};
-            (*response)["players"] = {{"max",Configuration::instance->config["ping"]["visible_player_limit"].as<int>()},{"online",1000}};
+            (*response)["players"] = {{"max",Configuration::instance->config["ping"]["visible_player_limit"].as<int>()},{"online",PlayerConnection::activeConnections.size()}};
             //for(int i = 0;i<100;i++){
             //    (*response)["players"]["sample"][i] = {{"name",string("WolverinDEV [").append(to_string(i)).append("]")},{"id","456ee69f-c907-48ee-8d71-d7ba5aa00d20"}};
             //}
@@ -191,12 +193,17 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
                     pconnection->sendMessage("§aConnecting to target server.");
                     return;
                 }
+                else if(strcmp(parts[1].c_str(),"list") == 0){
+                    pconnection->sendMessage("§6Server list:");
+                    for(vector<ServerInfo*>::iterator it = ServerInfo::servers.begin();it != ServerInfo::servers.end();it++){
+                        if((*it)->isVisible())
+                            pconnection->sendMessage(string(" §7- ").append((*it)->getName()));
+                    }
+                }
             }
             pconnection->sendMessage("§6/server list");
             pconnection->sendMessage("§6/server <servername>");
             pconnection->sendMessage("§6/server direct <host[:port]>");
-            pconnection->sendMessage("§6Server list:");
-            pconnection->sendMessage("§6No config = no servers //TODO add config"); //TODO
             return;
         }
     }

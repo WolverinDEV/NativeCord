@@ -15,6 +15,7 @@ class PacketHandler {
 public:
     static void readerTask(void* handlerPtr){ //TODO dont decompress full packet. First only to the packetID
         PacketHandler *handler = (PacketHandler *) handlerPtr;
+        handler->running = true;
         while (1) {
             try {
                 if(handler->connection == NULL){
@@ -64,8 +65,6 @@ public:
                     }
                 }
                 int rindex = buffer->getReaderindex();
-                cout << "Having packet: Packet length: " << packetLength << " PacketID: ";
-                cout << buffer->readVarInt() << endl;
                 buffer->setReaderindex(rindex);
 
                 handler->handlePacket(buffer);
@@ -83,6 +82,7 @@ public:
             }
         }
         handler->streamClosed();
+        handler->running = false;
     }
 
     PacketHandler(Connection* connection) : connection(connection){
@@ -90,7 +90,10 @@ public:
 
     virtual ~PacketHandler(){
         pthread_cancel(threadHandle);
-        pthread_join(threadHandle, NULL);
+        if(running)
+            pthread_join(threadHandle, NULL);
+        else
+            cout << "Thread stopped" << endl;
         //pthread_kill(threadHandle,SIGQUIT);
     }
 
@@ -121,6 +124,7 @@ protected:
     virtual void streamClosed(){}
     virtual void onException(Exception* ex){}
 
+        bool running;
     pthread_t threadHandle;
     Connection* connection;
 };

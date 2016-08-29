@@ -17,6 +17,7 @@
 #include "utils/SocketUtil.h"
 #include "connection/PlayerConnection.h"
 #include "protocoll/packet/ClientPacketHandler.h"
+#include "server/ServerInfo.h"
 
 using namespace std;
 
@@ -60,19 +61,20 @@ void clientConnect(){
                 error("Cant create socket.");
             }
         }
+        sockaddr_in* cli_addr = nullptr;
         while (1){
-            struct sockaddr_in* cli_addr = new sockaddr_in();
+            cli_addr = new sockaddr_in();
             socklen_t clilen = sizeof(*cli_addr);
             int newsockfd = accept(sockfd, (struct sockaddr *) cli_addr, &clilen);
             if (newsockfd < 0)
                 error("ERROR on accept");
 
             Socket *connection = new Socket(newsockfd);
-            PlayerConnection *playerConnection = new PlayerConnection(connection);
-            ClientPacketHandler* handler = new ClientPacketHandler(playerConnection);
-            handler->startReader();
+            PlayerConnection *playerConnection = new PlayerConnection(cli_addr ,connection);
+            playerConnection->start();
             //pthread_join((handler->getThreadHandle()),NULL);
         }
+        delete cli_addr;
     }catch (Exception* e){
         cout << "Exception message: " << e->what() << endl;
     }
@@ -96,10 +98,31 @@ int main(int argc, char** argv) {
             }
             return 0;
         }
+        ServerInfo::loadServers();
         cout << "Configuration valid!" << endl;
         pthread_t threadHandle;
         pthread_create(&threadHandle,NULL,(void* (*)(void*)) &clientConnect,NULL);
-        pthread_join(threadHandle,NULL);
+        //pthread_join(threadHandle,NULL);
+
+
+        string line;
+        while (1){
+            getline(cin, line);
+            cout << "Having line: " << line << endl;
+            if(strcmp(line.c_str(),"end") == 0){
+                cout << "Stpping nativecord" << endl;
+                vector<PlayerConnection*> ccopy(PlayerConnection::connections);
+                for(vector<PlayerConnection*>::iterator it =ccopy.begin(); it != ccopy.end();it++)
+                    (*it)->disconnect(new ChatMessage("§cNativecord is shuting down."));
+                break;
+            }
+        }
+        PlayerConnection::connections.clear();
+        PlayerConnection::activeConnections.clear();
+        pthread_cancel(threadHandle);
+        pthread_join(threadHandle, NULL);
+
+        ServerInfo::reset();
     }catch(Exception* ex){
         cout << "Exception: " << ex->what() << endl;
     }

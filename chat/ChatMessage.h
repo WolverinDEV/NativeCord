@@ -35,7 +35,7 @@ class ChatMessage {
 
         ~ChatMessage() {
             delete hover;
-            delete message;
+            free(message);
             for (std::vector<ChatMessage *>::iterator it = this->cildren.begin(); it != this->cildren.end(); ++it) {
                 delete *it;
             }
@@ -86,7 +86,7 @@ class ChatMessage {
         }
 
         bool isItalic() const {
-            return italic;
+            return italic; //https://www.computersnyou.com/4945/re-install-xorg-xserver-completely-ubuntu/
         }
 
         void setItalic(bool italic) {

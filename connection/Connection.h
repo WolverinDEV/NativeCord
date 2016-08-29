@@ -13,100 +13,103 @@
 #include <zlib.h>
 
 class Connection {
-public:
-    Connection(Socket* socket) : socket(socket), stream(new StreamedDataBuffer(socket)){
+    public:
+        Connection(Socket *socket) : socket(socket), stream(new StreamedDataBuffer(socket)) {
 
-    }
-    virtual ~Connection(){
-        delete(stream);
-    }
-
-    Socket* getSocket(){
-        return socket;
-    }
-    StreamedDataBuffer* getStream(){
-        return stream;
-    }
-
-    ConnectionState getState() const {
-        return state;
-    }
-
-    void setState(ConnectionState state){
-        this->state = state;
-    }
-
-    int getThreadshold() const {
-        return threadshold;
-    }
-
-    void setThreadshold(int threadshold) {
-        Connection::threadshold = threadshold;
-    }
-
-    void writePacket(int clientVersion, Packet* packetData){
-        writePacket(clientVersion,packetData,true);
-    }
-
-    void writePacket(int clientVersion, Packet* packetData,bool del){
-        DataBuffer* buffer = new DataBuffer();
-        buffer->writeVarInt(packetData->getPacketId(clientVersion));
-        packetData->write(clientVersion,buffer);
-        writePacket(buffer);
-        if(del)
-            delete packetData;
-        delete buffer;
-    }
-
-    void disconnect(ChatMessage* message) {
-        delete message;
-        closeChannel();
-    };
-
-    void writePacket(DataBuffer* packetData){
-        if(threadshold != -1){
-            if(packetData->getWriterindex() > threadshold){
-                uLong compSize = compressBound(packetData->getWriterindex());
-                DataBuffer* target = new DataBuffer(compSize);
-                int state = compress((Bytef *) target->getBuffer(),&compSize,(Bytef *) packetData->getBuffer(),packetData->getWriterindex());
-                switch (state) {
-                    case Z_OK:
-                        //cout << "Compressed okey" << endl;
-                        break;
-                    case Z_BUF_ERROR:
-                        cout << "Buffer error" << endl;
-                        break;
-                    case Z_DATA_ERROR:
-                        cout << "Invalid data!" << endl;
-                        break;
-                    default:
-                        cout << "Cant find state " << state << endl;
-                        break;
-                }
-                stream->writeVarInt(DataBuffer::getVarIntSize(packetData->getWriterindex())+target->getBufferLength()); //Write data of full packet
-                stream->writeVarInt(packetData->getWriterindex()); //Size of uncompressed packet
-                stream->write(target->getBuffer(),target->getBufferLength());
-                delete(target);
-            } else {
-                stream->writeVarInt(packetData->getWriterindex()+1);
-                stream->writeVarInt(0);
-                stream->write(packetData->getBuffer(),packetData->getWriterindex());
-            }
-        } else {
-            stream->writeVarInt(packetData->getWriterindex());
-            stream->write(packetData->getBuffer(),packetData->getWriterindex());
         }
-    }
-    void closeChannel(){
-        socket->closeSocket();
-        state = ConnectionState::CLOSED;
-    }
 
-private:
-    Socket* socket;
-    StreamedDataBuffer* stream;
-    ConnectionState state = ConnectionState ::HANDSHAKING;
-    int threadshold = -1;
+        virtual ~Connection() {
+            delete (stream);
+        }
+
+        Socket *getSocket() {
+            return socket;
+        }
+
+        StreamedDataBuffer *getStream() {
+            return stream;
+        }
+
+        ConnectionState getState() const {
+            return state;
+        }
+
+        void setState(ConnectionState state) {
+            this->state = state;
+        }
+
+        int getThreadshold() const {
+            return threadshold;
+        }
+
+        void setThreadshold(int threadshold) {
+            Connection::threadshold = threadshold;
+        }
+
+        void writePacket(int clientVersion, Packet *packetData) {
+            writePacket(clientVersion, packetData, true);
+        }
+
+        void writePacket(int clientVersion, Packet *packetData, bool del) {
+            DataBuffer *buffer = new DataBuffer();
+            buffer->writeVarInt(packetData->getPacketId(clientVersion));
+            packetData->write(clientVersion, buffer);
+            writePacket(buffer);
+            if (del)
+                delete packetData;
+            delete buffer;
+        }
+
+        void disconnect(ChatMessage *message) {
+            delete message;
+            closeChannel();
+        };
+
+        void writePacket(DataBuffer *packetData) {
+            if (threadshold != -1) {
+                if (packetData->getWriterindex() > threadshold) {
+                    uLong compSize = compressBound(packetData->getWriterindex());
+                    DataBuffer *target = new DataBuffer(compSize);
+                    int state = compress((Bytef *) target->getBuffer(), &compSize, (Bytef *) packetData->getBuffer(), packetData->getWriterindex());
+                    switch (state) {
+                        case Z_OK:
+                            //cout << "Compressed okey" << endl;
+                            break;
+                        case Z_BUF_ERROR:
+                            cout << "Buffer error" << endl;
+                            break;
+                        case Z_DATA_ERROR:
+                            cout << "Invalid data!" << endl;
+                            break;
+                        default:
+                            cout << "Cant find state " << state << endl;
+                            break;
+                    }
+                    stream->writeVarInt(DataBuffer::getVarIntSize(packetData->getWriterindex()) + target->getBufferLength()); //Write data of full packet
+                    stream->writeVarInt(packetData->getWriterindex()); //Size of uncompressed packet
+                    stream->write(target->getBuffer(), target->getBufferLength());
+                    delete (target);
+                } else {
+                    stream->writeVarInt(packetData->getWriterindex() + 1);
+                    stream->writeVarInt(0);
+                    stream->write(packetData->getBuffer(), packetData->getWriterindex());
+                }
+            } else {
+                stream->writeVarInt(packetData->getWriterindex());
+                stream->write(packetData->getBuffer(), packetData->getWriterindex());
+            }
+        }
+
+        virtual void closeChannel() {
+            socket->closeSocket();
+            state = ConnectionState::CLOSED;
+        }
+
+    private:
+        Socket *socket;
+        StreamedDataBuffer *stream;
+        ConnectionState state = ConnectionState::HANDSHAKING;
+        int threadshold = -1;
 };
 
 #endif //CBUNGEE_CONNECTION_H

@@ -9,7 +9,6 @@
 
 void ServerPacketHandler::handlePacket(DataBuffer *buffer) {
     int packetId = buffer->readVarInt();
-    cout << "Handle packet " << packetId << " at " << connection->getState() << endl;
     switch (this->connection->getState()) {
         case ConnectionState ::HANDSHAKING:
             handlePacketHandschake(packetId, buffer);
@@ -40,12 +39,10 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
     switch (packetId) {
         case 0x00:
             reason = buffer->readString();
-            cout << "Login denided! Reason: " << reason.c_str() << endl;
             message = new ChatMessage(string("§cTarget server denided login!\nReason: "));
             message->addSibling(new ChatMessage(json::parse(reason)));
             if(((ServerConnection*)connection)->getPlayerConnection()->getState() == LOGIN){
                 ((ServerConnection*)connection)->getPlayerConnection()->disconnect(message);
-                removeFromPending();
                 return;
             }
             ((ServerConnection*)connection)->getPlayerConnection()->sendMessage(message);
@@ -80,6 +77,7 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
                 buffer->setReaderindex(buffer->getReaderindex()-1); //Packet id
                 ((ServerConnection*)connection)->getPlayerConnection()->writePacket(buffer->readBuffer(buffer->readableBytes()));
                 ((ServerConnection*)connection)->getPlayerConnection()->setState(ConnectionState::PLAYING);
+                PlayerConnection::activeConnections.push_back(((ServerConnection*)connection)->getPlayerConnection());
             } else {
                 ((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(), new PacketPlayRespawn(1,0,0,string("default")));
                 //((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(), new PacketPlayRespawn(-1,0,0,string("default"))); need only one send. the second will send when server spawn the entity. May by send if server slow?
@@ -98,14 +96,11 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
 void entityRewriteServer(int packetId, DataBuffer *buffer, ServerConnection *connection){ //TODO getRight rewrite
     int cversion = connection->getPlayerConnection()->getClientVersion();
     if(cversion == 210)
-        EntityRewrite::entityRewrite210Server(packetId, buffer, connection->getPlayerId(),
-                                              connection->getPlayerConnection()->getPlayerId());
+        EntityRewrite::entityRewrite210Server(packetId, buffer, connection->getPlayerId(), connection->getPlayerConnection()->getPlayerId());
     else if(cversion == 110 || cversion == 109 || cversion == 107)
-        EntityRewrite::entityRewrite110Server(packetId, buffer, connection->getPlayerId(),
-                                              connection->getPlayerConnection()->getPlayerId());
+        EntityRewrite::entityRewrite110Server(packetId, buffer, connection->getPlayerId(), connection->getPlayerConnection()->getPlayerId());
     else if(cversion == 47)
-        EntityRewrite::entityRewrite47Server(packetId, buffer, connection->getPlayerId(),
-                                             connection->getPlayerConnection()->getPlayerId());
+        EntityRewrite::entityRewrite47Server(packetId, buffer, connection->getPlayerId(),  connection->getPlayerConnection()->getPlayerId());
 }
 
 void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {

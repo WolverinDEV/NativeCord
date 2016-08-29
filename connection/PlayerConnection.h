@@ -16,70 +16,88 @@
 #include "ServerConnection.h"
 #include "../server/TabManager.h"
 #include "../server/ScoreboardManager.h"
+#include "../protocoll/packet/ClientPacketHandler.h"
 #include <vector>
-class PlayerConnection : public Connection{
-public:
-    PlayerConnection(Socket* socket) : Connection(socket){
-    }
-    ~PlayerConnection();
 
-    void disconnect(ChatMessage* message);
-    PacketHandshake* getHandshake() const {
-        return handshake;
-    }
+class PlayerConnection : public Connection {
+    public:
+        static vector<PlayerConnection *> connections;
+        static vector<PlayerConnection *> activeConnections;
 
-    void setHandshake(PacketHandshake *handshake) {
-        PlayerConnection::handshake = handshake;
-    }
-
-    void sendMessage(string message);
-    void sendMessage(ChatMessage* message);
-
-    void connect(Socket* target);
-
-    ServerConnection *getCurrentTargetConnection() const;
-
-    void setCurrentTargetConnection(ServerConnection *currentTargetConnection);
-    int getClientVersion(){
-        if(nullptr == handshake){
-            cout << "Handshake null?" << endl;
-            return -1;
+        PlayerConnection(sockaddr_in* adress, Socket *socket) : Connection(socket), adress(adress) {
+            PlayerConnection::connections.push_back(this);
         }
-        return handshake->getClientVersion();
-    }
 
-    const string &getName() const;
+        ~PlayerConnection();
 
-    void setName(const string &name);
+        void disconnect(ChatMessage *message);
 
-    int getPlayerId() const {
-        return playerId;
-    }
+        PacketHandshake *getHandshake() const {
+            return handshake;
+        }
 
-    void setPlayerId(int playerId) {
-        PlayerConnection::playerId = playerId;
-    }
+        void setHandshake(PacketHandshake *handshake) {
+            PlayerConnection::handshake = handshake;
+        }
 
-    vector<ServerConnection*> getPendingConnection(){
-        return pendingConnections;
-    }
+        void sendMessage(string message);
 
-    TabManager* getTabManager(){
-        return tabManager;
-    }
+        void sendMessage(ChatMessage *message);
 
-    ScoreboardManager* getScoreboardManager(){
-        return scoreManager;
-    }
+        void connect(Socket *target);
 
-private:
-    int playerId = -1;
-    string name;
-    PacketHandshake* handshake = nullptr;
-    ServerConnection* currentTargetConnection = nullptr;
-    vector<ServerConnection*> pendingConnections;
-    TabManager* tabManager = new TabManager(this);
-    ScoreboardManager* scoreManager = new ScoreboardManager(this);
+        ServerConnection *getCurrentTargetConnection() const;
+
+        void setCurrentTargetConnection(ServerConnection *currentTargetConnection);
+
+        int getClientVersion() {
+            if (nullptr == handshake) {
+                cout << "Handshake null?" << endl;
+                return -1;
+            }
+            return handshake->getClientVersion();
+        }
+
+        const string &getName() const;
+
+        void setName(const string &name);
+
+        int getPlayerId() const {
+            return playerId;
+        }
+
+        void setPlayerId(int playerId) {
+            PlayerConnection::playerId = playerId;
+        }
+
+        vector<ServerConnection *> getPendingConnection() {
+            return pendingConnections;
+        }
+
+        TabManager *getTabManager() {
+            return tabManager;
+        }
+
+        ScoreboardManager *getScoreboardManager() {
+            return scoreManager;
+        }
+
+        virtual void closeChannel() override;
+
+        void start(){
+            packetHandler->startReader();
+        }
+
+    private:
+        int playerId = -1;
+        string name;
+        sockaddr_in* adress;
+        ClientPacketHandler* packetHandler = new ClientPacketHandler(this);
+        PacketHandshake *handshake = nullptr;
+        ServerConnection *currentTargetConnection = nullptr;
+        vector<ServerConnection *> pendingConnections;
+        TabManager *tabManager = new TabManager(this);
+        ScoreboardManager *scoreManager = new ScoreboardManager(this);
 };
 
 

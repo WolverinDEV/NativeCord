@@ -21,6 +21,11 @@ class Configuration {
 
         }
 
+        ~Configuration(){
+            config = NULL;
+            errors.clear();
+        }
+
         void loadConfig();
 
         bool isValid() {

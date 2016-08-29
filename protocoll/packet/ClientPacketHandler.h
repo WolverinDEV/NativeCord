@@ -6,12 +6,12 @@
 #define CBUNGEE_CLIENTPACKETHANDLER_H
 
 
-#include "../../connection/PlayerConnection.h"
 #include "PacketHandler.h"
 
+class PlayerConnection;
 class ClientPacketHandler : public PacketHandler {
 public:
-    ClientPacketHandler(PlayerConnection* connection) : PacketHandler(connection){
+    ClientPacketHandler(PlayerConnection* connection) : PacketHandler((Connection*) connection){
         this->pconnection = connection;
     }
 

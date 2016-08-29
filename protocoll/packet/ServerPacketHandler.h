@@ -12,7 +12,6 @@ class ServerConnection;
 class ServerPacketHandler : public PacketHandler {
 public:
     ServerPacketHandler(ServerConnection *connection) : PacketHandler((Connection *) connection), sconnection(connection) {
-
     }
 
 private:

@@ -148,37 +148,3 @@ ChatMessage::ChatMessage(json raw) : ChatMessage(){
             this->hover = new HoverEvent(hover["action"],j.dump());
     }
 }
-// * black
-// * dark_blue
-// * dark_green
-// * dark_aqua
-// * dark_red
-// * dark_purple
-// * gold
-// * gray
-// * dark_gray
-// * blue
-// * green
-// * aqua
-// * red
-// * light_purple
-// * yellow
-// * white
-// * obfuscated
-// * bold
-// * strikethrough
-// * underline
-// * italic
-// * reset
-
-/*
- *    "bold":true,
-     //Controls whether the text is italic or not. Default false
-     "italic":false,
-     //Controls whether the text is underlined or not. Default false
-     "underlined": false,
-     //Controls whether the text is striked out or not. Default false
-     "strikethrough": false,
-     //Controls whether the text is randomised constantly or not. Default false
-     "obfuscated": false,
- */

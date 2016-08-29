@@ -41,7 +41,7 @@ DataBuffer::DataBuffer(int bufferLength) {
 
 DataBuffer::~DataBuffer() {
     if(buffer != NULL) {
-        delete buffer;
+        free((void*) buffer);
     }
 }
 
@@ -87,8 +87,5 @@ void DataBuffer::write(const char *buffer, int length) {
 }
 
 void DataBuffer::write(char byte) {
-    char *buffer = new char[1];
-    buffer[0] = byte;
-    write(buffer, 1);
-    delete buffer;
+    write(&byte, 1);
 }

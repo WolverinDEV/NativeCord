@@ -60,7 +60,7 @@ class DataBuffer {
             read(buffer, 2);
             unsigned short out1 = (buffer[0] & 0xFF) << 8;
             unsigned char out2 = buffer[1] & 0xFF;
-            delete buffer;
+            delete[] buffer;
             return out1 + out2;
         }
 
@@ -71,7 +71,7 @@ class DataBuffer {
             uint32_t out2 = (buffer[1] & 0xFF) << 16;
             uint16_t out3 = (buffer[2] & 0xFF) << 8;
             uint8_t out4 = buffer[3] & 0xFF;
-            delete buffer;
+            delete[] buffer;
             return out1 + out2 + out3 + out4;
         }
 
@@ -86,7 +86,7 @@ class DataBuffer {
             uint32_t out6 = (buffer[5] & 0xFF) << 16;
             uint16_t out7 = (buffer[6] & 0xFF) << 8;
             uint8_t out8 = buffer[7] & 0xFF;
-            delete buffer;
+            delete[] buffer;
             return out1 + out2 + out3 + out4 + out5 + out6 + out7 + out8;
         }
 
@@ -141,7 +141,9 @@ class DataBuffer {
             char* buffer = new char[length+1];
             read(buffer, length);
             buffer[length] = '\0';
-            return string(buffer);
+            string s(buffer);
+            delete[] buffer;
+            return s;
         }
 
         uuid_t* readUUID() {
@@ -271,7 +273,7 @@ class DataBuffer {
                 if (buffer != NULL)
                     memcpy((void *) buffer + num, (const void *) oldBuffer, writerindex);
                 if (oldBuffer != NULL);
-                    delete oldBuffer;
+                    free((void*) oldBuffer);
             } else {
                 if(buffer == NULL)
                     return;
@@ -288,7 +290,7 @@ class DataBuffer {
                     readerindex = 0;
                 else
                     readerindex = readerindex-nindex;
-                delete  oldBuffer;
+                free((void*) oldBuffer);
             }
         }
 private:
@@ -314,7 +316,7 @@ private:
                     memcpy((void *) buffer, (const void *) oldBuffer, writerindex);
                 bufferLength = writerindex + length;
                 if (oldBuffer != NULL);
-                delete oldBuffer;
+                free((char*) oldBuffer);
             }
         }
 
