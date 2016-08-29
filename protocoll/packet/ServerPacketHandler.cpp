@@ -164,8 +164,12 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
     entityRewriteServer(packetId, buffer, (ServerConnection *) connection);
     buffer->setReaderindex(rindex-1); //Packet id
     DataBuffer* data = buffer->readBuffer(buffer->readableBytes());
-    ((ServerConnection*)connection)->getPlayerConnection()->writePacket(data);
-    delete data;
+    try{
+        ((ServerConnection*)connection)->getPlayerConnection()->writePacket(data);
+        delete data;
+    }catch (...){
+        delete data;
+    };
 } //TODO
 
 void ServerPacketHandler::handlePacketStatus(int packetId, DataBuffer *buffer) {}

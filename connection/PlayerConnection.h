@@ -44,7 +44,7 @@ class PlayerConnection : public Connection {
 
         void sendMessage(ChatMessage *message);
 
-        void connect(ServerInfo *target);
+        void connect(ServerInfo *target,bool sync = false);
 
         ServerConnection *getCurrentTargetConnection() const;
 

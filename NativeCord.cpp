@@ -28,10 +28,13 @@ void error(const char* message){
 }
 
 int ssockfd = 0;
+sockaddr_in* cli_addr = nullptr;
 
 void shutdownHook(void){
     cout << "Closing socket" << endl;
     close(ssockfd);
+    if(cli_addr != nullptr)
+        delete cli_addr;
 }
 
 void clientConnect(){
@@ -66,7 +69,6 @@ void clientConnect(){
         if(ssockfd < 0){
             error("Cant create socket.");
         }
-        sockaddr_in* cli_addr = nullptr;
         while (1) {
             cli_addr = new sockaddr_in();
             socklen_t clilen = sizeof(*cli_addr);
@@ -129,6 +131,7 @@ int main(int argc, char** argv) {
 
         ServerInfo::reset();
         cout << "BUffers: " << DataBuffer::creations << endl;
+        cout << "Chat instances: " << ChatMessage::count << endl;
     }catch(Exception* ex){
         cout << "Exception: " << ex->what() << endl;
     }

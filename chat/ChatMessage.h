@@ -11,7 +11,7 @@
 #include <string.h>
 #include <vector>
 #include "ChatColor.h"
-#include "HoverEvent.h"
+#include "ActionEvent.h"
 #include <algorithm>
 #include "../json/json.hpp"
 
@@ -20,11 +20,13 @@ using json = nlohmann::json;
 class ChatMessage {
     public:
         static string DEFAULT;
+        static int count;
 
         ChatMessage() {}
 
         ChatMessage(std::string message) {
             setMessage(message);
+            count++;
         }
 
         ChatMessage(const char *message) : ChatMessage(string(message)) {
@@ -34,11 +36,15 @@ class ChatMessage {
         ChatMessage(json raw);
 
         ~ChatMessage() {
+            if(hover != NULL)
             delete hover;
+            if(click != NULL)
+            delete click;
             free(message);
             for (std::vector<ChatMessage *>::iterator it = this->cildren.begin(); it != this->cildren.end(); ++it) {
                 delete *it;
             }
+            count--;
         }
 
         void addSibling(ChatMessage *message) {
@@ -112,19 +118,27 @@ class ChatMessage {
             memcpy(message,m.c_str(),m.length()+1);
         }
 
-        HoverEvent *getHover() const {
+        ActionEvent *getHoverAction() const {
             return hover;
         }
 
-        void setHover(HoverEvent *hover) {
+        void setHoverAction(ActionEvent *hover) {
             ChatMessage::hover = hover;
         }
 
+        ActionEvent *getClickAction() const {
+            return click;
+        }
+
+        void setClickAction(ActionEvent *click) {
+            ChatMessage::click = click;
+        }
     private:
         char* message = NULL;
         std::vector<ChatMessage *> cildren;
         ChatColor color = ChatColor::WHITE;
-        HoverEvent *hover = NULL;
+        ActionEvent *hover = NULL;
+        ActionEvent *click = NULL;
         bool random = 0;
         bool bold = 0;
         bool strikethrough = 0;

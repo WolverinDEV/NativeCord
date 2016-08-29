@@ -73,37 +73,43 @@ class Connection {
         void writePacket(DataBuffer *packetData) {
             if(getState() == ConnectionState::CLOSED)
                 return;
-            if (threadshold != -1) {
-                if (packetData->getWriterindex() > threadshold) {
-                    uLong compSize = compressBound(packetData->getWriterindex());
-                    DataBuffer *target = new DataBuffer(compSize);
-                    int state = compress((Bytef *) target->getBuffer(), &compSize, (Bytef *) packetData->getBuffer(), packetData->getWriterindex());
-                    switch (state) {
-                        case Z_OK:
-                            //cout << "Compressed okey" << endl;
-                            break;
-                        case Z_BUF_ERROR:
-                            cout << "Buffer error" << endl;
-                            break;
-                        case Z_DATA_ERROR:
-                            cout << "Invalid data!" << endl;
-                            break;
-                        default:
-                            cout << "Cant find state " << state << endl;
-                            break;
+            try{
+                if (threadshold != -1) {
+                    if (packetData->getWriterindex() > threadshold) {
+                        uLong compSize = compressBound(packetData->getWriterindex());
+                        DataBuffer *target = new DataBuffer(compSize);
+                        int state = compress((Bytef *) target->getBuffer(), &compSize, (Bytef *) packetData->getBuffer(), packetData->getWriterindex());
+                        switch (state) {
+                            case Z_OK:
+                                //cout << "Compressed okey" << endl;
+                                break;
+                            case Z_BUF_ERROR:
+                                cout << "Buffer error" << endl;
+                                break;
+                            case Z_DATA_ERROR:
+                                cout << "Invalid data!" << endl;
+                                break;
+                            default:
+                                cout << "Cant find state " << state << endl;
+                                break;
+                        }
+                        stream->writeVarInt(DataBuffer::getVarIntSize(packetData->getWriterindex()) + target->getBufferLength()); //Write data of full packet
+                        stream->writeVarInt(packetData->getWriterindex()); //Size of uncompressed packet
+                        stream->write(target->getBuffer(), target->getBufferLength());
+                        delete target;
+                    } else {
+                        stream->writeVarInt(packetData->getWriterindex() + 1);
+                        stream->writeVarInt(0);
+                        stream->write(packetData->getBuffer(), packetData->getWriterindex());
                     }
-                    stream->writeVarInt(DataBuffer::getVarIntSize(packetData->getWriterindex()) + target->getBufferLength()); //Write data of full packet
-                    stream->writeVarInt(packetData->getWriterindex()); //Size of uncompressed packet
-                    stream->write(target->getBuffer(), target->getBufferLength());
-                    delete target;
                 } else {
-                    stream->writeVarInt(packetData->getWriterindex() + 1);
-                    stream->writeVarInt(0);
+                    stream->writeVarInt(packetData->getWriterindex());
                     stream->write(packetData->getBuffer(), packetData->getWriterindex());
                 }
-            } else {
-                stream->writeVarInt(packetData->getWriterindex());
-                stream->write(packetData->getBuffer(), packetData->getWriterindex());
+            }catch(Exception* ex){
+                cout << "Having exception on write: " << ex->what() << endl;
+                closeChannel();
+                delete ex;
             }
         }
 

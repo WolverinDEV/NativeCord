@@ -8,11 +8,14 @@
 using namespace std;
 
 string ChatMessage::DEFAULT = string("");
+int ChatMessage::count = 0;
 
 std::string ChatMessage::toString() {
     json out;
     if(this->message != NULL)
         out["text"] = (const char*) this->message;
+    else
+        out["text"] = "";
     cout << "Message " << message << endl;
     if(this->bold)
         out["bold"] = true;
@@ -82,6 +85,9 @@ std::string ChatMessage::toString() {
         else
            out["hoverEvent"] = {{"action",this->hover->getAction()},{"value",this->hover->getValue()}};
     }
+    if(this->click != NULL){
+        out["clickEvent"] = {{"action",this->click->getAction()},{"value",this->click->getValue()}};
+    }
     return out.dump();
 }
 
@@ -143,8 +149,17 @@ ChatMessage::ChatMessage(json raw) : ChatMessage(){
         json hover = raw["hoverEvent"];
         json j = hover["value"];
         if(j.is_string())
-            this->hover = new HoverEvent(hover["action"],hover["value"]);
+            this->hover = new ActionEvent(hover["action"],hover["value"]);
         else
-            this->hover = new HoverEvent(hover["action"],j.dump());
+            this->hover = new ActionEvent(hover["action"],j.dump());
+    }
+
+    if(raw.count("clickEvent") == 1){
+        json click = raw["clickEvent"];
+        json j = click["value"];
+        if(j.is_string())
+            this->click = new ActionEvent(click["action"],click["value"]);
+        else
+            this->click = new ActionEvent(click["action"],j.dump());
     }
 }

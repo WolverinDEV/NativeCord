@@ -14,8 +14,8 @@
       <sourceFolder url="file://$MODULE_DIR$/config/Configuration.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/config/Configuration.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/chat/ChatMessage.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/chat/HoverEvent.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/chat/ChatColor.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/chat/ActionEvent.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/chat/ChatMessage.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/NativeCord.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/server/TabManager.cpp" isTestSource="false" />
@@ -24,11 +24,11 @@
       <sourceFolder url="file://$MODULE_DIR$/server/ServerInfo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/server/ScoreboardManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/server/ServerInfo.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/SocketUtil.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/UUIDUtils.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/utils/EntityRewrite.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/utils/StringUtil.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/UUIDUtils.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/utils/TimeUtils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/SocketUtil.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/StreamedDataBuffer.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/DataBuffer.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/DataBuffer.h" isTestSource="false" />

@@ -16,6 +16,7 @@ public:
     static void readerTask(void* handlerPtr){ //TODO dont decompress full packet. First only to the packetID
         PacketHandler *handler = (PacketHandler *) handlerPtr;
         handler->running = true;
+        DataBuffer *buffer;
         while (1) {
             try {
                 if(handler->connection == NULL){
@@ -31,7 +32,7 @@ public:
                     break;
                 }
                 int packetLength = handler->connection->getStream()->readVarInt();
-                DataBuffer *buffer = handler->connection->getStream()->readBuffer(packetLength);
+                buffer = handler->connection->getStream()->readBuffer(packetLength);
                 if(handler->connection->getThreadshold() != -1){
                     ulong outlength = buffer->readVarInt();
                     if(outlength > 0) {
@@ -40,7 +41,7 @@ public:
                                                (ulong *) &outlength,
                                                (Bytef *) buffer->getBuffer()+buffer->getReaderindex(),
                                                (ulong  ) buffer->getWriterindex());
-                        switch (state) {
+                        switch (state) { //TODO error handling!
                             case Z_OK:
                                 //cout << "Decompressed okey" << endl;
                                 break;
@@ -69,7 +70,10 @@ public:
 
                 handler->handlePacket(buffer);
                 delete  buffer; //Memory cleanup
+                buffer = nullptr;
             } catch (Exception *ex) {
+                if(nullptr != buffer)
+                    delete buffer;
                 if (dynamic_cast<StreamClosedException *>(ex) != NULL) {
                     cout << "Connection closed!" << endl;
                 }

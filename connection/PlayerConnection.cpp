@@ -68,9 +68,10 @@ void PlayerConnection::sendMessage(ChatMessage* message) {
     DataBuffer* buffer = new DataBuffer();
     buffer->writeVarInt(getClientVersion() == 46 ? 0x02 : 0x0F);
     buffer->writeString(message->toString());
-    buffer->writeVarInt(0);
+    buffer->write(0);
     writePacket(buffer);
-    delete(buffer);
+    cout << "Sendmessage and length -> " << buffer->getBufferLength() << endl;
+    delete buffer;
 }
 
 void* connectMethode(void* parm){
@@ -93,14 +94,13 @@ void* connectMethode(void* parm){
                 cparms->getPlayerConnection()->sendMessage("§cCant connect to target server.");
         }
         cparms->getPacketHandler()->removeFromPending();
-        delete cparms;
         return nullptr;
     }
     cparms->startConnect();
     return nullptr;
 }
 
-void PlayerConnection::connect(ServerInfo *target) { //TODO check if alredy connecting
+void PlayerConnection::connect(ServerInfo *target, bool sync) {
     for(vector<ServerConnection*>::iterator it = pendingConnections.begin();it != pendingConnections.end();it++){
         if((*it)->getServerInfo()->getName().compare(target->getName()) == 0){
             sendMessage("§cYou alredy connecting to this server.");
@@ -111,7 +111,8 @@ void PlayerConnection::connect(ServerInfo *target) { //TODO check if alredy conn
     getPendingConnection().push_back(c);
     pthread_t threadHandle;
     pthread_create(&threadHandle,NULL,connectMethode,(void*) c);
-    //pthread_join(threadHandle, NULL); Make sync
+    if(sync)
+        pthread_join(threadHandle, NULL); //Make sync
 }
 
 void* runlater(void* conn){

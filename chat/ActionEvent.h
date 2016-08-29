@@ -10,9 +10,9 @@
 
 using namespace std;
 
-class HoverEvent {
+class ActionEvent {
 public:
-    HoverEvent(const string &action, const string &value) : action(action), value(value) {
+    ActionEvent(const string &action, const string &value) : action(action), value(value) {
     }
 
     virtual string getAction(){

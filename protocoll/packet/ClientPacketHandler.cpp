@@ -109,8 +109,8 @@ void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
                 return;
             }
 
-            pconnection->writePacket(-1, new PacketThreadshold(255));
-            pconnection->setThreadshold(255);
+            pconnection->writePacket(pconnection->getHandshake()->getClientVersion(), new PacketThreadshold(Configuration::instance->config["network"]["compression_threshold"].as<int>()));
+            pconnection->setThreadshold(Configuration::instance->config["network"]["compression_threshold"].as<int>());
 
             if(pconnection->getFallbackServers().empty()){
                 pconnection->disconnect(new ChatMessage(string("§cNo fallback server found.")));
@@ -119,15 +119,6 @@ void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
             target = pconnection->getFallbackServers().front();
             pconnection->removeFirstFallback();
             pconnection->connect(target);
-            cout << "Start connecting to an server" << endl;
-
-            //target = SocketUtil::createTCPSocket("localhost", 25567);
-            //if(target == NULL){
-            //    pconnection->disconnect(new ChatMessage(string("§cCant reach target server!")));
-            //    return;
-            //}
-            //pconnection->setCurrentTargetConnection(new ServerConnection(pconnection,target));
-            //pconnection->getCurrentTargetConnection()->startConnect();
             break;
         default:
             std::cout << "Cant handle packet (" << packetId << ") at login! Disconnecting client!" << std::endl;
@@ -159,7 +150,7 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
         }
         if(strcmp(parts[0].c_str(),"/server") == 0){
             if(parts.size() == 3){
-                if(strcmp(parts[1].c_str(),"direct") == 0){
+                if(strcmp(parts[1].c_str(),"direct") == 0){ //TODO
                     string targetAdress = parts[2];
                     vector<string> aparts = StringUtils::split(targetAdress,':');
                     if(aparts.size() != 2 && aparts.size() != 1){
@@ -196,8 +187,14 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
             else if(parts.size() == 2 && strcmp(parts[1].c_str(),"list") == 0){
                 pconnection->sendMessage("§6Server list:");
                 for(vector<ServerInfo*>::iterator it = ServerInfo::servers.begin();it != ServerInfo::servers.end();it++){
-                    if((*it)->isVisible())
-                        pconnection->sendMessage(string(" §7- ").append((*it)->getName()));
+                    if((*it)->isVisible()){
+                        ChatMessage* message = new ChatMessage();
+                        message->setMessage(string(" §7- §a").append((*it)->getName()));
+                        message->setHoverAction(new ActionEvent("show_text", (ChatMessage(string("§aClick to connect to server").append((*it)->getName()))).toString()));
+                        message->setClickAction(new ActionEvent("run_command",string("/server ").append((*it)->getName())));
+                        pconnection->sendMessage(message);
+                        delete message;
+                    }
                 }
                 return;
             }
