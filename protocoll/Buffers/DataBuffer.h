@@ -35,6 +35,7 @@ class Exception : public exception {
 
 class DataBuffer {
     public:
+        static int creations;
         DataBuffer();
 
         DataBuffer(int size);

@@ -20,9 +20,10 @@ class Connection {
 
         virtual ~Connection() {
             delete (stream);
+            delete (socket);
         }
 
-        Socket *getSocket() {
+        virtual Socket *getSocket() {
             return socket;
         }
 
@@ -46,11 +47,7 @@ class Connection {
             Connection::threadshold = threadshold;
         }
 
-        void writePacket(int clientVersion, Packet *packetData) {
-            writePacket(clientVersion, packetData, true);
-        }
-
-        void writePacket(int clientVersion, Packet *packetData, bool del) {
+        void writePacket(int clientVersion, Packet *packetData, bool del = true) {
             DataBuffer *buffer = new DataBuffer();
             buffer->writeVarInt(packetData->getPacketId(clientVersion));
             packetData->write(clientVersion, buffer);
@@ -88,7 +85,7 @@ class Connection {
                     stream->writeVarInt(DataBuffer::getVarIntSize(packetData->getWriterindex()) + target->getBufferLength()); //Write data of full packet
                     stream->writeVarInt(packetData->getWriterindex()); //Size of uncompressed packet
                     stream->write(target->getBuffer(), target->getBufferLength());
-                    delete (target);
+                    delete target;
                 } else {
                     stream->writeVarInt(packetData->getWriterindex() + 1);
                     stream->writeVarInt(0);

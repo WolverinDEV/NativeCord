@@ -15,6 +15,8 @@ public:
         this->fd = fd;
     }
 
+        ~Socket();
+
     int writeBytes(char* buffer,int length);
     int writeBuffer(DataBuffer& buffer);
     int readBytes(char* buffer,int length);

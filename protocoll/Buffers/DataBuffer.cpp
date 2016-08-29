@@ -19,7 +19,10 @@
 
 using namespace std;
 
+int DataBuffer::creations = 0;
+
 DataBuffer::DataBuffer() {
+    creations++;
 }
 
 DataBuffer::DataBuffer(const char *buffer, int bufferLength, bool copy) {
@@ -31,11 +34,13 @@ DataBuffer::DataBuffer(const char *buffer, int bufferLength, bool copy) {
         this->buffer = buffer;
     this->writerindex = bufferLength;
     this->bufferLength = bufferLength;
+    creations++;
 }
 
 DataBuffer::DataBuffer(int bufferLength) {
     this->buffer = (const char *) malloc(bufferLength);
     this->bufferLength = bufferLength;
+    creations++;
 }
 
 
@@ -43,6 +48,7 @@ DataBuffer::~DataBuffer() {
     if(buffer != NULL) {
         free((void*) buffer);
     }
+    creations--;
 }
 
 int DataBuffer::readableBytes() {

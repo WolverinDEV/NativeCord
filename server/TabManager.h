@@ -22,12 +22,19 @@ public:
 
     ~TabManager(){
         for(std::vector<uuid_t*>::iterator it = uuids.begin(); it != uuids.end(); ++it) {
+            uuid_clear(*(*it));
             delete *it;
         }
         uuids.clear();
     }
 
     void resetTab();
+
+        uuid_t* copyUUID(uuid_t* old){
+            uuid_t* copy = (unsigned char (*)[16]) new uuid_t;
+            memcpy(copy,old,16);
+            return copy;
+        }
 
     void handleTabPacket(DataBuffer* buffer){
         int action = buffer->readVarInt();
@@ -49,7 +56,7 @@ public:
                     buffer->readVarInt(); //Ping
                     if(buffer->read() == 1)
                         buffer->readString(); //Name
-                    uuids.push_back(uuid);
+                    uuids.push_back(copyUUID(uuid));
                     break;
                 case 1:
                     buffer->readVarInt();
@@ -69,6 +76,8 @@ public:
                     }
                     break;
             }
+            uuid_clear(*uuid);
+            delete uuid;
         }
     }
 private:

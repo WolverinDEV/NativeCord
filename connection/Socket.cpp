@@ -33,3 +33,7 @@ int Socket::writeBytes(char *buffer, int length) {
 void Socket::closeSocket() {
     close(this->fd);
 }
+
+Socket::~Socket() {
+    closeSocket();
+}

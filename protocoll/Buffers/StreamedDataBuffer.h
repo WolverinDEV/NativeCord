@@ -27,6 +27,9 @@ public:
     StreamedDataBuffer(Socket* socket){
         this->socket = socket;
     }
+        ~StreamedDataBuffer(){
+
+        }
     void read(const char *buffer, int length) override ;
     char read() override ;
     int readableBytes() override;

@@ -7,6 +7,7 @@
 
 #include "../Buffers/DataBuffer.h"
 #include "../../chat/ChatMessage.h"
+#include "../../utils/StringUtil.h"
 #include <string>
 
 class Packet {
@@ -98,7 +99,13 @@ public:
     PacketPlayRespawn(uint16_t dimension, char difficulty, char gamemode, string level) : dimension(dimension),
                                                                                              difficulty(difficulty),
                                                                                              gamemode(gamemode),
-                                                                                             level(level) {}
+                                                                                             level(level) {
+        cout << "Level: " << level << endl;
+    }
+
+    ~PacketPlayRespawn(){
+        level.clear();
+    }
 
     virtual void read(int clientVersion, DataBuffer *buffer) override {
         dimension = buffer->readInt();
@@ -111,6 +118,7 @@ public:
         buffer->writeInt(dimension);
         buffer->write(difficulty);
         buffer->write(gamemode);
+        cout << "Write level: " << level.c_str() << endl;
         buffer->writeString(level);
     }
 

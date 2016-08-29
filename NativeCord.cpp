@@ -74,7 +74,6 @@ void clientConnect(){
             playerConnection->start();
             //pthread_join((handler->getThreadHandle()),NULL);
         }
-        delete cli_addr;
     }catch (Exception* e){
         cout << "Exception message: " << e->what() << endl;
     }
@@ -123,6 +122,7 @@ int main(int argc, char** argv) {
         pthread_join(threadHandle, NULL);
 
         ServerInfo::reset();
+        cout << "BUffers: " << DataBuffer::creations << endl;
     }catch(Exception* ex){
         cout << "Exception: " << ex->what() << endl;
     }

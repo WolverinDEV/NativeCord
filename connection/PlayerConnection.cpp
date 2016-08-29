@@ -8,7 +8,6 @@ vector<PlayerConnection*> PlayerConnection::connections = vector<PlayerConnectio
 vector<PlayerConnection*> PlayerConnection::activeConnections = vector<PlayerConnection*>();
 
 PlayerConnection::~PlayerConnection(){
-    delete (this->getSocket());
     delete (this->handshake);
     delete (this->currentTargetConnection);
     delete (this->tabManager);
@@ -56,7 +55,9 @@ void PlayerConnection::setName(const string &name) {
 }
 
 void PlayerConnection::sendMessage(string message) {
-    sendMessage(new ChatMessage(message));
+    ChatMessage* message1 = new ChatMessage(message);
+    sendMessage(message1);
+    delete message1;
 }
 void PlayerConnection::sendMessage(ChatMessage* message) {
     DataBuffer* buffer = new DataBuffer();

@@ -31,6 +31,8 @@ void ServerPacketHandler::handlePacketHandschake(int packetId, DataBuffer *buffe
     throw new Exception("Cant have a handshake packet on ServerConnection!");
 }
 
+
+
 void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
     string username;
     ChatMessage* message;
@@ -42,6 +44,7 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
             message = new ChatMessage(string("§cTarget server denided login!\nReason: "));
             message->addSibling(new ChatMessage(json::parse(reason)));
             if(((ServerConnection*)connection)->getPlayerConnection()->getState() == LOGIN){
+                removeFromPending();
                 ((ServerConnection*)connection)->getPlayerConnection()->disconnect(message);
                 return;
             }
@@ -75,7 +78,9 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
             if(((ServerConnection*)connection)->getPlayerConnection()->getState() == LOGIN){
                 buffer->resetReaderIndex();
                 buffer->setReaderindex(buffer->getReaderindex()-1); //Packet id
-                ((ServerConnection*)connection)->getPlayerConnection()->writePacket(buffer->readBuffer(buffer->readableBytes()));
+                DataBuffer* data = buffer->readBuffer(buffer->readableBytes());
+                ((ServerConnection*)connection)->getPlayerConnection()->writePacket(data);
+                delete data;
                 ((ServerConnection*)connection)->getPlayerConnection()->setState(ConnectionState::PLAYING);
                 PlayerConnection::activeConnections.push_back(((ServerConnection*)connection)->getPlayerConnection());
             } else {
@@ -136,7 +141,9 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
     }
     entityRewriteServer(packetId, buffer, (ServerConnection *) connection);
     buffer->setReaderindex(rindex-1); //Packet id
-    ((ServerConnection*)connection)->getPlayerConnection()->writePacket(buffer->readBuffer(buffer->readableBytes()));
+    DataBuffer* data = buffer->readBuffer(buffer->readableBytes());
+    ((ServerConnection*)connection)->getPlayerConnection()->writePacket(data);
+    delete data;
 } //TODO
 
 void ServerPacketHandler::handlePacketStatus(int packetId, DataBuffer *buffer) {}

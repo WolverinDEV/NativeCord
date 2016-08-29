@@ -30,6 +30,11 @@ class StringUtils {
             return str;
         }
 
+        static string copy(string old){
+            const char* _new = new char(old.size()+1);
+            memcpy((char*) _new,old.c_str(),old.size()+1);
+            return _new;
+        }
 
         static vector<string> split(const string &s, char delim) {
             vector<string> elems;
