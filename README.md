@@ -14,13 +14,13 @@ Compiler relequipments:
 - yaml-cpp lib (https://github.com/jbeder/yaml-cpp)
 
 Compile/Install
-1. git clone https://github.com/WolverinDEV/NativeCord.git
-2. cd NativeCord
-3. cmake .
-4. make
-5. cd .. && mkdir nbungee
-6. cp NativeCord/NativeCord nbungee/
-7. Redy to launch NativeCord. Run it with ./NativeCord
+1. git clone https://github.com/WolverinDEV/NativeCord.git<br>
+2. cd NativeCord<br>
+3. cmake .<br>
+4. make<br>
+5. cd .. && mkdir nbungee<br>
+6. cp NativeCord/NativeCord nbungee/<br>
+7. Redy to launch NativeCord. Run it with ./NativeCord<br>
 
 TODO List:
 - Implement ip_uuid_forward
