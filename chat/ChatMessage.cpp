@@ -16,7 +16,6 @@ std::string ChatMessage::toString() {
         out["text"] = (const char*) this->message;
     else
         out["text"] = "";
-    cout << "Message " << message << endl;
     if(this->bold)
         out["bold"] = true;
     if(this->italic)
