@@ -154,6 +154,9 @@ public:
     virtual int getPacketId(int clientVersion) override {
         return clientVersion == 46 ? 0x40 : 0x1A;
     }
+        ChatMessage* getMessage(){
+            return message;
+        }
 private:
     ChatMessage* message;
 };

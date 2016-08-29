@@ -32,7 +32,6 @@ void ServerPacketHandler::handlePacketHandschake(int packetId, DataBuffer *buffe
 }
 
 
-Packet* dim1 = new PacketPlayRespawn(1,0,0,string("default"));
 void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
     string username;
     ChatMessage* message;
@@ -51,8 +50,13 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
                 }
                 return;
             }
-            ((ServerConnection*)connection)->getPlayerConnection()->sendMessage(message);
             removeFromPending();
+            if(((ServerConnection*)connection)->getPlayerConnection()->getCurrentTargetConnection() == NULL || ((ServerConnection*)connection)->getPlayerConnection()->getCurrentTargetConnection()->getState() == ConnectionState::CLOSED){
+                if(((ServerConnection*)connection)->getPlayerConnection()->getFallbackServers().empty())
+                    ((ServerConnection*)connection)->getPlayerConnection()->disconnect(message);
+                return;
+            }
+            ((ServerConnection*)connection)->getPlayerConnection()->sendMessage(message);
             delete message;
             break;
         case 0x01:
@@ -87,8 +91,7 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
                 ((ServerConnection*)connection)->getPlayerConnection()->setState(ConnectionState::PLAYING);
                 PlayerConnection::activeConnections.push_back(((ServerConnection*)connection)->getPlayerConnection());
             } else {
-                ((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(), dim1, false);
-                //((ServerConnection*)connection)->getPlayerConnection()->writePacket(((ServerConnection*)connection)->getPlayerConnection()->getClientVersion(), new PacketPlayRespawn(-1,0,0,string("default"))); need only one send. the second will send when server spawn the entity. May by send if server slow?
+                ((ServerConnection*)connection)->getPlayerConnection()->sendDimswitch();
             }
             ((ServerConnection*)connection)->getPlayerConnection()->getTabManager()->resetTab();
             ((ServerConnection*)connection)->getPlayerConnection()->getScoreboardManager()->resetScoreboard();
@@ -134,6 +137,7 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
             string level = buffer->readString();
             ((ServerConnection *) connection)->getPlayerConnection()->writePacket( ((ServerConnection *) connection)->getPlayerConnection()->getClientVersion(), new PacketPlayRespawn(dim, diff, gamemode, level));
         }
+        ((ServerConnection*)connection)->getPlayerConnection()->setDimswitch(false);
         if(del)
           return;
     }
@@ -142,6 +146,20 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
     }
     if(packetId == 0x3F && clientVersion > 46 || packetId == 0x3B && clientVersion == 46) {
         ((ServerConnection *) connection)->getPlayerConnection()->getScoreboardManager()->handleObjectivePacket(buffer);
+    }
+    if(packetId == 0x1A && clientVersion > 46 || packetId == 0x40 && clientVersion == 46) {
+        //Kick packet
+        if(!((ServerConnection*)connection)->getPlayerConnection()->getFallbackServers().empty()){
+            ((ServerConnection*)connection)->getPlayerConnection()->sendDimswitch();
+            PacketPlayDisconnect* disconnect = new PacketPlayDisconnect();
+            disconnect->read(((ServerConnection *) connection)->getPlayerConnection()->getClientVersion(), buffer);
+            ChatMessage* message = new ChatMessage("§cYou have been kicked.\n§6Reason: §f");
+            message->addSibling(disconnect->getMessage());
+            ((ServerConnection*)connection)->getPlayerConnection()->sendMessage(message);
+            delete  message;
+            delete disconnect;
+            return;
+        }
     }
     entityRewriteServer(packetId, buffer, (ServerConnection *) connection);
     buffer->setReaderindex(rindex-1); //Packet id
@@ -179,5 +197,10 @@ void ServerPacketHandler::streamClosed() {
     PacketHandler::streamClosed();
     if(((ServerConnection*)connection)->getPlayerConnection()->getState() == ConnectionState::LOGIN) {
         ((ServerConnection *) connection)->getPlayerConnection()->connectToNextFallback();
+    }
+    if(((ServerConnection*)connection)->getPlayerConnection()->getCurrentTargetConnection() == NULL || ((ServerConnection*)connection)->getPlayerConnection()->getCurrentTargetConnection()->getState() == ConnectionState::CLOSED){
+        if(((ServerConnection*)connection)->getPlayerConnection()->getFallbackServers().empty())
+            ((ServerConnection*)connection)->getPlayerConnection()->disconnect(new ChatMessage("§cCant connect to target server."));
+        return;
     }
 }

@@ -67,7 +67,7 @@ void clientConnect(){
             error("Cant create socket.");
         }
         sockaddr_in* cli_addr = nullptr;
-        while (1){
+        while (1) {
             cli_addr = new sockaddr_in();
             socklen_t clilen = sizeof(*cli_addr);
             int newsockfd = accept(ssockfd, (struct sockaddr *) cli_addr, &clilen);

@@ -82,9 +82,18 @@ void* connectMethode(void* parm){
             cparms->getPlayerConnection()->connectToNextFallback();
         }
         else {
-            cparms->getPlayerConnection()->sendMessage("§cCant connect to target server.");
+            if(cparms->getPlayerConnection()->getCurrentTargetConnection() == NULL || cparms->getPlayerConnection()->getCurrentTargetConnection()->getState() == ConnectionState::CLOSED){
+                if(cparms->getPlayerConnection()->getPendingConnection().empty())
+                    cparms->getPlayerConnection()->disconnect(new ChatMessage("§cCant connect to target server."));
+                else
+                    cparms->getPlayerConnection()->sendDimswitch();
+                return nullptr;
+            }
+            else
+                cparms->getPlayerConnection()->sendMessage("§cCant connect to target server.");
         }
         cparms->getPacketHandler()->removeFromPending();
+        delete cparms;
         return nullptr;
     }
     cparms->startConnect();

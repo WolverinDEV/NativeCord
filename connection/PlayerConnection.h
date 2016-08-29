@@ -108,7 +108,23 @@ class PlayerConnection : public Connection {
             removeFirstFallback();
             connect(target);
         }
+
+        bool isInDimswitch(){
+            return dimswitch;
+        }
+
+        void sendDimswitch(){
+            if(dimswitch)
+                return;
+            dimswitch = true;
+            writePacket(getClientVersion() ,new PacketPlayRespawn(1,0,0,string("default")));
+        }
+
+        void setDimswitch(bool flag){
+            dimswitch = flag;
+        }
     private:
+        bool dimswitch = false;
         int playerId = -1;
         string name;
         sockaddr_in* adress;
