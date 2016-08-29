@@ -22,6 +22,7 @@ TODO List:
   - Handle exception on missing/wrong packet data
 - Improve entity rewrite. Currently not for all packets.
 - Implement configurable messages
+- Add a bootloader in java to automaticly choose the right binary file
 - Add a wikki
 - Add c++ plugin api
 - Add java plugin api
