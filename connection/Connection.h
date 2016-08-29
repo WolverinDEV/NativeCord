@@ -71,9 +71,11 @@ class Connection {
         };
 
         void writePacket(DataBuffer *packetData) {
+            pthread_mutex_lock(&mutex);
             if(getState() == ConnectionState::CLOSED)
                 return;
             try{
+                cout << "Write -> [threadshold=" << threadshold << ", packetData->getWriterindex()=" << packetData->getWriterindex() << endl;
                 if (threadshold != -1) {
                     if (packetData->getWriterindex() > threadshold) {
                         uLong compSize = compressBound(packetData->getWriterindex());
@@ -111,6 +113,7 @@ class Connection {
                 closeChannel();
                 delete ex;
             }
+            pthread_mutex_unlock(&mutex);
         }
 
         virtual void closeChannel() {
@@ -120,6 +123,7 @@ class Connection {
         }
 
     private:
+        pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
         Socket *socket = nullptr;
         StreamedDataBuffer *stream = nullptr;
         ConnectionState state = ConnectionState::HANDSHAKING;

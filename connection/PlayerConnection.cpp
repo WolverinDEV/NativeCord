@@ -70,13 +70,11 @@ void PlayerConnection::sendMessage(ChatMessage* message) {
     buffer->writeString(message->toString());
     buffer->write(0);
     writePacket(buffer);
-    cout << "Sendmessage and length -> " << buffer->getBufferLength() << endl;
     delete buffer;
 }
 
 void* connectMethode(void* parm){
     ServerConnection* cparms = (ServerConnection*) parm;
-    cout << "Info: " << cparms->getSocket() << endl;
     cparms->setSocket(cparms->getServerInfo()->createSocket()); //May by take some seconds to connect
     if(!cparms->isSocketValid()){
         if(cparms->getPlayerConnection()->getState() == ConnectionState::LOGIN){
