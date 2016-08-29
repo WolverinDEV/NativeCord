@@ -1,6 +1,8 @@
 # NativeCord
 NativeCord. A very fast C++ proxy for minecraft.
 
+### Currently searching for some sponsors for a demo server and some buisness partners. Im also happy about every help.
+
 Supported Systems:
 - Linux x64
 - Linux x32 (not tested with the newest but i think its working)
