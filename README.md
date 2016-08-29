@@ -18,7 +18,9 @@ TODO List:
   - Add size check for packet length
   - Handle exception on wrong compression
   - Handle exception on missing/wrong packet data
+- Improve entity rewrite. Currently not for all packets.
 - Implement configurable messages
+- Add a wikki
 - Add c++ plugin api
 - Add java plugin api
 - Add mac-os and windows support
