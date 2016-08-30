@@ -24,6 +24,7 @@ Compile/Install
 
 TODO List:
 - Implement ip_uuid_forward
+- Implement online mode
 - Fix some exploits/crashes
   - Add size check for packet length
   - Handle exception on wrong compression
