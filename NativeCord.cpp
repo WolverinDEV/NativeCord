@@ -18,7 +18,10 @@
 #include "connection/PlayerConnection.h"
 #include "protocoll/packet/ClientPacketHandler.h"
 #include "server/ServerInfo.h"
+#include "encription/Cipper.h"
+#include "encription/RSAUtil.h"
 #include <stdlib.h>
+#include "utils/Base64Utils.h"
 
 using namespace std;
 
@@ -67,7 +70,10 @@ void clientConnect(){
 
         ssockfd = SocketUtil::createTCPServerSocket(Configuration::instance->config["network"]["port"].as<int>());
         if(ssockfd < 0){
-            error("Cant create socket.");
+            ssockfd = SocketUtil::createTCPServerSocket(Configuration::instance->config["network"]["port"].as<int>()+1); //TEST MODE!
+            if(ssockfd < 0){
+                error("Cant create socket.");
+            }
         }
         while (1) {
             cli_addr = new sockaddr_in();
@@ -88,6 +94,36 @@ void clientConnect(){
 
 int main(int argc, char** argv) {
     atexit(shutdownHook);
+
+    cout << "Generate!" << endl;
+    cout << Cipper::publicKey << "/" << sizeof(*(Cipper::publicKey)) << "/" << (Cipper::publicKey) << endl;
+    cout << "Generate done!" << endl;
+    cout << "Length:" << Cipper::publicKey->engine << endl;
+
+    KeyEncripted* resp = RSAUtil::getPrivateEncriptedKey(Cipper::publicKey);
+    cout << "One line: " << resp->getBase64Buffer() << endl;
+    DataBuffer* in = new DataBuffer();
+    in->writeString("Hello world");
+    char* cbuffer = new char[20];
+    Cipper* cript = new Cipper((unsigned  char*) Cipper::publicKey,false);
+    Cipper* dript = new Cipper((unsigned  char*) Cipper::publicKey,true);
+
+    cript->init();
+    dript->init();
+
+    DataBuffer* out = cript->cipher(in,false);
+
+    DataBuffer* out2 = dript->cipher(out,false);
+    cout << "Data: ";
+    cout << out2->readString() << "Lengthg:";
+    cout << out2->getBufferLength() << endl;
+
+    //Cipper::createPublicKey((char*) Cipper::publicKey,sizeof(*Cipper::publicKey));
+
+
+
+    if(true && false)
+        return 0;
     try {
         string filename = string("config.yml");
         Configuration::instance = new Configuration(filename);

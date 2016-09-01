@@ -30,6 +30,7 @@ PlayerConnection::~PlayerConnection(){
 void PlayerConnection::disconnect(ChatMessage* message) {
     if(message != NULL) {
         if (getState() == LOGIN) {
+            cout << "Login disconnect" << endl;
             DataBuffer *buffer = new DataBuffer();
             buffer->writeVarInt(0x00);
             buffer->writeString(message->toString());

@@ -11,6 +11,13 @@
       <sourceFolder url="file://$MODULE_DIR$/connection/ServerConnection.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/connection/Socket.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/connection/PlayerConnection.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/SocketUtil.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/Base64Utils.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/UUIDUtils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/TimeUtils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/EntityRewrite.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/StringUtil.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/Base64Utils.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/config/Configuration.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/config/Configuration.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/chat/ChatMessage.h" isTestSource="false" />
@@ -24,11 +31,9 @@
       <sourceFolder url="file://$MODULE_DIR$/server/ServerInfo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/server/ScoreboardManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/server/ServerInfo.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/UUIDUtils.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/EntityRewrite.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/StringUtil.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/TimeUtils.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/SocketUtil.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/encription/Cipper.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/encription/RSAUtil.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/encription/Cipper.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/StreamedDataBuffer.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/DataBuffer.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/DataBuffer.h" isTestSource="false" />

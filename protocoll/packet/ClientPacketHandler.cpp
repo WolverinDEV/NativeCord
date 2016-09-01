@@ -13,6 +13,9 @@
 #include "../../config/Configuration.h"
 #include "../../server/ServerInfo.h"
 #include "../../connection/PlayerConnection.h"
+#include "../../encription/Cipper.h"
+#include "../../encription/RSAUtil.h"
+#include "../../utils/Base64Utils.h"
 
 // for convenience
 using json = nlohmann::json;
@@ -97,34 +100,61 @@ void ClientPacketHandler::handlePacketStatus(int packetId, DataBuffer *buffer) {
     }
 }
 
-void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
-    ChatMessage* message;
+void successConnecting(PlayerConnection* pconnection){
     ServerInfo*  target;
+    cout << "Player ["<<pconnection->getName()<<"] connecting" << endl;
+    if(!isSupportedVersion(pconnection->getHandshake()->getClientVersion())){
+        pconnection->disconnect(new ChatMessage(string("§fNative-Proxy:\n§cNativecord dosnt support your minecraft version.")));
+        return;
+    }
+
+    pconnection->writePacket(pconnection->getHandshake()->getClientVersion(), new PacketThreadshold(Configuration::instance->config["network"]["compression_threshold"].as<int>()));
+    pconnection->setThreadshold(Configuration::instance->config["network"]["compression_threshold"].as<int>());
+
+    if(pconnection->getFallbackServers().empty()){
+        pconnection->disconnect(new ChatMessage(string("§fNative-Proxy:\n§cNo fallback server found.")));
+        return;
+    }
+    target = pconnection->getFallbackServers().front();
+    pconnection->removeFirstFallback();
+    pconnection->connect(target);
+}
+
+void sendLogin(PlayerConnection* pconnection){
+    string unencripted = RSAUtil::getPublicEncriptedKey(Cipper::publicKey)->getBase64Buffer();
+    string data = base64_decode(unencripted);
+    cout << "Send data length: " << data.length() << endl;
+    cout << "Data: " << unencripted << endl;
+    PacketLoginEncryption* enc = new PacketLoginEncryption(Cipper::hash,(char*) data.data(),data.length(),(char*) Cipper::hash.data(),Cipper::hash.length());
+    pconnection->writePacket(-1, enc);
+}
+
+void handleEncriptionResponse(PlayerConnection* connection, DataBuffer *buffer){
+    PacketLoginEncryption* pack = new PacketLoginEncryption(false);
+    pack->read(connection->getClientVersion(),buffer);
+    cout << "Decript valid: " << Cipper::decodeMessagePrivateKey(pack->getVerifyToken(),pack->getVerifyTokenLength(),Cipper::publicKey) << endl;
+    string key = Cipper::decodeMessagePrivateKey(pack->getSecret(),pack->getSecretLength(),Cipper::publicKey);
+    connection->getStream()->setChupper((char*) key.data());
+    //connection->disconnect(new ChatMessage("Wrong key!"));
+    successConnecting(connection);
+
+}
+
+void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
     switch (packetId) {
         case 0x00:
             pconnection->setName(buffer->readString());
-            cout << "Player ["<<pconnection->getName()<<"] connecting" << endl;
-            if(!isSupportedVersion(pconnection->getHandshake()->getClientVersion())){
-                pconnection->disconnect(new ChatMessage(string("§fNative-Proxy:\n§cNativecord dosnt support your minecraft version.")));
-                return;
-            }
-
-            pconnection->writePacket(pconnection->getHandshake()->getClientVersion(), new PacketThreadshold(Configuration::instance->config["network"]["compression_threshold"].as<int>()));
-            pconnection->setThreadshold(Configuration::instance->config["network"]["compression_threshold"].as<int>());
-
-            if(pconnection->getFallbackServers().empty()){
-                pconnection->disconnect(new ChatMessage(string("§fNative-Proxy:\n§cNo fallback server found.")));
-                return;
-            }
-            target = pconnection->getFallbackServers().front();
-            pconnection->removeFirstFallback();
-            pconnection->connect(target);
+            //string serverId,char *secret, int secretLength, char *verifyToken, int verifyTokenLength
+            sendLogin(pconnection);
+            break;
+        case 0x01:
+            handleEncriptionResponse(pconnection,buffer);
             break;
         default:
             std::cout << "Cant handle packet (" << packetId << ") at login! Disconnecting client!" << std::endl;
-            connection->disconnect(new ChatMessage("Invalid packet."));
+            pconnection->disconnect(new ChatMessage("Invalid packet."));
             //TODO memory clear
-            delete connection;
+            //delete connection;
             break;
     }
 }

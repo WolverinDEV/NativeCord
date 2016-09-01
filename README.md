@@ -12,6 +12,7 @@ Compiler relequipments:
 - UUID lib (sudo apt-get install uuid-dev)
 - zlib lib (sudo apt-get install zlib1g-dev)
 - yaml-cpp lib (https://github.com/jbeder/yaml-cpp)
+- ssl lib (sudo apt-get install libssl-dev)
 
 Compile/Install
   1. git clone https://github.com/WolverinDEV/NativeCord.git<br>

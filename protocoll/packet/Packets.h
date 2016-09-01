@@ -90,6 +90,97 @@ private:
     int state = 0;
 };
 
+
+class PacketLoginEncryption : public Packet {
+    public:
+        PacketLoginEncryption(bool request) : Packet(), request(request) {
+
+        }
+
+        PacketLoginEncryption(char *secret, int secretLength, char *verifyToken, int verifyTokenLength) : PacketLoginEncryption(false) {
+            this->secretLength = secretLength;
+            this->verifyTokenLength = verifyTokenLength;
+            this->secret = (char*) malloc(secretLength);
+            this->verifyToken = (char*) malloc(verifyTokenLength);
+
+            memcpy(this->secret,secret,secretLength);
+            memcpy(this->verifyToken,verifyToken,verifyTokenLength);
+        }
+        PacketLoginEncryption(string serverId,char *secret, int secretLength, char *verifyToken, int verifyTokenLength) : PacketLoginEncryption(true) {
+            this->secretLength = secretLength;
+            this->verifyTokenLength = verifyTokenLength;
+            this->secret = (char*) malloc(secretLength);
+            this->verifyToken = (char*) malloc(verifyTokenLength);
+
+            memcpy(this->secret,secret,secretLength);
+            memcpy(this->verifyToken,verifyToken,verifyTokenLength);
+        }
+
+        ~PacketLoginEncryption(){
+            free(secret);
+            free(verifyToken);
+        }
+
+        virtual void read(int clientVersion, DataBuffer *buffer) override {
+            if(!request){
+                secretLength = buffer->readVarInt(); //TODO length check!
+                secret = (char*) malloc(secretLength);
+                buffer->read(secret, secretLength);
+
+                verifyTokenLength = buffer->readVarInt(); //TODO length check!
+                verifyToken = (char*) malloc(secretLength);
+                buffer->read(verifyToken, verifyTokenLength);
+            }
+        }
+
+        virtual void write(int clientVersion, DataBuffer *buffer) override {
+            if(request){
+                buffer->writeString(serverId);
+                buffer->writeVarInt(secretLength);
+                buffer->write(secret,secretLength);
+                buffer->writeVarInt(verifyTokenLength);
+                buffer->write(verifyToken,verifyTokenLength);
+            } else throw  new Exception("Cant send an excription response!");
+        }
+
+        virtual int getPacketId(int clientVersion) override {
+            return 0x01;
+        }
+
+        bool isRequest() const {
+            return request;
+        }
+
+        const string &getServerId() const {
+            return serverId;
+        }
+
+        char *getSecret() const {
+            return secret;
+        }
+
+        int getSecretLength() const {
+            return secretLength;
+        }
+
+        char *getVerifyToken() const {
+            return verifyToken;
+        }
+
+        int getVerifyTokenLength() const {
+            return verifyTokenLength;
+        }
+
+    private:
+        bool request;
+        string serverId;
+        char* secret = NULL;
+        int secretLength;
+        char* verifyToken = NULL;
+        int verifyTokenLength;
+};
+
+
 class PacketPlayRespawn : public Packet {
 public:
     PacketPlayRespawn() : Packet() {

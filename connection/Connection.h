@@ -10,7 +10,9 @@
 #include "../protocoll/packet/Packets.h"
 #include "../chat/ChatMessage.h"
 #include "ConnectionState.h"
+#include "../encription/Cipper.h"
 #include <zlib.h>
+#include <openssl/evp.h>
 
 class Connection {
     public:
