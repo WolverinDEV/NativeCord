@@ -100,7 +100,7 @@ void ClientPacketHandler::handlePacketStatus(int packetId, DataBuffer *buffer) {
     }
 }
 
-void successConnecting(PlayerConnection* pconnection){
+void sendSuccessfullLoggedIn(PlayerConnection *pconnection){
     ServerInfo*  target;
     cout << "Player ["<<pconnection->getName()<<"] connecting" << endl;
     if(!isSupportedVersion(pconnection->getHandshake()->getClientVersion())){
@@ -120,7 +120,7 @@ void successConnecting(PlayerConnection* pconnection){
     pconnection->connect(target);
 }
 
-void sendLogin(PlayerConnection* pconnection){
+void sendLoginVerify(PlayerConnection *pconnection){
     string unencripted = RSAUtil::getPublicEncriptedKey(Cipper::publicKey)->getBase64Buffer();
     string data = base64_decode(unencripted);
     cout << "Send data length: " << data.length() << endl;
@@ -134,9 +134,10 @@ void handleEncriptionResponse(PlayerConnection* connection, DataBuffer *buffer){
     pack->read(connection->getClientVersion(),buffer);
     cout << "Decript valid: " << Cipper::decodeMessagePrivateKey(pack->getVerifyToken(),pack->getVerifyTokenLength(),Cipper::publicKey) << endl;
     string key = Cipper::decodeMessagePrivateKey(pack->getSecret(),pack->getSecretLength(),Cipper::publicKey);
-    connection->getStream()->setChupper((char*) key.data());
+    connection->getStream()->setChupper((char*) key.data()); //Setup encription
+    //TODO check with mojang
     //connection->disconnect(new ChatMessage("Wrong key!"));
-    successConnecting(connection);
+    sendSuccessfullLoggedIn(connection);
 
 }
 
@@ -144,8 +145,10 @@ void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
     switch (packetId) {
         case 0x00:
             pconnection->setName(buffer->readString());
-            //string serverId,char *secret, int secretLength, char *verifyToken, int verifyTokenLength
-            sendLogin(pconnection);
+            if(Configuration::instance->config["network"]["online_mode"].as<bool>())
+                sendLoginVerify(pconnection);
+            else
+                sendSuccessfullLoggedIn(pconnection);
             break;
         case 0x01:
             handleEncriptionResponse(pconnection,buffer);

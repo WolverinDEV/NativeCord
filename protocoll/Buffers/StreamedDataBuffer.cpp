@@ -12,10 +12,10 @@ char StreamedDataBuffer::read() {
 
 void StreamedDataBuffer::read(const char *buffer, int length) {
     int readedBytes = -2;
-    if(decodeCipper != NULL){
+    if(encodeCipper != NULL){
         char* bbuffer = (char*) malloc(length);
         readedBytes = socket->readBytes((char*) bbuffer,length);
-        decodeCipper->cipher(bbuffer,length,(char*) buffer,false);
+        encodeCipper->cipher(bbuffer,length,(char*) buffer,false);
         free(bbuffer);
     }
     else readedBytes = socket->readBytes((char*) buffer,length);
@@ -31,8 +31,8 @@ void StreamedDataBuffer::write(char byte) {
 
 void StreamedDataBuffer::write(const char *buffer, int length) {
     int state = 0;
-    if(encodeCipper != NULL){
-        char* bbuffer = encodeCipper->cipher((char *) buffer,length, false);
+    if(decodeCipper != NULL){
+        char* bbuffer = decodeCipper->cipher((char *) buffer,length, false);
         state = socket->writeBytes((char*) bbuffer,length);
         delete bbuffer;
     } else state = socket->writeBytes((char*) buffer,length);

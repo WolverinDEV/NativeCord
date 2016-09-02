@@ -52,8 +52,8 @@ class StreamedDataBuffer : public DataBuffer {
         void checkWriteableBytes(int bytes) override {}
 
         void setChupper(char *key) {
-            decodeCipper = new Cipper((unsigned char *) key, false);
-            encodeCipper = new Cipper((unsigned char *) key, true);
+            decodeCipper = new Cipper((unsigned char *) key, true);
+            encodeCipper = new Cipper((unsigned char *) key, false);
 
             decodeCipper->init();
             encodeCipper->init();
