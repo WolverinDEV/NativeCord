@@ -5,14 +5,15 @@ NativeCord. A very fast C++ proxy for minecraft.
 
 Supported Systems:
 - Linux x64
-- Linux x32 (not tested with the newest but i think its working)
+- Linux x32 (not tested with the newest but i think its working) (May not working anymore (Bigint is only x64 (i think)))
 
 Compiler relequipments:
-- CMake 3.6+
+- CMake 3.2.2+
 - UUID lib (sudo apt-get install uuid-dev)
 - zlib lib (sudo apt-get install zlib1g-dev)
 - yaml-cpp lib (https://github.com/jbeder/yaml-cpp)
 - ssl lib (sudo apt-get install libssl-dev)
+- cpr (with curl) (TODO)
 
 Compile/Install
   1. git clone https://github.com/WolverinDEV/NativeCord.git<br>
@@ -24,8 +25,8 @@ Compile/Install
   7. Redy to launch NativeCord. Run it with ./NativeCord<br>
 
 TODO List:
-- Implement ip_uuid_forward
-- Implement online mode
+- Implement ip_uuid_forward [DONE]
+- Implement online mode [DONE]
 - Fix some exploits/crashes
   - Add size check for packet length
   - Handle exception on wrong compression
