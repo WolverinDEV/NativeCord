@@ -22,7 +22,10 @@
 #include "encription/RSAUtil.h"
 #include <stdlib.h>
 #include "utils/Base64Utils.h"
-
+#include "cpr/cpr.h"
+#include <curl/curl.h>
+#include "utils/HexUtils.h"
+#include <openssl/sha.h>
 using namespace std;
 
 void error(const char* message){
@@ -93,6 +96,34 @@ void clientConnect(){
 }
 
 int main(int argc, char** argv) {
+    /*
+    char* input = "WolverinDEV";
+    char* input2 = "Test";
+    cout << "X: " << SHA_DIGEST_LENGTH << endl;
+    char* output = (char*) malloc(SHA_DIGEST_LENGTH);
+    memset(output,0x00,16);
+    SHA_CTX context;
+    SHA1_Init(&context);
+    SHA1_Update(&context, (unsigned char*)input, strlen(input));
+    //SHA1_Update(&context, (unsigned char*)input2, strlen(input2));
+    SHA1_Final((unsigned char*) output,&context);
+
+    string outs = HexUtils::hexStr((unsigned char*) output,SHA_DIGEST_LENGTH);
+    cout << "Having out" << endl;
+    cout << outs << " / " << (int) output[0] << " / " << (int) output[1] << endl;
+    */
+
+    auto r = cpr::Get([](cpr::Response r) {
+        cout << "3-Response: " << r.text << endl;
+        cout << "Code: " << r.status_code << endl;
+    }, cpr::Url{"https://sessionserver.mojang.com:443/session/minecraft/hasJoined"}, cpr::Parameters{{"username", "WolverinDEV"}}, cpr::Parameters{{"serverId", "WolverinDEV"}}, cpr::Header{{"User-Agent", "runscope/0.1"},{"Accept-Encoding","gzip, deflate"},{"Accept","*/*"}}, cpr::Timeout{5000}, cpr::VerifySsl{false});
+    cout << "Status code: " <<  r.status_code << endl;
+    cout << "Accept-Ranges -> " << r.header["Accept-Ranges"] << endl;
+    cout << "Connection -> " << r.header["Connection"] << endl;
+
+    if(true)
+        return 0;
+
     atexit(shutdownHook);
 
     cout << "Generate!" << endl;

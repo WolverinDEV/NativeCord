@@ -16,7 +16,7 @@
 #include "../../encription/Cipper.h"
 #include "../../encription/RSAUtil.h"
 #include "../../utils/Base64Utils.h"
-
+#include "../../utils/HTTPUtil.h"
 // for convenience
 using json = nlohmann::json;
 
@@ -136,8 +136,10 @@ void handleEncriptionResponse(PlayerConnection* connection, DataBuffer *buffer){
     string key = Cipper::decodeMessagePrivateKey(pack->getSecret(),pack->getSecretLength(),Cipper::publicKey);
     connection->getStream()->setChupper((char*) key.data()); //Setup encription
     //TODO check with mojang
+
+
     //connection->disconnect(new ChatMessage("Wrong key!"));
-    sendSuccessfullLoggedIn(connection);
+   // sendSuccessfullLoggedIn(connection);
 
 }
 
@@ -145,7 +147,7 @@ void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
     switch (packetId) {
         case 0x00:
             pconnection->setName(buffer->readString());
-            if(Configuration::instance->config["network"]["online_mode"].as<bool>())
+            if(Configuration::instance->config["network"]["online_mode"].as<bool>() || true)
                 sendLoginVerify(pconnection);
             else
                 sendSuccessfullLoggedIn(pconnection);

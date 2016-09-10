@@ -8,6 +8,7 @@
 #include <string>
 #include <algorithm>
 #include <iostream>
+#include <vector>
 #include "../protocoll/Buffers/DataBuffer.h"
 
 class PlayerConnection;
