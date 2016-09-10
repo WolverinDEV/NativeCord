@@ -16,7 +16,10 @@
 #include "../../encription/Cipper.h"
 #include "../../encription/RSAUtil.h"
 #include "../../utils/Base64Utils.h"
+#import "cpr/cpr.h"
 #include "../../utils/HTTPUtil.h"
+#include <typeinfo>
+
 // for convenience
 using json = nlohmann::json;
 
@@ -129,18 +132,30 @@ void sendLoginVerify(PlayerConnection *pconnection){
     pconnection->writePacket(-1, enc);
 }
 
-void handleEncriptionResponse(PlayerConnection* connection, DataBuffer *buffer){
+void handleEncriptionResponse(PlayerConnection* connection, DataBuffer*& buffer){
     PacketLoginEncryption* pack = new PacketLoginEncryption(false);
     pack->read(connection->getClientVersion(),buffer);
-    cout << "Decript valid: " << Cipper::decodeMessagePrivateKey(pack->getVerifyToken(),pack->getVerifyTokenLength(),Cipper::publicKey) << endl;
     string key = Cipper::decodeMessagePrivateKey(pack->getSecret(),pack->getSecretLength(),Cipper::publicKey);
     connection->getStream()->setChupper((char*) key.data()); //Setup encription
+    connection->setSecret(key);
+
+    string hashDecripted = Cipper::decodeMessagePrivateKey(pack->getVerifyToken(),pack->getVerifyTokenLength(),Cipper::publicKey);
+
     //TODO check with mojang
+    cout << "Having key: " << hashDecripted << " as hash from " << Cipper::hash << endl;
 
 
+    auto r = cpr::GetCallback([connection](cpr::Response r) {
+        cout << "2-Response: " << r.text << endl;
+        cout << "Code: " << r.status_code << endl;
+        if(r.status_code == 204){
+            connection->disconnect(new ChatMessage("§cCant verify with mojang!"));
+        } else;
+         sendSuccessfullLoggedIn(connection);
+    }, cpr::Url{"https://sessionserver.mojang.com:443/session/minecraft/hasJoined"}, cpr::Parameters{{"username", connection->getName()}, {"serverId", connection->generateServerHash()}}, cpr::Header{{"User-Agent", "NativeCord"}}, cpr::Timeout{5000}, cpr::VerifySsl{false});
+    cout << "Name: " << connection->getName() << " ServerID " << connection->generateServerHash() << endl;
     //connection->disconnect(new ChatMessage("Wrong key!"));
    // sendSuccessfullLoggedIn(connection);
-
 }
 
 void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
@@ -278,3 +293,4 @@ void ClientPacketHandler::handlePacket(DataBuffer *buffer) {
             return;
     }
 }
+

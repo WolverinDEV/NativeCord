@@ -3,6 +3,8 @@
 //
 
 #include "PlayerConnection.h"
+#include "../encription/RSAUtil.h"
+#include "../utils/Base64Utils.h"
 
 vector<PlayerConnection*> PlayerConnection::connections = vector<PlayerConnection*>(); //activeConnections
 vector<PlayerConnection*> PlayerConnection::activeConnections = vector<PlayerConnection*>();
@@ -126,6 +128,9 @@ void* runlater(void* conn){
 }
 
 void PlayerConnection::closeChannel() {
+    if(!this->open)
+        return;
+    this->open = false;
     Connection::closeChannel();
     PlayerConnection::connections.erase(std::find(PlayerConnection::connections.begin(),PlayerConnection::connections.end(), this));
     vector<PlayerConnection*>::iterator rit = std::find(PlayerConnection::activeConnections.begin(),PlayerConnection::activeConnections.end(), this);
@@ -137,4 +142,63 @@ void PlayerConnection::closeChannel() {
 
 const vector<ServerInfo *> PlayerConnection::getFallbackServers() const {
     return fallbackServers;
+}
+
+string PlayerConnection::generateServerHash() {
+    int mdLength = 20;
+    SHA_CTX context;
+    unsigned char md[mdLength];
+    std::string out;
+    int i;
+    const char hex[] = "0123456789abcdef";
+
+    SHA1_Init(&context);
+    string unencripted = RSAUtil::getPublicEncriptedKey(Cipper::publicKey)->getBase64Buffer();
+    string data = base64_decode(unencripted);
+
+    //cout << "Pubkey: " << data.size() << endl;
+    //cout << "Key: " << unencripted << endl;
+    //cout << "Secret: " << secret.size() << "(" << base64_encode((const unsigned char*) secret.data(),secret.size()) << ")" << endl;
+    //cout << "ServerID: " << Cipper::hash << endl;
+
+    SHA1_Update(&context, (unsigned char*) Cipper::hash.data(), Cipper::hash.size());
+    SHA1_Update(&context, (unsigned char*) secret.data(), secret.size());
+    SHA1_Update(&context, (unsigned char*) data.data(), data.size());
+    SHA1_Final(md, &context);
+
+    //cout << "SHA1 base: " << base64_encode(md,28) << endl;
+
+    if(md[0] & 0x80)
+    {
+        unsigned char carry = 1;
+        out = '-';
+        for (i = mdLength-1; i >= 0; i--)
+        {
+            unsigned short twocomp = (unsigned char)~md[i];
+            twocomp+=carry;
+            if(twocomp & 0xff00)
+            {
+                twocomp = twocomp&0xff;
+            }
+            else
+            {
+                carry = 0;
+            }
+            md[i] = (uint8_t)twocomp;
+        }
+    }
+
+    for (i = 0; i < mdLength; i++)
+    {
+        if(i || md[i]>>4)
+        {
+            out += hex[(md[i]>>4)];
+        }
+        if(i || md[i]>>4 || md[i]&0xf)
+        {
+            out += hex[(md[i]&0xf)];
+        }
+    }
+
+    return out;
 }

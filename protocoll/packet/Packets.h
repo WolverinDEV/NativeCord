@@ -111,7 +111,7 @@ class PacketLoginEncryption : public Packet {
             this->verifyTokenLength = verifyTokenLength;
             this->secret = (char*) malloc(secretLength);
             this->verifyToken = (char*) malloc(verifyTokenLength);
-
+            this->serverId = serverId;
             memcpy(this->secret,secret,secretLength);
             memcpy(this->verifyToken,verifyToken,verifyTokenLength);
         }

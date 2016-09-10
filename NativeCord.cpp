@@ -96,7 +96,7 @@ void clientConnect(){
 }
 
 int main(int argc, char** argv) {
-    /*
+
     char* input = "WolverinDEV";
     char* input2 = "Test";
     cout << "X: " << SHA_DIGEST_LENGTH << endl;
@@ -111,18 +111,6 @@ int main(int argc, char** argv) {
     string outs = HexUtils::hexStr((unsigned char*) output,SHA_DIGEST_LENGTH);
     cout << "Having out" << endl;
     cout << outs << " / " << (int) output[0] << " / " << (int) output[1] << endl;
-    */
-
-    auto r = cpr::Get([](cpr::Response r) {
-        cout << "3-Response: " << r.text << endl;
-        cout << "Code: " << r.status_code << endl;
-    }, cpr::Url{"https://sessionserver.mojang.com:443/session/minecraft/hasJoined"}, cpr::Parameters{{"username", "WolverinDEV"}}, cpr::Parameters{{"serverId", "WolverinDEV"}}, cpr::Header{{"User-Agent", "runscope/0.1"},{"Accept-Encoding","gzip, deflate"},{"Accept","*/*"}}, cpr::Timeout{5000}, cpr::VerifySsl{false});
-    cout << "Status code: " <<  r.status_code << endl;
-    cout << "Accept-Ranges -> " << r.header["Accept-Ranges"] << endl;
-    cout << "Connection -> " << r.header["Connection"] << endl;
-
-    if(true)
-        return 0;
 
     atexit(shutdownHook);
 

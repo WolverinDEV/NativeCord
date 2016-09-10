@@ -29,13 +29,11 @@ class Cipper {
             EVP_PKEY * pubkey;
             d2i_X509(&cert,(const unsigned char**) &key,keyLength);
             pubkey = X509_get_pubkey (cert);
-            cout << "Pub size: " << sizeof(pubkey->pkey) << endl;
             return pubkey;
         }
 
         static string decodeMessagePrivateKey(char* buffer,int length,RSA* key){
             char* out = (char*) malloc(length);
-            cout << "Decript length: " << length << endl;
             int state = 0;
             if((state = RSA_private_decrypt(length, (unsigned char*)buffer, (unsigned char*)out,  key, RSA_PKCS1_PADDING)) == -1) {
                 char   *err;               // Buffer for any error messages

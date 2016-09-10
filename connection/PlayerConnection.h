@@ -24,8 +24,9 @@ class PlayerConnection : public Connection {
         static vector<PlayerConnection *> connections;
         static vector<PlayerConnection *> activeConnections;
 
-        PlayerConnection(sockaddr_in* adress, Socket *socket) : Connection(socket), adress(adress) {
+        PlayerConnection(sockaddr_in* adress, Socket *socket) : Connection(socket) {
             PlayerConnection::connections.push_back(this);
+            this->open = true;
         }
 
         ~PlayerConnection();
@@ -123,11 +124,23 @@ class PlayerConnection : public Connection {
         void setDimswitch(bool flag){
             dimswitch = flag;
         }
+
+        const string &getSecret() const {
+            return secret;
+        }
+
+        void setSecret(const string &secret) {
+            PlayerConnection::secret = secret;
+        }
+
+        string generateServerHash();
+
     private:
         bool dimswitch = false;
         int playerId = -1;
         string name;
         sockaddr_in* adress;
+        string secret;
         ClientPacketHandler* packetHandler = new ClientPacketHandler(this);
         PacketHandshake *handshake = nullptr;
         ServerConnection *currentTargetConnection = nullptr;

@@ -40,7 +40,6 @@ class RSAUtil {
             KeyEncripted* enc =  new KeyEncripted;
             string keyStart = string("-----BEGIN PUBLIC KEY-----\n");
             string keyEnd = string("\n-----END PUBLIC KEY-----\n");
-            cout << "Public Key: " << endl << string(pub_key,pub_len) << endl;
             enc->keyStart = keyStart;
             enc->keyEnd = keyEnd;
             enc->buffer = pub_key;
@@ -59,7 +58,6 @@ class RSAUtil {
             KeyEncripted* enc =  new KeyEncripted;
             string keyStart = string("-----BEGIN RSA PRIVATE KEY-----\n");
             string keyEnd = string("\n-----END RSA PRIVATE KEY-----\n");
-            cout << "Private Key: " << endl << string(pub_key,pub_len) << endl;
             enc->keyStart = keyStart;
             enc->keyEnd = keyEnd;
             enc->buffer = pub_key;

@@ -127,6 +127,8 @@ class Connection {
             state = ConnectionState::CLOSED;
         }
 
+    protected:
+        bool open = false;
     private:
         pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
         Socket *socket = nullptr;
