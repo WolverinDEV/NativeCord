@@ -217,7 +217,14 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
                         pconnection->sendMessage("§c§l» §7Invalid target port.");
                         return;
                     }
-                    Socket* target = SocketUtil::createTCPSocket(host.c_str(),port);
+                    ServerInfo* target = ServerInfo::getServerInfo(host.c_str(),port);
+                    if(target == NULL){
+                        target = ServerInfo::createTempServerInfo(host,port);
+                    }
+                    pconnection->connect(target, false);
+
+                    /*
+                    Socket* target = SocketUtil::createTCPSocket(,);
                     if(*((int*) target) == -1){
                         pconnection->sendMessage(string("§c§l» §7An error happend while connecting. (Cant create socket)"));
                         delete(target);
@@ -233,6 +240,7 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
                         delete(target);
                         return;
                     }
+                     */
                     //pconnection->connect(target);
                     pconnection->sendMessage("§a§l» §7Connecting to target server.");
                     return;

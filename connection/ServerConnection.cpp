@@ -29,7 +29,6 @@ void ServerConnection::startConnect() {
             out << '\00';
             out << getPlayerConnection()->getProfile()->getProperties();
         }
-        cout << "Passing: " << out.str() << endl;
         handshake->setHost(out.str());
         writePacket(getPlayerConnection()->getClientVersion(), handshake); //handshake
     }

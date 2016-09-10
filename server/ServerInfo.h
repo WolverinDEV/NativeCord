@@ -10,6 +10,7 @@
 #include <vector>
 #include <string>
 #include <yaml-cpp/yaml.h>
+#include <stdlib.h>
 #include "../config/Configuration.h"
 #include "../connection/Socket.h"
 #include "../utils/SocketUtil.h"
@@ -48,6 +49,10 @@ class ServerInfo {
                 servers.push_back(out = new ServerInfo(name,host.c_str(),port,visible));
             }
             return out;
+        }
+
+        static ServerInfo* createTempServerInfo(string host,int port){
+            return new ServerInfo(host.append(to_string(port)) ,host,port,false);
         }
 
         static vector<ServerInfo*> buildDefaultServerQueue(){
