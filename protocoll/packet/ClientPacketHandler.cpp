@@ -12,7 +12,7 @@
 #include "../../utils/EntityRewrite.h"
 #include "../../config/Configuration.h"
 #include "../../server/ServerInfo.h"
-#include "../../connection/PlayerConnection.h"
+#include "../../connection/player/PlayerConnection.h"
 #include "../../encription/Cipper.h"
 #include "../../encription/RSAUtil.h"
 #include "../../utils/Base64Utils.h"
@@ -104,6 +104,9 @@ void ClientPacketHandler::handlePacketStatus(int packetId, DataBuffer *buffer) {
 }
 
 void sendSuccessfullLoggedIn(PlayerConnection *pconnection){
+    if(pconnection->getProfile() == nullptr)
+        pconnection->setProfile(new GameProfile((string&) pconnection->getName(), UUIDUtils::randomUUID()));
+
     ServerInfo*  target;
     cout << "Player ["<<pconnection->getName()<<"] connecting" << endl;
     if(!isSupportedVersion(pconnection->getHandshake()->getClientVersion())){
@@ -141,21 +144,22 @@ void handleEncriptionResponse(PlayerConnection* connection, DataBuffer*& buffer)
 
     string hashDecripted = Cipper::decodeMessagePrivateKey(pack->getVerifyToken(),pack->getVerifyTokenLength(),Cipper::publicKey);
 
-    //TODO check with mojang
-    cout << "Having key: " << hashDecripted << " as hash from " << Cipper::hash << endl;
-
+    if(hashDecripted.compare(Cipper::hash) != 0){
+        connection->disconnect(new ChatMessage("§cInvalid verify token! §7(§bRecived token: §6"+hashDecripted+"§7)"));
+        return;
+    }
 
     auto r = cpr::GetCallback([connection](cpr::Response r) {
         cout << "2-Response: " << r.text << endl;
         cout << "Code: " << r.status_code << endl;
         if(r.status_code == 204){
             connection->disconnect(new ChatMessage("§cCant verify with mojang!"));
-        } else;
-         sendSuccessfullLoggedIn(connection);
+        } else{
+            connection->setProfile(new GameProfile(json::parse(r.text)));
+            cout << "Name: " << connection->getProfile()->getName() << endl;
+            sendSuccessfullLoggedIn(connection);
+        }
     }, cpr::Url{"https://sessionserver.mojang.com:443/session/minecraft/hasJoined"}, cpr::Parameters{{"username", connection->getName()}, {"serverId", connection->generateServerHash()}}, cpr::Header{{"User-Agent", "NativeCord"}}, cpr::Timeout{5000}, cpr::VerifySsl{false});
-    cout << "Name: " << connection->getName() << " ServerID " << connection->generateServerHash() << endl;
-    //connection->disconnect(new ChatMessage("Wrong key!"));
-   // sendSuccessfullLoggedIn(connection);
 }
 
 void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {

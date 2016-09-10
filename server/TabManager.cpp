@@ -3,7 +3,7 @@
 //
 
 #include "TabManager.h"
-#include "../connection/PlayerConnection.h"
+#include "../connection/player/PlayerConnection.h"
 
 void TabManager::resetTab() {
     if(uuids.empty())

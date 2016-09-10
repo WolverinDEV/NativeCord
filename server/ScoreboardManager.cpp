@@ -3,7 +3,7 @@
 //
 
 #include "ScoreboardManager.h"
-#include "../connection/PlayerConnection.h"
+#include "../connection/player/PlayerConnection.h"
 
 void ScoreboardManager::resetScoreboard() {
     if(objects.empty())

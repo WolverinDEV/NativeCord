@@ -15,7 +15,7 @@
 #include "config/Configuration.h"
 #include "protocoll/Buffers/DataBuffer.h"
 #include "utils/SocketUtil.h"
-#include "connection/PlayerConnection.h"
+#include "connection/player/PlayerConnection.h"
 #include "protocoll/packet/ClientPacketHandler.h"
 #include "server/ServerInfo.h"
 #include "encription/Cipper.h"

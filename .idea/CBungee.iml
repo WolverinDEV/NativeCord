@@ -8,13 +8,13 @@
       <sourceFolder url="file://$MODULE_DIR$/chat/ChatMessage.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/connection/Socket.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/connection/ServerConnection.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/connection/PlayerConnectionProperties.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/connection/Connection.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/connection/ConnectionState.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/connection/PlayerConnection.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/connection/ServerConnection.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/connection/Socket.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/connection/PlayerConnection.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/connection/player/PlayerConnection.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/connection/player/GameProfile.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/connection/player/PlayerConnection.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/encription/Cipper.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/encription/RSAUtil.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/encription/Cipper.cpp" isTestSource="false" />
@@ -30,6 +30,26 @@
       <sourceFolder url="file://$MODULE_DIR$/numbers/BigIntegerLibrary.hh" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/numbers/NumberlikeArray.hh" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/numbers/BigUnsigned.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/SocketUtil.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/Base64Utils.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/UUIDUtils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/TimeUtils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/HTTPUtil.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/UtilImplement.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/EntityRewrite.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/StringUtil.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/Base64Utils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/utils/HexUtils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/NativeCord.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/server/TabManager.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/server/TabManager.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/server/ScoreboardManager.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/server/ServerInfo.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/server/ScoreboardManager.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/server/ServerInfo.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/config/Configuration.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/config/Configuration.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/StreamedDataBuffer.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/DataBuffer.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/DataBuffer.h" isTestSource="false" />
@@ -40,26 +60,6 @@
       <sourceFolder url="file://$MODULE_DIR$/protocoll/packet/PacketHandler.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/protocoll/packet/ServerPacketHandler.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/protocoll/packet/ClientPacketHandler.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/NativeCord.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/server/TabManager.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/server/TabManager.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/server/ScoreboardManager.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/server/ServerInfo.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/server/ScoreboardManager.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/server/ServerInfo.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/EntityRewrite.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/SocketUtil.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/Base64Utils.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/UUIDUtils.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/TimeUtils.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/HTTPUtil.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/UtilImplement.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/HexUtils.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/StringUtil.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/Base64Utils.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/config/Configuration.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/config/Configuration.h" isTestSource="false" />
     </content>
     <content url="file://$USER_HOME$/cgit/cpr/cpr">
       <sourceFolder url="file://$USER_HOME$/cgit/cpr/cpr/session.cpp" isTestSource="false" />

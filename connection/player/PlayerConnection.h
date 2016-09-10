@@ -6,17 +6,18 @@
 #define CBUNGEE_PLAYERCONNECTION_H
 
 
-#include "../protocoll/Buffers/StreamedDataBuffer.h"
-#include "Socket.h"
-#include "../protocoll/packet/Packets.h"
-#include "../chat/ChatMessage.h"
-#include "ConnectionState.h"
-#include "Connection.h"
-#include "../utils/SocketUtil.h"
-#include "ServerConnection.h"
-#include "../server/TabManager.h"
-#include "../server/ScoreboardManager.h"
-#include "../protocoll/packet/ClientPacketHandler.h"
+#include "../../protocoll/Buffers/StreamedDataBuffer.h"
+#include "../Socket.h"
+#include "../../protocoll/packet/Packets.h"
+#include "../../chat/ChatMessage.h"
+#include "../ConnectionState.h"
+#include "../Connection.h"
+#include "../../utils/SocketUtil.h"
+#include "../ServerConnection.h"
+#include "../../server/TabManager.h"
+#include "../../server/ScoreboardManager.h"
+#include "../../protocoll/packet/ClientPacketHandler.h"
+#include "GameProfile.h"
 #include <vector>
 
 class PlayerConnection : public Connection {
@@ -24,7 +25,7 @@ class PlayerConnection : public Connection {
         static vector<PlayerConnection *> connections;
         static vector<PlayerConnection *> activeConnections;
 
-        PlayerConnection(sockaddr_in* adress, Socket *socket) : Connection(socket) {
+        PlayerConnection(sockaddr_in* adress, Socket *socket) : Connection(socket), adress(adress) {
             PlayerConnection::connections.push_back(this);
             this->open = true;
         }
@@ -125,7 +126,7 @@ class PlayerConnection : public Connection {
             dimswitch = flag;
         }
 
-        const string &getSecret() const {
+        string getSecret() {
             return secret;
         }
 
@@ -134,6 +135,16 @@ class PlayerConnection : public Connection {
         }
 
         string generateServerHash();
+
+        GameProfile *getProfile() const {
+            return profile;
+        }
+
+        void setProfile(GameProfile *profile) {
+            PlayerConnection::profile = profile;
+        }
+
+        sockaddr_in *getAdress() const;
 
     private:
         bool dimswitch = false;
@@ -148,6 +159,7 @@ class PlayerConnection : public Connection {
         TabManager *tabManager = new TabManager(this);
         ScoreboardManager *scoreManager = new ScoreboardManager(this);
         vector<ServerInfo*> fallbackServers = ServerInfo::buildDefaultServerQueue();
+        GameProfile* profile = nullptr;
 };
 
 

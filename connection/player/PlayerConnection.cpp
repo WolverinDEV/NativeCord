@@ -3,8 +3,8 @@
 //
 
 #include "PlayerConnection.h"
-#include "../encription/RSAUtil.h"
-#include "../utils/Base64Utils.h"
+#include "../../encription/RSAUtil.h"
+#include "../../utils/Base64Utils.h"
 
 vector<PlayerConnection*> PlayerConnection::connections = vector<PlayerConnection*>(); //activeConnections
 vector<PlayerConnection*> PlayerConnection::activeConnections = vector<PlayerConnection*>();
@@ -16,6 +16,7 @@ PlayerConnection::~PlayerConnection(){
     delete (this->scoreManager);
     delete (this->packetHandler);
     delete (this->adress);
+    delete (this->profile);
     for(std::vector<ServerConnection*>::iterator it = this->pendingConnections.begin(); it != this->pendingConnections.end(); ++it) {
         if ((*it)->getState() == ConnectionState::CLOSED) {
             //delete *it;
@@ -54,7 +55,7 @@ void PlayerConnection::setCurrentTargetConnection(ServerConnection *currentTarge
     PlayerConnection::currentTargetConnection = currentTargetConnection;
 }
 
-const string &PlayerConnection::getName() const {
+const string& PlayerConnection::getName() const {
     return name;
 }
 
@@ -201,4 +202,8 @@ string PlayerConnection::generateServerHash() {
     }
 
     return out;
+}
+
+sockaddr_in *PlayerConnection::getAdress() const {
+    return adress;
 }

@@ -235,7 +235,12 @@ public:
         delete(message);
     }
     virtual void read(int clientVersion, DataBuffer *buffer) override {
-        message = new ChatMessage(json::parse(buffer->readString()));
+        string rmessage = buffer->readString();
+        json json = json::parse(rmessage);
+        if(json == NULL)
+            cout << "Cant serelize " << rmessage << endl;
+        else
+            message = new ChatMessage(json);
     }
 
     virtual void write(int clientVersion, DataBuffer *buffer) override {

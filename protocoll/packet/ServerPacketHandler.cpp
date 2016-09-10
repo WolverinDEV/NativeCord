@@ -4,7 +4,7 @@
 
 #include "ServerPacketHandler.h"
 #include "../../utils/UUIDUtils.h"
-#include "../../connection/PlayerConnection.h"
+#include "../../connection/player/PlayerConnection.h"
 #include "../../utils/EntityRewrite.h"
 
 void ServerPacketHandler::handlePacket(DataBuffer *buffer) {
@@ -69,7 +69,7 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
             uuid_parse(buffer->readString().c_str(),playerUUID);
             username = buffer->readString();
             cout << "Username: " << username << endl;
-            cout << "UUID:     " << UUIDUtils::uuidToStrring(playerUUID) << endl;
+            cout << "UUID:     " << UUIDUtils::uuidToString(playerUUID) << endl;
             connection->setState(ConnectionState::PLAYING);
 
             old = ((ServerConnection*)connection)->getPlayerConnection()->getCurrentTargetConnection();
@@ -118,7 +118,7 @@ void entityRewriteServer(int packetId, DataBuffer *buffer, ServerConnection *con
 void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
     int rindex = buffer->getReaderindex();
     int clientVersion = ((ServerConnection*)connection)->getPlayerConnection()->getClientVersion();
-    if(packetId == 0x23 && clientVersion > 46 || packetId == 0x01 && clientVersion == 46) {
+    if(packetId == 0x23 && clientVersion > 46 || packetId == 0x01 && clientVersion == 46) { //TODO 1.8 The packed sended twice or somethink like that lol? idk
         int playerId = buffer->readInt();
         bool del = true; //First time must send
         if(((ServerConnection*)connection)->getPlayerConnection()->getPlayerId() == -1) { //player version isnt defined
@@ -126,6 +126,8 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
             del = false;
         }
         ((ServerConnection*)connection)->setPlayerId(playerId);
+        cout << "PacketID " << packetId << endl;
+        cout << "Id: " << this->running << endl;
         cout << "Your entity id: " << ((ServerConnection*)connection)->getPlayerConnection()->getPlayerId() << endl;
         cout << "Server entity id: " << playerId << endl;
         if(del) {
