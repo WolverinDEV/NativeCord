@@ -166,7 +166,11 @@ void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
     switch (packetId) {
         case 0x00:
             pconnection->setName(buffer->readString());
-            if(Configuration::instance->config["network"]["online_mode"].as<bool>() || true)
+            if(Configuration::instance->config["network"]["player_limit"].as<int>() != -1 && PlayerConnection::activeConnections.size() >= Configuration::instance->config["network"]["player_limit"].as<int>()){
+                pconnection->disconnect(new ChatMessage("§cServer is full"));
+                return;
+            }
+            if(Configuration::instance->config["network"]["online_mode"].as<bool>())
                 sendLoginVerify(pconnection);
             else
                 sendSuccessfullLoggedIn(pconnection);
