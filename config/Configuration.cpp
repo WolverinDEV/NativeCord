@@ -48,7 +48,7 @@ void Configuration::loadConfig() {
         saveConfig = true;
         config["network"]["player_limit"] = 350;
     }
-    if (!config["network"]["connection_throttle"].IsDefined()) {
+    if (!config["network"]["connection_throttle"].IsDefined()) { //TODO
         saveConfig = true;
         config["network"]["connection_throttle"] = 2500;
     }
@@ -58,15 +58,15 @@ void Configuration::loadConfig() {
     }
     if (!config["network"]["online_mode"].IsDefined()) {
         saveConfig = true;
-        config["network"]["online_mode"] = false; //TODO change it to true when implemented
+        config["network"]["online_mode"] = true;
     }
-    if (!config["network"]["host"].IsDefined()) {
+    if (!config["network"]["host"].IsDefined()) { //TODO
         saveConfig = true;
-        config["network"]["host"] = "localhost"; //TODO change it to true when implemented
+        config["network"]["host"] = "localhost";
     }
     if (!config["network"]["port"].IsDefined()) {
         saveConfig = true;
-        config["network"]["port"] = 25565; //TODO change it to true when implemented
+        config["network"]["port"] = 25565;
     }
 
     /**
@@ -80,7 +80,7 @@ void Configuration::loadConfig() {
         saveConfig = true;
         config["ping"]["motd"] = string("&6It's not just another NativeCord! Its the NativeCord!\n&7Made by WolverinDEV and lots of coffee.");
     }
-    //if (!config["ping"]["log"].IsDefined()) {
+    //if (!config["ping"]["log"].IsDefined()) { //TODO log?
     //    saveConfig = true;
     //    config["ping"]["log"] = true;
     //}
@@ -100,7 +100,7 @@ void Configuration::loadConfig() {
         config["join"]["forced_hosts"]["lobby.localhost"] = "lobby";
         config["join"]["forced_hosts"]["hub.localhost"] = "lobby";
     }
-    if (!config["join"]["force_default_server"].IsDefined()) {
+    if (!config["join"]["force_default_server"].IsDefined()) { //TODO save last locations
         saveConfig = true;
         config["join"]["force_default_server"] = true;
     }

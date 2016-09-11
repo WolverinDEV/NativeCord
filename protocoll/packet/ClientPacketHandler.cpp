@@ -209,6 +209,10 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
         if(strcmp(parts[0].c_str(),"/server") == 0){
             if(parts.size() == 3){
                 if(strcmp(parts[1].c_str(),"direct") == 0){ //TODO
+                    if(Configuration::instance->config["servers"]["disable_direct"]){
+                        pconnection->sendMessage("§c§l> §7Direct server connecting is forbidden.");
+                        return;
+                    }
                     string targetAdress = parts[2];
                     vector<string> aparts = StringUtils::split(targetAdress,':');
                     if(aparts.size() != 2 && aparts.size() != 1){
