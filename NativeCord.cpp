@@ -25,7 +25,7 @@
 #include "cpr/cpr.h"
 #include <curl/curl.h>
 #include "utils/HexUtils.h"
-#include <openssl/sha.h>
+#include "plugin/handle/PluginManager.h"
 using namespace std;
 
 void error(const char* message){
@@ -97,49 +97,9 @@ void clientConnect(){
 
 int main(int argc, char** argv) {
 
-    char* input = "WolverinDEV";
-    char* input2 = "Test";
-    cout << "X: " << SHA_DIGEST_LENGTH << endl;
-    char* output = (char*) malloc(SHA_DIGEST_LENGTH);
-    memset(output,0x00,16);
-    SHA_CTX context;
-    SHA1_Init(&context);
-    SHA1_Update(&context, (unsigned char*)input, strlen(input));
-    //SHA1_Update(&context, (unsigned char*)input2, strlen(input2));
-    SHA1_Final((unsigned char*) output,&context);
-
-    string outs = HexUtils::hexStr((unsigned char*) output,SHA_DIGEST_LENGTH);
-    cout << "Having out" << endl;
-    cout << outs << " / " << (int) output[0] << " / " << (int) output[1] << endl;
-
-    atexit(shutdownHook);
-
-    cout << "Generate!" << endl;
-    cout << Cipper::publicKey << "/" << sizeof(*(Cipper::publicKey)) << "/" << (Cipper::publicKey) << endl;
-    cout << "Generate done!" << endl;
-    cout << "Length:" << Cipper::publicKey->engine << endl;
-
-    KeyEncripted* resp = RSAUtil::getPrivateEncriptedKey(Cipper::publicKey);
-    cout << "One line: " << resp->getBase64Buffer() << endl;
-    DataBuffer* in = new DataBuffer();
-    in->writeString("Hello world");
-    char* cbuffer = new char[20];
-    Cipper* cript = new Cipper((unsigned  char*) Cipper::publicKey,false);
-    Cipper* dript = new Cipper((unsigned  char*) Cipper::publicKey,true);
-
-    cript->init();
-    dript->init();
-
-    DataBuffer* out = cript->cipher(in,false);
-
-    DataBuffer* out2 = dript->cipher(out,false);
-    cout << "Data: ";
-    cout << out2->readString() << "Lengthg:";
-    cout << out2->getBufferLength() << endl;
-
-    //Cipper::createPublicKey((char*) Cipper::publicKey,sizeof(*Cipper::publicKey));
 
 
+    PluginManager* manager = nullptr;
 
     if(true && false)
         return 0;

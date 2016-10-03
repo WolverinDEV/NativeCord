@@ -2,67 +2,75 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/chat/ChatMessage.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/chat/ChatColor.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/chat/ActionEvent.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/chat/ChatMessage.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/connection/Socket.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/connection/ServerConnection.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/connection/Connection.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/connection/ConnectionState.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/connection/ServerConnection.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/connection/Socket.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/connection/player/PlayerConnection.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/connection/player/GameProfile.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/connection/player/PlayerConnection.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/encription/Cipper.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/encription/RSAUtil.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/encription/Cipper.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/numbers/BigIntegerAlgorithms.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/numbers/BigInteger.hh" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/numbers/BigIntegerUtils.hh" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/numbers/BigUnsignedInABase.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/numbers/BigInteger.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/numbers/BigIntegerAlgorithms.hh" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/numbers/BigUnsigned.hh" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/numbers/BigIntegerUtils.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/numbers/BigUnsignedInABase.hh" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/numbers/BigIntegerLibrary.hh" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/numbers/NumberlikeArray.hh" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/numbers/BigUnsigned.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/SocketUtil.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/Base64Utils.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/UUIDUtils.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/TimeUtils.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/HTTPUtil.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/UtilImplement.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/EntityRewrite.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/StringUtil.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/Base64Utils.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/utils/HexUtils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/chat/ChatMessage.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/plugin/PluginManager.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/plugin/handle/CXXPluginManagerImpl.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/plugin/handle/JavaPluginManagerImpl.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/plugin/handle/JavaPluginManagerImpl.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/plugin/handle/CXXPluginManagerImpl.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/config/Configuration.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/numbers/BigUnsigned.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/numbers/BigIntegerUtils.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/numbers/BigInteger.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/numbers/BigUnsignedInABase.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/numbers/BigIntegerAlgorithms.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/utils/UtilImplement.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/utils/Base64Utils.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/connection/Socket.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/connection/PlayerConnection.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/connection/ServerConnection.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/server/ServerInfo.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/server/ScoreboardManager.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/server/TabManager.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/encription/Cipper.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/protocoll/Buffers/StreamedDataBuffer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/protocoll/Buffers/DataBuffer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/protocoll/packet/ServerPacketHandler.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/protocoll/packet/ClientPacketHandler.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/NativeCord.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/cryption/Cipper.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/cryption/RSAUtil.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/plugin/cxx/CXXPlugin.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/plugin/PluginManager.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/plugin/Plugin.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/plugin/java/JavaPlugin.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/utils/SocketUtil.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/utils/HTTPUtil.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/utils/HexUtils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/utils/TimeUtils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/utils/UUIDUtils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/utils/EntityRewrite.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/utils/StringUtil.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/utils/Base64Utils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/config/Configuration.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/numbers/BigIntegerUtils.hh" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/numbers/BigIntegerLibrary.hh" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/numbers/BigInteger.hh" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/numbers/BigUnsigned.hh" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/numbers/BigIntegerAlgorithms.hh" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/numbers/BigUnsignedInABase.hh" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/numbers/NumberlikeArray.hh" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/chat/ChatMessage.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/chat/ActionEvent.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/chat/ChatColor.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/server/ScoreboardManager.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/server/TabManager.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/server/ServerInfo.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/connection/ServerConnection.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/connection/Connection.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/connection/ConnectionState.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/connection/Socket.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/connection/GameProfile.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/connection/PlayerConnection.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/protocoll/Packets.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/protocoll/StreamedDataBuffer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/protocoll/ServerPacketHandler.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/protocoll/ClientPacketHandler.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/protocoll/PacketHandler.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/server/TabManager.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/server/TabManager.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/server/ScoreboardManager.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/server/ServerInfo.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/server/ScoreboardManager.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/server/ServerInfo.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/config/Configuration.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/config/Configuration.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/StreamedDataBuffer.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/DataBuffer.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/DataBuffer.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/protocoll/Buffers/StreamedDataBuffer.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/protocoll/packet/ServerPacketHandler.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/protocoll/packet/ClientPacketHandler.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/protocoll/packet/Packets.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/protocoll/packet/PacketHandler.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/protocoll/packet/ServerPacketHandler.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/protocoll/packet/ClientPacketHandler.cpp" isTestSource="false" />
     </content>
     <content url="file://$USER_HOME$/cgit/cpr/cpr">
-      <sourceFolder url="file://$USER_HOME$/cgit/cpr/cpr/session.cpp" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/cgit/cpr/cpr/cookies.cpp" isTestSource="false" />
       <sourceFolder url="file://$USER_HOME$/cgit/cpr/cpr/cprtypes.cpp" isTestSource="false" />
       <sourceFolder url="file://$USER_HOME$/cgit/cpr/cpr/parameters.cpp" isTestSource="false" />
       <sourceFolder url="file://$USER_HOME$/cgit/cpr/cpr/CMakeLists.txt" isTestSource="false" />
@@ -70,7 +78,7 @@
       <sourceFolder url="file://$USER_HOME$/cgit/cpr/cpr/digest.cpp" isTestSource="false" />
       <sourceFolder url="file://$USER_HOME$/cgit/cpr/cpr/proxies.cpp" isTestSource="false" />
       <sourceFolder url="file://$USER_HOME$/cgit/cpr/cpr/error.cpp" isTestSource="false" />
-      <sourceFolder url="file://$USER_HOME$/cgit/cpr/cpr/cookies.cpp" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/cgit/cpr/cpr/session.cpp" isTestSource="false" />
       <sourceFolder url="file://$USER_HOME$/cgit/cpr/cpr/payload.cpp" isTestSource="false" />
       <sourceFolder url="file://$USER_HOME$/cgit/cpr/cpr/auth.cpp" isTestSource="false" />
       <sourceFolder url="file://$USER_HOME$/cgit/cpr/cpr/util.cpp" isTestSource="false" />
@@ -79,18 +87,20 @@
     <orderEntry type="module-library">
       <library name="Header Search Paths">
         <CLASSES>
+          <root url="file:///usr/include" />
+          <root url="file:///usr/lib/jvm/java-8-oracle/include" />
           <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
           <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
-          <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
           <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/CBungee-7d74d14a/7d74d14a/__default__/cpr/opt/curl/include/curl" />
           <root url="file://$USER_HOME$/cgit/cpr/include" />
           <root url="file://$USER_HOME$/cgit/cpr/opt/curl/include" />
         </CLASSES>
         <SOURCES>
+          <root url="file:///usr/include" />
+          <root url="file:///usr/lib/jvm/java-8-oracle/include" />
           <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
           <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
-          <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
           <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/CBungee-7d74d14a/7d74d14a/__default__/cpr/opt/curl/include/curl" />
           <root url="file://$USER_HOME$/cgit/cpr/include" />

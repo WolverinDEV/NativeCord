@@ -6,10 +6,10 @@ message("cpr libs: ${CPR_LIBRARIES}")
 message("curl libs: ${CURL_LIBRARIES}")
 #message("${CURL_FOUND}")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-pointer-arith")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-pointer-arith -Wno-deprecated -Wno-return-local-addr")
 
-set(SOURCE_FILES protocoll/Buffers/DataBuffer.cpp connection/player/PlayerConnection.cpp connection/player/PlayerConnection.h connection/Socket.cpp connection/Socket.h protocoll/Buffers/StreamedDataBuffer.cpp protocoll/Buffers/StreamedDataBuffer.h protocoll/packet/ClientPacketHandler.cpp protocoll/packet/ClientPacketHandler.h protocoll/packet/Packets.h chat/ChatMessage.cpp chat/ChatMessage.h chat/ActionEvent.h connection/ServerConnection.cpp connection/ServerConnection.h protocoll/packet/ServerPacketHandler.cpp protocoll/packet/ServerPacketHandler.h protocoll/packet/PacketHandler.h connection/ConnectionState.h connection/Connection.h utils/TimeUtils.h utils/UUIDUtils.h utils/SocketUtil.h utils/StringUtil.h utils/EntityRewrite.h server/TabManager.cpp server/TabManager.h chat/ChatColor.h server/ScoreboardManager.cpp server/ScoreboardManager.h config/Configuration.cpp config/Configuration.h NativeCord.cpp server/ServerInfo.cpp server/ServerInfo.h encription/Cipper.cpp encription/Cipper.h encription/RSAUtil.h utils/Base64Utils.cpp utils/Base64Utils.h utils/HTTPUtil.h utils/HTTPUtil.h utils/HexUtils.h utils/UtilImplement.cpp)
-set(SOURCE_FILES ${SOURCE_FILES} numbers/BigIntegerAlgorithms.cc numbers/BigIntegerUtils.cc numbers/BigUnsignedInABase.hh numbers/BigIntegerAlgorithms.hh numbers/BigIntegerUtils.hh numbers/NumberlikeArray.hh numbers/BigInteger.cc numbers/BigUnsigned.cc numbers/BigInteger.hh numbers/BigUnsigned.hh numbers/BigIntegerLibrary.hh numbers/BigUnsignedInABase.cc connection/player/GameProfile.h)
+set(SOURCE_FILES src/protocoll/Buffers/DataBuffer.cpp src/connection/PlayerConnection.cpp include/connection/PlayerConnection.h src/connection/Socket.cpp include/connection/Socket.h src/protocoll/Buffers/StreamedDataBuffer.cpp include/protocoll/StreamedDataBuffer.h src/protocoll/packet/ClientPacketHandler.cpp include/protocoll/ClientPacketHandler.h include/protocoll/Packets.h src/chat/ChatMessage.cpp include/chat/ChatMessage.h include/chat/ActionEvent.h src/connection/ServerConnection.cpp include/connection/ServerConnection.h src/protocoll/packet/ServerPacketHandler.cpp include/protocoll/ServerPacketHandler.h include/protocoll/PacketHandler.h include/connection/ConnectionState.h include/connection/Connection.h include/utils/TimeUtils.h include/utils/UUIDUtils.h include/utils/SocketUtil.h include/utils/StringUtil.h include/utils/EntityRewrite.h src/server/TabManager.cpp include/server/TabManager.h include/chat/ChatColor.h src/server/ScoreboardManager.cpp include/server/ScoreboardManager.h src/config/Configuration.cpp include/config/Configuration.h NativeCord.cpp src/server/ServerInfo.cpp include/server/ServerInfo.h src/encription/Cipper.cpp include/cryption/Cipper.h include/cryption/RSAUtil.h src/utils/Base64Utils.cpp include/utils/Base64Utils.h include/utils/HTTPUtil.h include/utils/HTTPUtil.h include/utils/HexUtils.h src/utils/UtilImplement.cpp)
+set(SOURCE_FILES ${SOURCE_FILES} src/numbers/BigIntegerAlgorithms.cc src/numbers/BigIntegerUtils.cc include/numbers/BigUnsignedInABase.hh include/numbers/BigIntegerAlgorithms.hh include/numbers/BigIntegerUtils.hh include/numbers/NumberlikeArray.hh src/numbers/BigInteger.cc src/numbers/BigUnsigned.cc include/numbers/BigInteger.hh include/numbers/BigUnsigned.hh include/numbers/BigIntegerLibrary.hh src/numbers/BigUnsignedInABase.cc include/connection/GameProfile.h include/plugin/cxx/CXXPlugin.h include/plugin/Plugin.h src/plugin/handle/JavaPluginManagerImpl.cpp src/plugin/handle/JavaPluginManagerImpl.h include/plugin/java/JavaPlugin.h src/plugin/PluginManager.cpp include/plugin/PluginManager.h src/plugin/handle/CXXPluginManagerImpl.cpp src/plugin/handle/CXXPluginManagerImpl.h)
 #set(SOURCE_FILES ${SOURCE_FILES} test/BufferTest.cpp)
 
 link_directories(/home/wolverindev/cgit/cpr/lib/)
@@ -18,5 +18,17 @@ link_libraries(pthread uuid z yaml-cpp crypto libcpr.a libcurl.so) #z = zlib   c
 add_subdirectory(/home/wolverindev/cgit/cpr/cpr/ cpr)
 include_directories(${CPR_INCLUDE_DIRS})
 
+
+########################### Java ####################################
+include_directories(/usr/lib/jvm/java-8-oracle/include/)
+include_directories(/usr/lib/jvm/java-8-oracle/include/linux)
+
+link_libraries(/usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so)
+#####################################################################
+
+########################## 32 Bit [DONT WORK :/] ###################################
+#add_definitions(-DCURL_32_BIT)
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
+#####################################################################
 
 add_executable(NativeCord ${SOURCE_FILES})
