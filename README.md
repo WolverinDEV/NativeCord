@@ -5,7 +5,7 @@ NativeCord. A very fast C++ proxy for minecraft.
 
 Supported Systems:
 - Linux x64
-- Linux x32 (not tested with the newest but i think its working) (May not working anymore (Bigint is only x64 (i think)))
+- Linux x32 (Not working... (Need some changes in jvm incluse and -luuid and -lyaml-cpp MAY than its working....))
 
 Compiler relequipments:
 - CMake 3.2.2+
