@@ -16,23 +16,23 @@ Compiler relequipments:
 Compile/Install
   1. git clone https://github.com/WolverinDEV/NativeCord.git<br>
   2. cd NativeCord<br>
-  3. git submodule update --init --recursive
-  4. go int lib and install cpr & yaml
+  3. git submodule update --init --recursive<br>
+  4. go int lib and install cpr & yaml<br>
   5. cmake .<br>
   6. make<br>
   7. cd .. && mkdir nbungee<br>
   8. cp NativeCord/NativeCord nbungee/<br>
   9. Redy to launch NativeCord. Run it with ./NativeCord<br>
 
-Install libs:
-  cpr: 
-    1. cmake . 
-    2. make
-    3. make install
-  yaml:
-    1. make
-    2. make install
-    
+Install libs:<br>
+  cpr: <br>
+    1. cmake . <br>
+    2. make<br>
+    3. make install<br>
+  yaml:<br>
+    1. make<br>
+    2. make install<br>
+
 TODO List:
 - Implement ip_uuid_forward [DONE]
 - Implement online mode [DONE]
