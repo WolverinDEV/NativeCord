@@ -5,7 +5,7 @@
 #ifndef NATIVECORD_CXXPLUGIN_H
 #define NATIVECORD_CXXPLUGIN_H
 
-#include "../../../include/plugin/Plugin.h"
+#include "../Plugin.h"
 
 class CXXPlugin : public Plugin{
     public:

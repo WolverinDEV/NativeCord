@@ -12,11 +12,14 @@
 using namespace std;
 class PluginManager {
     public:
-        vector<Plugin*>& getLoadedPlugins();
-        vector<Plugin*>& getEnabledPlugins();
+        virtual void enable() = 0;
+        virtual void disable() = 0;
 
-        Plugin* enablePlugin(string name);
-        bool disablePlugin(Plugin* plugin);
+        virtual vector<Plugin*>& getLoadedPlugins() = 0;
+        virtual vector<Plugin*>& getEnabledPlugins() = 0;
+
+        virtual Plugin* enablePlugin(string name) = 0;
+        virtual bool disablePlugin(Plugin* plugin) = 0;
 };
 
 

@@ -5,7 +5,7 @@
 #ifndef NATIVECORD_JAVAPLUGIN_H
 #define NATIVECORD_JAVAPLUGIN_H
 
-#include "../../../include/plugin/Plugin.h"
+#include "../Plugin.h"
 
 class JavaPlugin : public Plugin {
 

@@ -35,3 +35,31 @@ void JavaPluginManagerImpl::startJavaVM() {
         return;
     }
 }
+
+void JavaPluginManagerImpl::stopJavaVM() {
+    this->jvm->DestroyJavaVM();
+}
+
+vector<Plugin *> &JavaPluginManagerImpl::getLoadedPlugins() {
+    return plugins;
+}
+
+vector<Plugin *> &JavaPluginManagerImpl::getEnabledPlugins() {
+    return plugins;
+}
+
+Plugin *JavaPluginManagerImpl::enablePlugin(string name) {
+    return nullptr;
+}
+
+bool JavaPluginManagerImpl::disablePlugin(Plugin *plugin) {
+    return false;
+}
+
+void JavaPluginManagerImpl::enable() {
+    startJavaVM();
+}
+
+void JavaPluginManagerImpl::disable() {
+    stopJavaVM();
+}

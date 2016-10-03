@@ -6,6 +6,7 @@
 #include <openssl/rsa.h>
 #include <openssl/pem.h>
 #include <openssl/err.h>
+#include "../../include/log/LogUtils.h"
 
 RSA* generateRND_RSA_Key(){
     RSA* rsa = RSA_generate_key(1024,17,NULL,NULL);
@@ -13,8 +14,8 @@ RSA* generateRND_RSA_Key(){
     char* buffer = (char*) malloc(170);
     memset(buffer,0x00,170);
     BIO *mem = BIO_new(BIO_s_mem());
-    cout << "Bio PEM_write_bio_RSA_PUBKEY: " << PEM_write_bio_RSA_PUBKEY(mem,rsa) << endl;
-    cout << "Bio num:   " << BIO_pending(mem) << endl;
+    debugMessage("Bio PEM_write_bio_RSA_PUBKEY: "+to_string(PEM_write_bio_RSA_PUBKEY(mem,rsa)));
+    debugMessage("Bio num:   " + to_string(BIO_pending(mem)));
 
     int pub_len = BIO_pending(mem);
 
@@ -25,7 +26,7 @@ RSA* generateRND_RSA_Key(){
     pub_key[pub_len] = '\0';
     cout << pub_key << endl;
 
-    cout << "First: " << (int) buffer[0] << "/" << (int) buffer[1] << endl;
+    debugMessage("First: " + to_string((int) buffer[0] ) + "/" + to_string((int) buffer[1]));
     return rsa;
 }
 

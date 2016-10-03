@@ -1,3 +1,9 @@
 [submodule "libs/cpr"]
 	path = libs/cpr
 	url = https://github.com/WolverinDEV/cpr.git
+[submodule "libs/yaml-cpp"]
+	path = libs/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "java"]
+	path = java
+	url = https://github.com/WolverinDEV/NativeCordJavaAPI.git

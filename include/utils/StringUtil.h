@@ -8,6 +8,9 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <cstdlib>
+#include <cstring>
+#include <sstream>
 
 using namespace std;
 

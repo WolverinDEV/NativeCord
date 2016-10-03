@@ -10,15 +10,14 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <execinfo.h>
-#include <signal.h>
-#include <stdlib.h>
 #include "cpr/cpr.h"
 #include "include/utils/SocketUtil.h"
 #include "include/config/Configuration.h"
 #include "include/connection/PlayerConnection.h"
 #include "include/plugin/PluginManager.h"
-#include <curl/curl.h>
+#include "include/log/LogUtils.h"
+#include "src/plugin/java/JavaPluginManagerImpl.h"
+
 using namespace std;
 
 void error(const char* message){
@@ -92,9 +91,12 @@ int main(int argc, char** argv) {
 
 
 
-    PluginManager* manager = nullptr;
+    JavaPluginManagerImpl* manager = new JavaPluginManagerImpl();
+    manager->enable();
 
-    if(true && false)
+
+    manager->disable();
+    if(true)
         return 0;
     try {
         string filename = string("config.yml");
@@ -102,19 +104,19 @@ int main(int argc, char** argv) {
         Configuration::instance->loadConfig();
         cout << "Loading configuration" << endl;
         if(!Configuration::instance->isValid()){
-            cout << "Configuration not valid!" << endl;
+            logError("Configuration not valid!");
             vector<string> errors = Configuration::instance->getErrors();
             if(errors.size() == 1)
-                cout << "Error: ";
+                logError("Error:");
             else
-                cout << "Errors (" << errors.size() << "):" << endl;
+                logError("Errors (" + to_string(errors.size()) + "):");
             for(vector<string>::iterator it = errors.begin();it!=errors.end();it++){
-                cout << (errors.size() != 1 ? " - " : "") << *it << endl;
+                logError((errors.size() != 1 ? " - " : "") + *it);
             }
             return 0;
         }
         ServerInfo::loadServers();
-        cout << "Configuration valid!" << endl;
+        logMessage("Configuration successfull loaded.");
         pthread_t threadHandle;
         pthread_create(&threadHandle,NULL,(void* (*)(void*)) &clientConnect,NULL);
         //pthread_join(threadHandle,NULL);
