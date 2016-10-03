@@ -5,7 +5,7 @@
 #ifndef NATIVECORD_GAMEPROFILE_H
 #define NATIVECORD_GAMEPROFILE_H
 
-#include "../../src/json/json.hpp"
+#include "../json/json.hpp"
 #include "../utils/UUIDUtils.h"
 #include "../utils/StringUtil.h"
 #include <string>

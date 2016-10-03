@@ -53,6 +53,7 @@
       <sourceFolder url="file://$MODULE_DIR$/include/chat/ChatMessage.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/chat/ActionEvent.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/chat/ChatColor.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/json/json.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/server/ScoreboardManager.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/server/TabManager.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/server/ServerInfo.h" isTestSource="false" />

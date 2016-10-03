@@ -13,9 +13,9 @@
 #include "ChatColor.h"
 #include "ActionEvent.h"
 #include <algorithm>
-#include "../../src/json/json.hpp"
+#include "../json/json.hpp"
 
-using json = nlohmann::json;
+using json = nlohmann::json ;
 
 class ChatMessage {
     public:

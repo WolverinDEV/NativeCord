@@ -12,20 +12,13 @@
 #include <netinet/in.h>
 #include <execinfo.h>
 #include <signal.h>
-#include "config/Configuration.h"
-#include "protocoll/Buffers/DataBuffer.h"
-#include "utils/SocketUtil.h"
-#include "connection/player/PlayerConnection.h"
-#include "protocoll/packet/ClientPacketHandler.h"
-#include "server/ServerInfo.h"
-#include "encription/Cipper.h"
-#include "encription/RSAUtil.h"
 #include <stdlib.h>
-#include "utils/Base64Utils.h"
 #include "cpr/cpr.h"
+#include "include/utils/SocketUtil.h"
+#include "include/config/Configuration.h"
+#include "include/connection/PlayerConnection.h"
+#include "include/plugin/PluginManager.h"
 #include <curl/curl.h>
-#include "utils/HexUtils.h"
-#include "plugin/handle/PluginManager.h"
 using namespace std;
 
 void error(const char* message){

@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sstream>
-#include "../../numbers/BigIntegerLibrary.hh"
+#include "../numbers/BigIntegerLibrary.hh"
 
 using namespace std;
 

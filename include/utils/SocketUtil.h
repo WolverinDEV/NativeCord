@@ -5,7 +5,6 @@
 #ifndef CBUNGEE_SOCKETUTIL_H
 #define CBUNGEE_SOCKETUTIL_H
 
-#include "../../connection/Socket.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -14,6 +13,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include "../connection/Socket.h"
 
 using namespace std;
 

@@ -4,7 +4,7 @@
 
 #include "../../../include/protocoll/ClientPacketHandler.h"
 #include "../../../include/protocoll/Packets.h"
-#include "../../json/json.hpp"
+#include "../../../include/json/json.hpp"
 #include "../../../include/connection/ServerConnection.h"
 #include "../../../include/connection/Connection.h"
 #include "../../../include/utils/TimeUtils.h"

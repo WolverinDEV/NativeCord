@@ -3,8 +3,7 @@
 //
 
 #include "../../include/chat/ChatMessage.h"
-#include "../json/json.hpp"
-
+#include "../../include/json/json.hpp"
 using namespace std;
 
 string ChatMessage::DEFAULT = string("");

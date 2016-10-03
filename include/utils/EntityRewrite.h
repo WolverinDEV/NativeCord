@@ -5,7 +5,6 @@
 #ifndef CBUNGEE_ENTITYREWRITE_H
 #define CBUNGEE_ENTITYREWRITE_H
 
-#include "../../protocoll/Buffers/DataBuffer.h"
 class EntityRewrite{
 public:
     static void replaceEntityId(int pid,DataBuffer* buffer,int old,int _new){
