@@ -11,19 +11,28 @@ Compiler relequipments:
 - CMake 3.2.2+
 - UUID lib (sudo apt-get install uuid-dev)
 - zlib lib (sudo apt-get install zlib1g-dev)
-- yaml-cpp lib (https://github.com/jbeder/yaml-cpp)
 - ssl lib (sudo apt-get install libssl-dev)
-- cpr (with curl) (TODO)
 
 Compile/Install
   1. git clone https://github.com/WolverinDEV/NativeCord.git<br>
   2. cd NativeCord<br>
-  3. cmake .<br>
-  4. make<br>
-  5. cd .. && mkdir nbungee<br>
-  6. cp NativeCord/NativeCord nbungee/<br>
-  7. Redy to launch NativeCord. Run it with ./NativeCord<br>
+  3. git submodule update --init --recursive
+  4. go int lib and install cpr & yaml
+  5. cmake .<br>
+  6. make<br>
+  7. cd .. && mkdir nbungee<br>
+  8. cp NativeCord/NativeCord nbungee/<br>
+  9. Redy to launch NativeCord. Run it with ./NativeCord<br>
 
+Install libs:
+  cpr: 
+    1. cmake . 
+    2. make
+    3. make install
+  yaml:
+    1. make
+    2. make install
+    
 TODO List:
 - Implement ip_uuid_forward [DONE]
 - Implement online mode [DONE]
