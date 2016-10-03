@@ -1,0 +1,3 @@
+[submodule "libs/cpr"]
+	path = libs/cpr
+	url = https://github.com/WolverinDEV/cpr.git

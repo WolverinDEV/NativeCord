@@ -1,0 +1,14 @@
+//
+// Created by wolverindev on 03.10.16.
+//
+
+#ifndef NATIVECORD_CXXPLUGINMANAGERIMPL_H
+#define NATIVECORD_CXXPLUGINMANAGERIMPL_H
+
+
+class CXXPluginManagerImpl {
+
+};
+
+
+#endif //NATIVECORD_CXXPLUGINMANAGERIMPL_H
