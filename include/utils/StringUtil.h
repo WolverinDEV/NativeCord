@@ -16,12 +16,16 @@ using namespace std;
 
 class StringUtils {
     public:
-        static void split(const string &s, char delim, vector<string> &elems) {
-            stringstream ss(s);
-            string item;
-            while (getline(ss, item, delim)) {
-                elems.push_back(item);
+        static void split(const string &s, string delim, vector<string> &elems) {
+            auto start = 0U;
+            auto end = s.find(delim);
+            while (end != std::string::npos)
+            {
+                elems.push_back(s.substr(start, end - start));
+                start = end + delim.length();
+                end = s.find(delim, start);
             }
+            elems.push_back(s.substr(start, end - start));
         }
 
         static string replaceAll(std::string str, const std::string& from, const std::string& to) {
@@ -39,10 +43,14 @@ class StringUtils {
             return _new;
         }
 
-        static vector<string> split(const string &s, char delim) {
+        static vector<string> split(const string &s, string delim) {
             vector<string> elems;
             split(s, delim, elems);
             return elems;
+        }
+
+        static bool contains(string& a, string b){
+            return a.find(b) != string::npos;
         }
 };
 

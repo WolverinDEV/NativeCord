@@ -6,12 +6,19 @@
 #include "../../include/utils/StringUtil.h"
 
 using namespace std;
+void printMessage(ostream& stream, string prefix, string& message){
+    vector<string> strings = StringUtils::split(message, "\n");
+    for(vector<string>::iterator it = strings.begin(); it != strings.end();it++) {
+        stream << prefix << *it << endl;
+    }
+}
+
 void logMessage(std::string message){
-    cout << "[LOG] " << message << endl;
+    printMessage(cout, "[LOG] ", message);
 }
 void logError(std::string message){
-    cout << "[ERROR] " << message << endl;
+    printMessage(cerr, "[ERROR] ", message);
 }
 void debugMessage(std::string message){
-    cout << "[DEBUG] " << message << endl;
+    printMessage(cout, "[DEBUG] ", message);
 }

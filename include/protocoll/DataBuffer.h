@@ -23,6 +23,9 @@ using namespace std;
 
 class Exception : public exception {
     public:
+        Exception(string message) : message(message.c_str()){
+
+        }
         Exception(const char *message) : message(message) {
         }
 

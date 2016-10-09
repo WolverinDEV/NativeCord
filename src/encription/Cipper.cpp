@@ -19,14 +19,11 @@ RSA* generateRND_RSA_Key(){
 
     int pub_len = BIO_pending(mem);
 
-    char* pub_key = (char*) malloc(pub_len + 1);
+    char* pub_key = (char*) malloc(pub_len-2); //-2 = \n
 
-    BIO_read(mem, pub_key, pub_len);
+    BIO_read(mem, pub_key, pub_len-2);
 
-    pub_key[pub_len] = '\0';
-    cout << pub_key << endl;
-
-    debugMessage("First: " + to_string((int) buffer[0] ) + "/" + to_string((int) buffer[1]));
+    debugMessage(string(pub_key, pub_len));
     return rsa;
 }
 

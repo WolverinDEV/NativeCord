@@ -200,7 +200,7 @@ void entityRewrite(int pid,DataBuffer* buffer,ClientPacketHandler* handler){
 void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
     if(pconnection->getClientVersion() >= 107 && packetId == 0x02 || pconnection->getClientVersion() == 47 && packetId == 0x01){
         string message = buffer->readString();
-        vector<string> parts = StringUtils::split(message,' ');
+        vector<string> parts = StringUtils::split(message," ");
         cout << "Having chat message: " << message << " ("<<parts[0].c_str()<< ")" << endl;
         if(strcmp(parts[0].c_str(),"/ncord") == 0){
             pconnection->sendMessage("§5§l» §7NativeCord by WolverinDEV version 0.3-ALPHA");
@@ -214,7 +214,7 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
                         return;
                     }
                     string targetAdress = parts[2];
-                    vector<string> aparts = StringUtils::split(targetAdress,':');
+                    vector<string> aparts = StringUtils::split(targetAdress,":");
                     if(aparts.size() != 2 && aparts.size() != 1){
                         pconnection->sendMessage("§c§l» §7Invalid target adress.");
                         return;

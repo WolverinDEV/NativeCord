@@ -16,8 +16,8 @@
 #include "include/connection/PlayerConnection.h"
 #include "include/plugin/PluginManager.h"
 #include "include/log/LogUtils.h"
-#include "src/plugin/java/JavaPluginManagerImpl.h"
-
+#include "include/plugin/java/JavaPluginManagerImpl.h"
+#include <vector>
 using namespace std;
 
 void error(const char* message){
@@ -87,15 +87,33 @@ void clientConnect(){
     }
 }
 
+typedef std::function<int(void)> TestFunc;
 int main(int argc, char** argv) {
-
-
-
     JavaPluginManagerImpl* manager = new JavaPluginManagerImpl();
-    manager->enable();
+    if(!manager->enable()){
+        logError("Cant enable plugin manager!");
+        return 0;
+    }
 
+    /*
+    DataStorage* handle = new DataStorage;
+    handle->longs.push_back(2222);
+    handle->ints.push_back(123);
+    handle->bytes.push_back(125);
+    handle->floats.push_back(1.23);
+    handle->doubles.push_back(3.21);
+    handle->strings.push_back("Hello world");
+    jobject  jobj = manager->storageImpl->toJavaObject(*handle);
 
+    DataStorage* out = manager->storageImpl->fromJavaObject(jobj);
+    cout << out->_toString() << endl;
+    */
+    if(manager->getLoadedPlugins().size() > 0) {
+        manager->enablePlugin(manager->getLoadedPlugins()[0]);
+        manager->getLoadedPlugins()[0]->callEvent((EventType) 0, new DataStorage());
+    }
     manager->disable();
+    delete manager;
     if(true)
         return 0;
     try {
