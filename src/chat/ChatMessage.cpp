@@ -11,8 +11,8 @@ int ChatMessage::count = 0;
 
 std::string ChatMessage::toString() {
     json out;
-    if(this->message != NULL)
-        out["text"] = (const char*) this->message;
+    if(!this->message.empty())
+        out["text"] = this->message;
     else
         out["text"] = "";
     if(this->bold)

@@ -3,11 +3,24 @@
 //
 
 #include "../../include/connection/PlayerConnection.h"
+#include "../../include/plugin/java/JavaPluginManagerImpl.h"
 #include "../../include/cryption/RSAUtil.h"
 #include "../../include/utils/Base64Utils.h"
 
 vector<PlayerConnection*> PlayerConnection::connections = vector<PlayerConnection*>(); //activeConnections
 vector<PlayerConnection*> PlayerConnection::activeConnections = vector<PlayerConnection*>();
+
+
+//TODO register / derwgister
+PlayerConnection::PlayerConnection(sockaddr_in *adress, Socket *socket)  : Connection(socket), adress(adress) {
+    PlayerConnection::connections.push_back(this);
+    if(JavaPluginManagerImpl::instance != nullptr){
+        this->nativeAddress = (uint64_t) this;
+        this->javaInstance = JavaPluginManagerImpl::instance->getRefelectManager()->createPlayerInstance(this);
+        JavaPluginManagerImpl::instance->getRefelectManager()->registerPlayer(this);
+    }
+    this->open = true;
+}
 
 PlayerConnection::~PlayerConnection(){
     delete (this->handshake);
@@ -17,6 +30,13 @@ PlayerConnection::~PlayerConnection(){
     delete (this->packetHandler);
     delete (this->adress);
     delete (this->profile);
+    if(this->lastDisconnectMessage != nullptr)
+        delete this->lastDisconnectMessage;
+    if(this->javaInstance != nullptr){
+        debugMessage("Deleting java reference");
+        JavaPluginManagerImpl::instance->getRefelectManager()->unregisterPlayer(this);
+        JavaPluginManagerImpl::instance->getEnv()->DeleteGlobalRef(this->javaInstance);
+    }
     for(std::vector<ServerConnection*>::iterator it = this->pendingConnections.begin(); it != this->pendingConnections.end(); ++it) {
         if ((*it)->getState() == ConnectionState::CLOSED) {
             //delete *it;
@@ -55,12 +75,16 @@ void PlayerConnection::setCurrentTargetConnection(ServerConnection *currentTarge
     PlayerConnection::currentTargetConnection = currentTargetConnection;
 }
 
-const string& PlayerConnection::getName() const {
+string& PlayerConnection::getName() {
     return name;
 }
 
 void PlayerConnection::setName(const string &name) {
     PlayerConnection::name = name;
+    if(JavaPluginManagerImpl::instance != nullptr){
+        jstring string = JavaPluginManagerImpl::instance->getEnv()->NewStringUTF(name.c_str());
+        JavaPluginManagerImpl::instance->getEnv()->SetObjectField(PlayerConnection::getJavaInstance(), JavaPluginManagerImpl::instance->getRefelectManager()->f_playerConnection_playerName, string);
+    }
 }
 
 void PlayerConnection::sendMessage(string message) {
@@ -86,9 +110,14 @@ void* connectMethode(void* parm){
         }
         else {
             if(cparms->getPlayerConnection()->getCurrentTargetConnection() == NULL || cparms->getPlayerConnection()->getCurrentTargetConnection()->getState() == ConnectionState::CLOSED){
-                if(cparms->getPlayerConnection()->getPendingConnection().empty())
-                    cparms->getPlayerConnection()->disconnect(new ChatMessage("§fNative-Proxy:\n§7Cant connect to target server and your last server kicked you."));
-                else
+                if(cparms->getPlayerConnection()->getPendingConnection().empty()) {
+                    ChatMessage* message = new ChatMessage("§fNative-Proxy:\n§7Cant connect to target server and your last server kicked you.\n§6Message: ");
+                    if(cparms->getPlayerConnection()->getLastDisconnectMessage() != nullptr)
+                        message->addSibling(cparms->getPlayerConnection()->getLastDisconnectMessage()->clone());
+                    else
+                        message->addSibling(new ChatMessage("No message"));
+                    cparms->getPlayerConnection()->disconnect(message);
+                }else
                     cparms->getPlayerConnection()->sendDimswitch();
                 return nullptr;
             }
@@ -129,6 +158,7 @@ void* runlater(void* conn){
 }
 
 void PlayerConnection::closeChannel() {
+    debugMessage("Close player connection!");
     if(!this->open)
         return;
     this->open = false;
@@ -206,4 +236,42 @@ string PlayerConnection::generateServerHash() {
 
 sockaddr_in *PlayerConnection::getAdress() const {
     return adress;
+}
+
+void PlayerConnection::setState(ConnectionState state) {
+    Connection::setState(state);
+    //TODO set java state!
+}
+
+PlayerConnection* getPlayerConnection(jobject player){
+    jlong playerId = JavaPluginManagerImpl::instance->getEnv()->GetLongField(player, JavaPluginManagerImpl::instance->getRefelectManager()->f_playerConnection_nativeAdress);
+    for(PlayerConnection* conn : PlayerConnection::connections)
+        if(conn->getJavaNativeAddress() == playerId)
+            return conn;
+    JavaPluginManagerImpl::instance->getEnv()->ThrowNew(JavaPluginManagerImpl::instance->getRefelectManager()->clazz_illegalArgumentException, "Cant find player connection!");
+    return nullptr;
+}
+
+void PlayerConnection::NATIVE_disconnect0(JNIEnv *env, jobject caller, jstring message) {
+    PlayerConnection* conn = getPlayerConnection(caller);
+    if(conn == nullptr || conn->getState() == ConnectionState::CLOSED)
+        return;
+    const char* cmassage = JavaPluginManagerImpl::instance->getEnv()->GetStringUTFChars(message, 0);
+    conn->disconnect(new ChatMessage(string(cmassage)));
+}
+
+jboolean PlayerConnection::NATIVE_sendPacket0(JNIEnv *env, jobject caller, jobject jstorage) {
+    PlayerConnection* conn = getPlayerConnection(caller);
+    if(conn == nullptr || conn->getState() == ConnectionState::CLOSED)
+        return 0;
+
+    DataStorage storage;
+    JavaPluginManagerImpl::instance->getStorageImpl()->fromJavaObject(jstorage, &storage);
+
+    DataBuffer buffer (storage.bytes.size()+DataBuffer::getVarIntSize(storage.ints[0]));
+    buffer.writeVarInt(storage.ints[0]);
+    for(vector<uint8_t>::iterator it = storage.bytes.begin(); it != storage.bytes.end(); it++)
+        buffer.writeByte(*it);
+    conn->writePacket(&buffer);
+    return 1;
 }

@@ -5,6 +5,13 @@
 #include "../../../include/plugin/java/JavaReflectManager.h"
 #include "../../../include/plugin/java/JavaPluginManagerImpl.h"
 
+bool trueError(bool boolean, string message){
+    if(boolean){
+        logError(message);
+    }
+    return boolean;
+}
+
 bool JavaReflectManager::loadFields() {
     JNIEnv* env = handle.getEnv();
 
@@ -15,10 +22,7 @@ bool JavaReflectManager::loadFields() {
     }
 
     clazz_pluginManager = env->FindClass("dev/wolveringer/nativecord/plugin/PluginManager");
-    if(clazz_pluginManager == NULL){
-        logError("Cant find class dev/wolveringer/nativecord/plugin/PluginManager!");
-        return 0;
-    }
+    if(trueError(clazz_pluginManager == NULL, "Cant find class dev/wolveringer/nativecord/plugin/PluginManager!")) return 0;
 
     f_pluginManagerImpl_handle = env->GetFieldID(clazz_pluginManagerImpl, "handle", "Ldev/wolveringer/nativecord/plugin/PluginManager;");
     if(f_pluginManagerImpl_handle == NULL){
@@ -92,6 +96,30 @@ bool JavaReflectManager::loadFields() {
     clazz_illegalArgumentException = env->FindClass("java/lang/IllegalArgumentException");
     m_object_toString = handle.getEnv()->GetMethodID(handle.getEnv()->FindClass("java/lang/Object"),"toString","()Ljava/lang/String;");
     m_methode_getName = handle.getEnv()->GetMethodID(handle.getEnv()->FindClass("java/lang/reflect/Method"),"getName","()Ljava/lang/String;");
+
+    clazz_playerConnection = env->FindClass("dev/wolveringer/nativecord/api/player/PlayerConnection");
+
+    f_playerConnection_static_players = env->GetStaticFieldID(clazz_playerConnection, "connections","Ljava/util/ArrayList;");
+    f_playerConnection_nativeAdress = env->GetFieldID(clazz_playerConnection, "nativeAdress", "J");
+    f_playerConnection_clientVersion = env->GetFieldID(clazz_playerConnection, "connectionVersion","I");
+    f_playerConnection_playerName = env->GetFieldID(clazz_playerConnection, "playerName","Ljava/lang/String;");
+    f_playerConnection_uuid = env->GetFieldID(clazz_playerConnection, "uuid", "Ljava/util/UUID;");
+
+    if(trueError(f_playerConnection_static_players == NULL ||
+                         f_playerConnection_clientVersion == NULL ||
+                         f_playerConnection_nativeAdress == NULL ||
+                         f_playerConnection_playerName == NULL ||
+                         f_playerConnection_uuid == NULL, "Cant find playerConnection fields! "+to_string(f_playerConnection_static_players == NULL)+"/"+to_string(f_playerConnection_clientVersion == NULL)+"/"+to_string(f_playerConnection_nativeAdress == NULL)+"/"+to_string(f_playerConnection_playerName == NULL)+"/"+to_string(f_playerConnection_uuid == NULL)+"/"+to_string(clazz_playerConnection == NULL))) return 0;
+
+    clazz_list = env->FindClass("java/util/ArrayList");
+    m_list_add = env->GetMethodID(clazz_list,"add","(Ljava/lang/Object;)Z");
+    m_list_remove = env->GetMethodID(clazz_list,"remove","(Ljava/lang/Object;)Z");
+
+    if(trueError(m_list_add == NULL || m_list_remove == NULL, "Some list fields are null!")) return 0;
+
+    clazz_event = env->FindClass("dev/wolveringer/nativecord/api/event/Event");
+    f_event_storage = env->GetFieldID(clazz_event, "storage","Ldev/wolveringer/nativecord/impl/DataStorage;");
+    if(trueError(clazz_event == NULL || f_event_storage == NULL, "Some event fields are null!")) return 0;
     return 1;
 }
 
@@ -106,3 +134,27 @@ std::string JavaReflectManager::methodeToString(jobject methode) {
     jstring out = (jstring) handle.getEnv()->CallObjectMethod(methode,m_methode_getName);
     return string(handle.getEnv()->GetStringUTFChars(out,&_true));
 }
+
+jobject JavaReflectManager::createPlayerInstance(PlayerConnection *connection) {
+    JNIEnv* env = handle.getEnv();
+    jobject playerInstance = env->AllocObject(clazz_playerConnection);
+
+    env->SetLongField(playerInstance, f_playerConnection_nativeAdress, (jlong) connection->getJavaNativeAddress());
+    //TODO set adress field!
+    return env->NewGlobalRef(playerInstance);
+}
+
+void JavaReflectManager::registerPlayer(PlayerConnection *connection) {
+    JNIEnv* env = handle.getEnv();
+    jobject list = env->GetStaticObjectField(clazz_playerConnection, f_playerConnection_static_players);
+    if(!env->CallBooleanMethod(list, m_list_add, connection->getJavaInstance())){
+        logError("Cant add player ("+to_string((uint64_t)connection)+") to existing player connections!");
+    }
+} //TODO
+void JavaReflectManager::unregisterPlayer(PlayerConnection *connection) {
+    JNIEnv* env = handle.getEnv();
+    jobject  list = env->GetStaticObjectField(clazz_playerConnection, f_playerConnection_static_players);
+    if(!env->CallBooleanMethod(list, m_list_remove, connection->getJavaInstance())){
+        logError("Cant remove player ("+to_string((uint64_t)connection)+")["+connection->getName()+"] from existing player connections!");
+    }
+} //TODO

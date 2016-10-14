@@ -37,12 +37,12 @@ class ChatMessage {
 
         ~ChatMessage() {
             if(hover != NULL)
-            delete hover;
+                delete hover;
             if(click != NULL)
-            delete click;
-            if(message != NULL)
-            free(message);
+                delete click;
             for (std::vector<ChatMessage *>::iterator it = this->cildren.begin(); it != this->cildren.end(); ++it) {
+                if(*it == NULL || *it == nullptr)
+                    continue;
                 delete *it;
             }
             count--;
@@ -113,10 +113,7 @@ class ChatMessage {
         }
 
         void setMessage(const string &m) {
-            if(message != NULL)
-                delete message;
-            message = (char*) malloc(m.length()+1);
-            memcpy(message,m.c_str(),m.length()+1);
+            message = m;
         }
 
         ActionEvent *getHoverAction() const {
@@ -134,8 +131,27 @@ class ChatMessage {
         void setClickAction(ActionEvent *click) {
             ChatMessage::click = click;
         }
+
+        ChatMessage* clone(){
+            ChatMessage* _new = new ChatMessage;
+            if(hover != NULL)
+                _new->hover = new ActionEvent(hover->getAction(),hover->getValue());
+            if(click != NULL)
+                _new->click = new ActionEvent(click->getAction(),click->getValue());
+            _new->message = string(message);
+            _new->random = random;
+            _new->bold = bold;
+            _new->strikethrough = strikethrough;
+            _new->italic = italic;
+            _new->underlined = underlined;
+
+            for(vector<ChatMessage*>::iterator it = cildren.begin();it != cildren.end();it++)
+                _new->cildren.push_back((*it)->clone());
+            return _new;
+        }
+
     private:
-        char* message = NULL;
+        string message;
         std::vector<ChatMessage *> cildren;
         ChatColor color = ChatColor::WHITE;
         ActionEvent *hover = NULL;

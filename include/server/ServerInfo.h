@@ -14,6 +14,7 @@
 #include "../config/Configuration.h"
 #include "../connection/Socket.h"
 #include "../utils/SocketUtil.h"
+#include "../log/LogUtils.h"
 
 using namespace std;
 class ServerInfo {
@@ -99,6 +100,7 @@ class ServerInfo {
          * @return See SocketUtil::createTCPSocket
          */
         Socket* createSocket(){
+            debugMessage("Creating socket "+host+":"+to_string(port));
             return SocketUtil::createTCPSocket(host.c_str(), port);
         }
 

@@ -9,8 +9,9 @@
 #include "PacketHandler.h"
 
 class ServerConnection;
-
+class PlayerConnection;
 class ServerPacketHandler : public PacketHandler {
+        friend class PlayerConnection;
     public:
         ServerPacketHandler(ServerConnection *connection) : PacketHandler((Connection *) connection), sconnection(connection) {
         }

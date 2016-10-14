@@ -44,7 +44,7 @@ class Connection {
             return state;
         }
 
-        void setState(ConnectionState state) {
+        virtual void setState(ConnectionState state) {
             this->state = state;
         }
 

@@ -8,6 +8,7 @@
 #include "DataBuffer.h"
 #include "../chat/ChatMessage.h"
 #include "../utils/StringUtil.h"
+#include "../log/LogUtils.h"
 #include <string>
 
 class Packet {
@@ -232,10 +233,16 @@ public:
 
     }
     ~PacketPlayDisconnect(){
-        delete(message);
+        if(message != nullptr && message != NULL)
+            delete(message);
     }
     virtual void read(int clientVersion, DataBuffer *buffer) override {
         string rmessage = buffer->readString();
+        if(rmessage.empty()){
+            debugMessage("Empty disconnect message. Message: '"+rmessage+"'");
+            message = nullptr;
+            return;
+        }
         json json = json::parse(rmessage);
         if(json == NULL)
             cout << "Cant serelize " << rmessage << endl;
@@ -254,7 +261,7 @@ public:
             return message;
         }
 private:
-    ChatMessage* message;
+    ChatMessage* message = nullptr;
 };
 
 class PacketThreadshold : public  Packet {

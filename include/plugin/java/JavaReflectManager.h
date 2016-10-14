@@ -6,6 +6,7 @@
 #define NATIVECORD_JAVAREFLECTMANAGER_H
 
 #include "jni.h"
+#include "../../connection/PlayerConnection.h"
 #include <string>
 
 class JavaPluginManagerImpl;
@@ -51,8 +52,29 @@ class JavaReflectManager {
 
         jmethodID m_methode_getName;
 
+        jclass clazz_playerConnection;
+        jfieldID f_playerConnection_static_players;
+        jfieldID f_playerConnection_nativeAdress;
+        jfieldID f_playerConnection_connectionState;
+        jfieldID f_playerConnection_clientVersion;
+        jfieldID f_playerConnection_playerName;
+        jfieldID f_playerConnection_uuid;
+        jfieldID f_playerConnection_adress;
+        //TODO server fields....
+
+        jclass clazz_list;
+        jmethodID m_list_add;
+        jmethodID m_list_remove;
+
+        jclass clazz_event;
+        jfieldID f_event_storage;
+
         std::string classToString(jobject clazz);
         std::string methodeToString(jobject methode);
+
+        jobject createPlayerInstance(PlayerConnection* handle);
+        void registerPlayer(PlayerConnection* connection);
+        void unregisterPlayer(PlayerConnection* connection);
     private:
         JavaPluginManagerImpl& handle;
 };

@@ -20,8 +20,6 @@ public:
     }
 
 private:
-    void forwardPacket(DataBuffer* buffer);
-
     void handlePacket(DataBuffer* buffer);
     void handlePacketHandschake(int packetId,DataBuffer* buffer);
     void handlePacketStatus(int packetId,DataBuffer* buffer);

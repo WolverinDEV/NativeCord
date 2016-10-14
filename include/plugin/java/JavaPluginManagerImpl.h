@@ -6,12 +6,14 @@
 #define NATIVECORD_JAVAPLUGINMANAGERIMPL_H
 
 #include "jni.h"
+#include <functional>
 #include "../PluginManager.h"
 #include "jni/DataStorageImpl.h"
 #include "JavaReflectManager.h"
 
 class JavaPluginManagerImpl : public PluginManager{
     public:
+        static pthread_key_t ENV_KEY;
         static JavaPluginManagerImpl* instance;
 
         ~JavaPluginManagerImpl();
@@ -29,17 +31,19 @@ class JavaPluginManagerImpl : public PluginManager{
 
         virtual bool disable() override;
 
+        virtual void callEvent(EventType type,DataStorage* storage);
+
         bool startJavaVM();
         bool registerNatives();
         bool stopJavaVM();
 
-        const DataStorageImpl* getStorageImpl() const;
+        DataStorageImpl* getStorageImpl();
 
         DataStorageImpl *storageImpl;
 
-        JNIEnv* getEnv(){
-            return env;
-        }
+        void runOperation(std::function<void(JNIEnv*)>);
+
+        JNIEnv* getEnv();
 
         bool flushException();
 

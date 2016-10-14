@@ -40,7 +40,7 @@ class Plugin {
             return pluginId;
         }
 
-        void registerEventListener(EventType event,string key,std::function<bool(DataStorage*)> function) throw(Exception){
+        void registerEventListener(EventType event,string key,std::function<bool(void*)> function) throw(Exception){
             if(eventListeners[event].count(key) > 0){
                 logError("Cant register "+key+" for event "+to_string(event)+". Alredy exist!");
                 throw new Exception("Cant register "+key+" for event "+to_string(event)+". Alredy exist!");
@@ -60,11 +60,11 @@ class Plugin {
             eventListeners.clear();
         }
 
-        void callEvent(EventType type, DataStorage* storage){
-            for(std::map<std::string, std::function<bool(DataStorage*)>>::iterator it = eventListeners[type].begin(); it != eventListeners[type].end(); it++){
+        void callEvent(EventType type, void* data){
+            for(std::map<std::string, std::function<bool(void*)>>::iterator it = eventListeners[type].begin(); it != eventListeners[type].end(); it++){
                 try{
                     uint64_t start = TimeUtils::getCurrentTimeMillis();
-                    it->second(storage);
+                    it->second(data);
                     uint64_t end = TimeUtils::getCurrentTimeMillis();
                     if(end-start > 300){
                         logError("Needed more that 300ms to run event "+EventHelper::EventTypeName[type]+" ("+to_string(end-start)+"ms)");
@@ -80,7 +80,7 @@ class Plugin {
             }
         }
     protected:
-        std::map<int, std::map<std::string ,std::function<bool(DataStorage*)>>> eventListeners;
+        std::map<int, std::map<std::string ,std::function<bool(void*)>>> eventListeners;
         uint64_t pluginId;
         bool enabled;
     private:

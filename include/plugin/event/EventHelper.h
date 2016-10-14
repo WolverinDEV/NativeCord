@@ -10,8 +10,11 @@
 #include "jni.h"
 #include "EventType.h"
 #include "../java/jni/DataStorage.h"
+#include "../../protocoll/Packets.h"
 
 class JavaPluginManagerImpl;
+class PlayerConnection;
+
 using namespace std;
 class EventHelper {
     public:
@@ -19,7 +22,9 @@ class EventHelper {
         static string JavaClassMapping[];
 
         static jobject createJavaInstance(JavaPluginManagerImpl *impl, EventType type, DataStorage *buffer);
+        static DataStorage& callEvent(EventType,DataStorage&);
 
+        static void handleHandshake(PlayerConnection*,PacketHandshake*);
     private:
         static std::map <string, jclass> mapping;
 };

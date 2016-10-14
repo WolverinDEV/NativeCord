@@ -156,10 +156,14 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
             PacketPlayDisconnect* disconnect = new PacketPlayDisconnect();
             disconnect->read(((ServerConnection *) connection)->getPlayerConnection()->getClientVersion(), buffer);
             ChatMessage* message = new ChatMessage("§6§l» §7You have been kicked.\n§6§l» §7Reason: §f");
-            message->addSibling(disconnect->getMessage());
+            if(disconnect->getMessage() != nullptr) {
+                ((ServerConnection*)connection)->getPlayerConnection()->setLastDisconnectMessage(disconnect->getMessage()->clone());
+                message->addSibling(disconnect->getMessage()->clone());
+            }else
+                message->addSibling(new ChatMessage("No reason!"));
             ((ServerConnection*)connection)->getPlayerConnection()->sendMessage(message);
             delete message;
-            delete disconnect;
+            //delete disconnect; //TODO Memory leak!
             ((ServerConnection*)connection)->closeChannel();
             return;
         }
@@ -208,6 +212,10 @@ void ServerPacketHandler::streamClosed() {
     if(((ServerConnection*)connection)->getPlayerConnection()->getCurrentTargetConnection() == NULL || ((ServerConnection*)connection)->getPlayerConnection()->getCurrentTargetConnection()->getState() == ConnectionState::CLOSED){
         if(((ServerConnection*)connection)->getPlayerConnection()->getFallbackServers().empty())
             ((ServerConnection*)connection)->getPlayerConnection()->disconnect(new ChatMessage("§fNative-Proxy:\n§cCant connect to target server."));
+        else
+        {
+            ((ServerConnection*)connection)->getPlayerConnection()->connectToNextFallback();
+        }
         return;
     }
 }

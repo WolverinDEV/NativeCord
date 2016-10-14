@@ -18,14 +18,12 @@
 #include "../../../include/utils/Base64Utils.h"
 #import "cpr/cpr.h"
 #include "../../../include/utils/HTTPUtil.h"
+#include "../../../include/plugin/event/EventHelper.h"
+#include "../../../include/plugin/java/JavaPluginManagerImpl.h"
 #include <typeinfo>
 
 // for convenience
 using json = nlohmann::json;
-
-void ClientPacketHandler::forwardPacket(DataBuffer *buffer) {
-    //connection->writePacket(buffer);
-}
 
 void ClientPacketHandler::streamClosed() {
     if (pconnection->getCurrentTargetConnection() != NULL)
@@ -52,6 +50,9 @@ void ClientPacketHandler::handlePacketHandschake(const int packetId, DataBuffer 
                     break;
             }
             cout << "Having handshake." << endl;
+            if(JavaPluginManagerImpl::instance != nullptr){
+                EventHelper::handleHandshake(this->pconnection, handshake);
+            }
             cout << "Version: " << handshake->getClientVersion() << endl;
             cout << "State:   " << handshake->getState() << endl;
             break;
@@ -104,8 +105,10 @@ void ClientPacketHandler::handlePacketStatus(int packetId, DataBuffer *buffer) {
 }
 
 void sendSuccessfullLoggedIn(PlayerConnection *pconnection){
-    if(pconnection->getProfile() == nullptr)
-        pconnection->setProfile(new GameProfile((string&) pconnection->getName(), UUIDUtils::randomUUID()));
+    if(pconnection->getProfile() == nullptr){
+        string offlineName = "OfflinePlayer:"+pconnection->getName();
+        pconnection->setProfile(new GameProfile(pconnection->getName(), UUIDUtils::getOfflineUUID(offlineName)));
+    }
 
     ServerInfo*  target;
     cout << "Player ["<<pconnection->getName()<<"] connecting" << endl;

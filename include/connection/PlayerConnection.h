@@ -19,16 +19,16 @@
 #include "../protocoll/ClientPacketHandler.h"
 #include "GameProfile.h"
 #include <vector>
+#include <jni.h>
 
 class PlayerConnection : public Connection {
     public:
+        friend class ServerConnection;
+
         static vector<PlayerConnection *> connections;
         static vector<PlayerConnection *> activeConnections;
 
-        PlayerConnection(sockaddr_in* adress, Socket *socket) : Connection(socket), adress(adress) {
-            PlayerConnection::connections.push_back(this);
-            this->open = true;
-        }
+        PlayerConnection(sockaddr_in* adress, Socket *socket);
 
         ~PlayerConnection();
 
@@ -41,6 +41,8 @@ class PlayerConnection : public Connection {
         void setHandshake(PacketHandshake *handshake) {
             PlayerConnection::handshake = handshake;
         }
+
+        virtual void setState(ConnectionState state) override;
 
         void sendMessage(string message);
 
@@ -60,7 +62,7 @@ class PlayerConnection : public Connection {
             return handshake->getClientVersion();
         }
 
-        const string &getName() const;
+        string &getName();
 
         void setName(const string &name);
 
@@ -146,6 +148,24 @@ class PlayerConnection : public Connection {
 
         sockaddr_in *getAdress() const;
 
+        int getJavaNativeAddress(){
+            return nativeAddress;
+        }
+
+        jobject getJavaInstance(){
+            return javaInstance;
+        }
+
+        ChatMessage *getLastDisconnectMessage() const {
+            return lastDisconnectMessage;
+        }
+
+        void setLastDisconnectMessage(ChatMessage *lastDisconnectMessage) {
+            PlayerConnection::lastDisconnectMessage = lastDisconnectMessage;
+        }
+
+        static jboolean NATIVE_sendPacket0(JNIEnv* env, jobject caller, jobject storage);
+        static void NATIVE_disconnect0(JNIEnv* env, jobject caller, jstring message);
     private:
         bool dimswitch = false;
         int playerId = -1;
@@ -160,6 +180,12 @@ class PlayerConnection : public Connection {
         ScoreboardManager *scoreManager = new ScoreboardManager(this);
         vector<ServerInfo*> fallbackServers = ServerInfo::buildDefaultServerQueue();
         GameProfile* profile = nullptr;
+
+        ChatMessage* lastDisconnectMessage = nullptr;
+
+        //Java instance
+        jobject javaInstance = nullptr;
+        uint64_t nativeAddress = -1;
 };
 
 

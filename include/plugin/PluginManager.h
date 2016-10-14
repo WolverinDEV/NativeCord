@@ -20,6 +20,8 @@ class PluginManager {
 
         virtual bool enablePlugin(Plugin* plugin) = 0;
         virtual bool disablePlugin(Plugin* plugin) = 0;
+
+        virtual void callEvent(EventType type,DataStorage* storage) = 0;
 };
 
 

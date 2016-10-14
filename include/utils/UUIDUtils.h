@@ -9,6 +9,10 @@
 #include <string>
 #include <uuid/uuid.h>
 
+#include <openssl/conf.h>
+#include <openssl/err.h>
+#include <openssl/md5.h>
+
 using namespace std;
 class UUIDUtils {
 public:
@@ -28,6 +32,33 @@ public:
                 //8-4-4-4-12
                 return getUUIDFromString(getUUIDString36(suuid));
             }
+        }
+
+        /*
+         *
+         */
+        static uuid_t& getOfflineUUID(string& name){
+
+            MD5_CTX ctx;
+            MD5_Init(&ctx);
+            MD5_Update(&ctx, (unsigned char*) name.c_str(), name.size());
+
+            unsigned char* uuid = new unsigned char [16];
+            bzero(uuid, 16);
+
+            MD5_Final((unsigned char*) uuid, &ctx);
+
+            uuid[6]  &= 0x0f;  /* clear version        */
+            uuid[6]  |= 0x30;  /* set to version 3     */
+            uuid[8]  = uuid[8] & 0x3f;  /* clear variant        */
+            uuid[8]  = uuid[8] | 0x80;  /* set to IETF variant  */
+
+
+            //uuid_t* tyoe = (uuid_t*) new uuid_t;
+            //memcpy(tyoe, out, 16);
+            //*tyoe = {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+            //uuid_t& uout = (uuid_t&) out;
+            return *((uuid_t*) uuid);
         }
 
         static string getUUIDString36(string str32){

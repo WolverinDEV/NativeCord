@@ -88,6 +88,20 @@ void clientConnect(){
 }
 
 typedef std::function<int(void)> TestFunc;
+
+pthread_t threadHandle;
+void exitNativeCoord(){
+    JavaPluginManagerImpl::instance->disable();
+    PlayerConnection::connections.clear();
+    PlayerConnection::activeConnections.clear();
+    pthread_cancel(threadHandle);
+    //pthread_join(threadHandle, NULL);
+    ServerInfo::reset();
+
+    cout << "Buffers: " << DataBuffer::creations << endl;
+    cout << "Chat instances: " << ChatMessage::count << endl;
+}
+
 int main(int argc, char** argv) {
     JavaPluginManagerImpl* manager = new JavaPluginManagerImpl();
     if(!manager->enable()){
@@ -110,12 +124,12 @@ int main(int argc, char** argv) {
     */
     if(manager->getLoadedPlugins().size() > 0) {
         manager->enablePlugin(manager->getLoadedPlugins()[0]);
-        manager->getLoadedPlugins()[0]->callEvent((EventType) 0, new DataStorage());
+        DataStorage storage;
+        manager->callEvent(EventType::PLAYER_HANDSCHAKE_EVENT, &storage);
     }
-    manager->disable();
-    delete manager;
-    if(true)
-        return 0;
+    //manager->disable();
+    //delete manager;
+
     try {
         string filename = string("config.yml");
         Configuration::instance = new Configuration(filename);
@@ -135,7 +149,6 @@ int main(int argc, char** argv) {
         }
         ServerInfo::loadServers();
         logMessage("Configuration successfull loaded.");
-        pthread_t threadHandle;
         pthread_create(&threadHandle,NULL,(void* (*)(void*)) &clientConnect,NULL);
         //pthread_join(threadHandle,NULL);
 
@@ -149,17 +162,10 @@ int main(int argc, char** argv) {
                 vector<PlayerConnection*> ccopy(PlayerConnection::connections);
                 for(vector<PlayerConnection*>::iterator it =ccopy.begin(); it != ccopy.end();it++)
                     (*it)->disconnect(new ChatMessage("§cNativecord is shuting down."));
-                break;
+                exitNativeCoord();
+                return 0;
             }
         }
-        PlayerConnection::connections.clear();
-        PlayerConnection::activeConnections.clear();
-        pthread_cancel(threadHandle);
-        pthread_join(threadHandle, NULL);
-
-        ServerInfo::reset();
-        cout << "BUffers: " << DataBuffer::creations << endl;
-        cout << "Chat instances: " << ChatMessage::count << endl;
     }catch(Exception* ex){
         cout << "Exception: " << ex->what() << endl;
     }
