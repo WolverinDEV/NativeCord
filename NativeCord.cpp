@@ -87,19 +87,18 @@ void clientConnect(){
     }
 }
 
-typedef std::function<int(void)> TestFunc;
-
 pthread_t threadHandle;
 void exitNativeCoord(){
-    JavaPluginManagerImpl::instance->disable();
     PlayerConnection::connections.clear();
     PlayerConnection::activeConnections.clear();
     pthread_cancel(threadHandle);
-    //pthread_join(threadHandle, NULL);
+    pthread_join(threadHandle, NULL);
     ServerInfo::reset();
 
     cout << "Buffers: " << DataBuffer::creations << endl;
     cout << "Chat instances: " << ChatMessage::count << endl;
+
+    JavaPluginManagerImpl::instance->disable(); // Close the process
 }
 
 int main(int argc, char** argv) {
@@ -162,6 +161,7 @@ int main(int argc, char** argv) {
                 vector<PlayerConnection*> ccopy(PlayerConnection::connections);
                 for(vector<PlayerConnection*>::iterator it =ccopy.begin(); it != ccopy.end();it++)
                     (*it)->disconnect(new ChatMessage("§cNativecord is shuting down."));
+                cout << "Exit nativecord!" << endl;
                 exitNativeCoord();
                 return 0;
             }

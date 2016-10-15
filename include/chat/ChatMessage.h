@@ -20,13 +20,14 @@ using json = nlohmann::json ;
 class ChatMessage {
     public:
         static string DEFAULT;
-        static int count;
+        static uint32_t count;
 
-        ChatMessage() {}
-
-        ChatMessage(std::string message) {
-            setMessage(message);
+        ChatMessage() {
             count++;
+        }
+
+        ChatMessage(std::string message) : ChatMessage() {
+            setMessage(message);
         }
 
         ChatMessage(const char *message) : ChatMessage(string(message)) {

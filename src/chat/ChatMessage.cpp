@@ -7,7 +7,7 @@
 using namespace std;
 
 string ChatMessage::DEFAULT = string("");
-int ChatMessage::count = 0;
+uint32_t ChatMessage::count = 0;
 
 std::string ChatMessage::toString() {
     json out;

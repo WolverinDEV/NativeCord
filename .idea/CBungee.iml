@@ -140,7 +140,6 @@
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_cb_rea.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_writeout.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_panykey.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/slist_wc.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_cb_rea.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_writeout.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_cb_prg.h" isTestSource="false" />
@@ -161,9 +160,10 @@
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_getparam.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_setopt.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_strdup.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_setopt.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/slist_wc.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_xattr.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/slist_wc.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_setopt.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/libcurl.pc.in" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/md5.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/ldap.c" isTestSource="false" />
@@ -240,6 +240,7 @@
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/select.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/amigaos.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/rawstr.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/select.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/strequal.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/curl_memrchr.c" isTestSource="false" />
@@ -338,7 +339,6 @@
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/curl_des.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/curl_setup_once.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/curl_rtmp.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/cookie.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/curl_ldap.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/smb.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/pop3.h" isTestSource="false" />
@@ -371,7 +371,7 @@
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/hostsyn.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/curl_md5.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/http_chunks.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/rawstr.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/cookie.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/krb5.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/getinfo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/formdata.c" isTestSource="false" />

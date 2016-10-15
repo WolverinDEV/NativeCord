@@ -163,7 +163,7 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
                 message->addSibling(new ChatMessage("No reason!"));
             ((ServerConnection*)connection)->getPlayerConnection()->sendMessage(message);
             delete message;
-            //delete disconnect; //TODO Memory leak!
+            delete disconnect; //TODO Memory leak!
             ((ServerConnection*)connection)->closeChannel();
             return;
         }

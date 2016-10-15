@@ -49,6 +49,7 @@ void ClientPacketHandler::handlePacketHandschake(const int packetId, DataBuffer 
                     cout << "Cant find state: " << handshake->getState() << endl;
                     break;
             }
+
             cout << "Having handshake." << endl;
             if(JavaPluginManagerImpl::instance != nullptr){
                 EventHelper::handleHandshake(this->pconnection, handshake);

@@ -122,6 +122,11 @@ JNIEnv* JavaPluginManagerImpl::getEnv() {
 }
 
 bool JavaPluginManagerImpl::stopJavaVM() {
+    JNIEnv* env = getEnv();
+    jclass clazz_system = env->FindClass("java/lang/System");
+    jmethodID m_exit = env->GetStaticMethodID(clazz_system,"exit","(I)V");
+    env->CallStaticVoidMethod(clazz_system, m_exit, 0);
+    debugMessage("Detroy jvm after System.exit(1)");
     this->jvm->DestroyJavaVM();
     return 1;
 }
