@@ -26,13 +26,13 @@ void DataStorageImpl::fromJavaObject(jobject object, DataStorage *storage) {
 
     length = handle.getEnv()->GetIntField(object, ref->f_datastorage_longLength);
     if(length > 0){
-        long* longs = handle.getEnv()->GetLongArrayElements((jlongArray) handle.getEnv()->GetObjectField(object, ref->f_datastorage_longs), &_true);
+        jlong * longs = handle.getEnv()->GetLongArrayElements((jlongArray) handle.getEnv()->GetObjectField(object, ref->f_datastorage_longs),&_true);
         storage->longs = vector<uint64_t>(longs, &longs[length]);
     }
 
     length = handle.getEnv()->GetIntField(object, ref->f_datastorage_intLength);
     if(length > 0){
-        int* ints = handle.getEnv()->GetIntArrayElements((jintArray) handle.getEnv()->GetObjectField(object, ref->f_datastorage_ints), &_true);
+        jint * ints = handle.getEnv()->GetIntArrayElements((jintArray) handle.getEnv()->GetObjectField(object, ref->f_datastorage_ints), &_true);
         storage->ints = vector<uint32_t>(ints, &ints[length]);
     }
 
@@ -70,14 +70,14 @@ jobject DataStorageImpl::toJavaObject(DataStorage& storage){
 
     if(storage.longs.size() > 0) {
         jlongArray array = handle.getEnv()->NewLongArray(storage.longs.size());
-        handle.getEnv()->SetLongArrayRegion(array, 0, storage.longs.size(), (const long*) &(storage.longs[0]));
+        handle.getEnv()->SetLongArrayRegion(array, 0, storage.longs.size(), (const jlong *) &(storage.longs[0]));
         handle.getEnv()->SetObjectField(clazzInstance, ref->f_datastorage_longs, array);
         handle.getEnv()->SetIntField(clazzInstance, ref->f_datastorage_longLength, storage.longs.size());
     }
 
     if(storage.ints.size() > 0) {
         jintArray array = handle.getEnv()->NewIntArray(storage.ints.size());
-        handle.getEnv()->SetIntArrayRegion(array, 0, storage.ints.size(), (const int*) &(storage.ints[0]));
+        handle.getEnv()->SetIntArrayRegion(array, 0, storage.ints.size(), (const jint *) &(storage.ints[0]));
         handle.getEnv()->SetObjectField(clazzInstance, ref->f_datastorage_ints, array);
         handle.getEnv()->SetIntField(clazzInstance, ref->f_datastorage_intLength, storage.ints.size());
     }

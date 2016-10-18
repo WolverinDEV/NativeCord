@@ -6,6 +6,7 @@ message("Project name: ${PROJECT_NAME}")
 message("cpr include path: ${CPR_INCLUDE_DIRS}")
 message("cpr libs: ${CPR_LIBRARIES}")
 message("curl libs: ${CURL_LIBRARIES}")
+message("System arch: ${CMAKE_OSX_ARCHITECTURES}")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-pointer-arith -Wno-deprecated -Wno-return-local-addr -Wno-write-strings")
 
@@ -29,7 +30,7 @@ add_subdirectory(libs/cpr)
 include_directories(/usr/lib/jvm/java-8-oracle/include/)
 include_directories(/usr/lib/jvm/java-8-oracle/include/linux)
 
-link_libraries(/usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so)
+link_libraries(/usr/lib/jvm/java-8-oracle/jre/lib/i386/server/libjvm.so) #TODO detect automatic
 #####################################################################
 
 ################### 32 Bit [DONT WORK :/] ###########################
