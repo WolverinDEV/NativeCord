@@ -49,9 +49,9 @@ class DataBuffer {
 
         DataBuffer(const char *buffer, int bufferLength,bool copy);
 
-        ~DataBuffer();
+        virtual ~DataBuffer();
 
-        virtual void read(const char *buffer, int length);
+        virtual int read(const char *buffer, int length);
 
         virtual char read();
 

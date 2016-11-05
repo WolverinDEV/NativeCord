@@ -6,7 +6,6 @@
 #define CBUNGEE_STREAMEDDATABUFFER_H
 
 
-#include "DataBuffer.h"
 #include "../connection/Socket.h"
 #include "../cryption/Cipper.h"
 
@@ -35,7 +34,7 @@ class StreamedDataBuffer : public DataBuffer {
             delete encodeCipper;
         }
 
-        void read(const char *buffer, int length) override;
+        int read(const char *buffer, int length) override;
 
         char read() override;
 

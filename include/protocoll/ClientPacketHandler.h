@@ -11,6 +11,7 @@
 class PlayerConnection;
 class ClientPacketHandler : public PacketHandler {
 public:
+        friend class PlayerConnection;
     ClientPacketHandler(PlayerConnection* connection) : PacketHandler((Connection*) connection){
         this->pconnection = connection;
     }
@@ -26,8 +27,6 @@ private:
     void handlePacketLogin(int packetId,DataBuffer *buffer);
     void handlePacketPlay(int packetId,DataBuffer *buffer);
 
-protected:
-    virtual void streamClosed() override;
 
 private:
     PlayerConnection* pconnection;

@@ -11,6 +11,7 @@
 #include "EventType.h"
 #include "../java/jni/DataStorage.h"
 #include "../../protocoll/Packets.h"
+#include "../../server/ServerInfo.h"
 
 class JavaPluginManagerImpl;
 class PlayerConnection;
@@ -25,6 +26,8 @@ class EventHelper {
         static DataStorage& callEvent(EventType,DataStorage&);
 
         static void handleHandshake(PlayerConnection*,PacketHandshake*);
+        static ServerInfo* callServerConnectEvent(PlayerConnection*,ServerInfo*);
+        static void callServerConnectedEvent(PlayerConnection*);
     private:
         static std::map <string, jclass> mapping;
 };

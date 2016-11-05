@@ -3,12 +3,11 @@
 //
 
 #include "../../include/connection/ServerConnection.h"
-
 #include "../../include/connection/PlayerConnection.h"
 #include <arpa/inet.h>
 
 void ServerConnection::startConnect() {
-    ((ServerPacketHandler*)phandler)->startReader();
+    startReaderTask();
     if(Configuration::instance->config["network"]["ip_uuid_forward"].as<bool>()){
         //https://github.com/SpigotMC/BungeeCord/blob/master/proxy/src/main/java/net/md_5/bungee/ServerConnector.java#L91-L97
         PacketHandshake* handshake = new PacketHandshake();
@@ -46,4 +45,34 @@ void ServerConnection::startConnect() {
 
 ServerInfo *ServerConnection::getServerInfo() const {
     return serverInfo;
+}
+
+void ServerConnection::handleConnectionClosed() {
+    if(getPlayerConnection()->getState() == ConnectionState::LOGIN) {
+        getPlayerConnection()->connectToNextFallback();
+    }
+    if(getPlayerConnection()->getCurrentTargetConnection() == nullptr && getPlayerConnection()->getCurrentTargetConnection()->getState() != ConnectionState::CLOSED){
+        if(getPlayerConnection()->getFallbackServers().empty())
+            getPlayerConnection()->disconnect(new ChatMessage("§fNative-Proxy:\n§cCant connect to target server."));
+        else
+        {
+            getPlayerConnection()->connectToNextFallback();
+        }
+        return;
+    }
+}
+
+void ServerConnection::handleException(Exception *ex) {
+    if(getState() == ConnectionState::CLOSED || getState() == ConnectionState::CLOSED)
+        return;
+    if(getState() == ConnectionState::LOGIN){
+        if(getPlayerConnection()->getFallbackServers().empty())
+            disconnect(new ChatMessage(string("§fNative-Proxy:\n§cAn exception was thrown.\n§l» §7Message: §5")+ex->what()));
+    } else {
+        getPlayerConnection()->sendMessage(string("§c§l» §7An exception was thrown.\n§6§l» §7Message: §f")+ex->what());
+    }
+}
+
+void ServerConnection::handlePacket(DataBuffer *data) {
+    this->phandler->handlePacket(data);
 }

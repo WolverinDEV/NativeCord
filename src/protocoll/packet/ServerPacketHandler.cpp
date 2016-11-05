@@ -127,7 +127,6 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
         }
         ((ServerConnection*)connection)->setPlayerId(playerId);
         cout << "PacketID " << packetId << endl;
-        cout << "Id: " << this->running << endl;
         cout << "Your entity id: " << ((ServerConnection*)connection)->getPlayerConnection()->getPlayerId() << endl;
         cout << "Server entity id: " << playerId << endl;
         if(del) {
@@ -181,17 +180,6 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
 
 void ServerPacketHandler::handlePacketStatus(int packetId, DataBuffer *buffer) {}
 
-void ServerPacketHandler::onException(Exception* ex) {
-    if(((ServerConnection *) connection)->getPlayerConnection()->getState() == ConnectionState::CLOSED || ((ServerConnection *) connection)->getState() == ConnectionState::CLOSED)
-        return;
-    if(((ServerConnection *) connection)->getPlayerConnection()->getState() == ConnectionState::LOGIN){
-        if(((ServerConnection *) connection)->getPlayerConnection()->getFallbackServers().empty())
-            ((ServerConnection *) connection)->getPlayerConnection()->disconnect(new ChatMessage(string("§fNative-Proxy:\n§cAn exception was thrown.\n§l» §7Message: §5")+ex->what()));
-    } else {
-        ((ServerConnection *) connection)->getPlayerConnection()->sendMessage(string("§c§l» §7An exception was thrown.\n§6§l» §7Message: §f")+ex->what());
-    }
-}
-
 void ServerPacketHandler::removeFromPending() {
     vector<ServerConnection*> temp;
     vector<ServerConnection*> v = (((ServerConnection*)connection)->getPlayerConnection()->getPendingConnection());
@@ -201,21 +189,5 @@ void ServerPacketHandler::removeFromPending() {
     }
     for (std::vector<ServerConnection *>::iterator it = temp.begin(); it != temp.end(); ++it) {
         v.erase(std::find(v.begin(),v.end(),*it));
-    }
-}
-
-void ServerPacketHandler::streamClosed() {
-    PacketHandler::streamClosed();
-    if(((ServerConnection*)connection)->getPlayerConnection()->getState() == ConnectionState::LOGIN) {
-        ((ServerConnection *) connection)->getPlayerConnection()->connectToNextFallback();
-    }
-    if(((ServerConnection*)connection)->getPlayerConnection()->getCurrentTargetConnection() == NULL || ((ServerConnection*)connection)->getPlayerConnection()->getCurrentTargetConnection()->getState() == ConnectionState::CLOSED){
-        if(((ServerConnection*)connection)->getPlayerConnection()->getFallbackServers().empty())
-            ((ServerConnection*)connection)->getPlayerConnection()->disconnect(new ChatMessage("§fNative-Proxy:\n§cCant connect to target server."));
-        else
-        {
-            ((ServerConnection*)connection)->getPlayerConnection()->connectToNextFallback();
-        }
-        return;
     }
 }

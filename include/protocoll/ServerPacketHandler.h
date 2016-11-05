@@ -12,6 +12,7 @@ class ServerConnection;
 class PlayerConnection;
 class ServerPacketHandler : public PacketHandler {
         friend class PlayerConnection;
+        friend class ServerConnection;
     public:
         ServerPacketHandler(ServerConnection *connection) : PacketHandler((Connection *) connection), sconnection(connection) {
         }
@@ -19,17 +20,6 @@ class ServerPacketHandler : public PacketHandler {
         void removeFromPending();
 
     private:
-    protected:
-        virtual void onException(Exception *ex) override;
-
-    private:
-    protected:
-        virtual void streamClosed() override;
-
-    private:
-
-        void forwardPacket(DataBuffer *buffer);
-
         void handlePacket(DataBuffer *buffer);
 
         void handlePacketHandschake(int packetId, DataBuffer *buffer) override;

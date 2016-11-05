@@ -1,7 +1,6 @@
 //
 // Created by wolverindev on 23.08.16.
 //
-
 #include "../../../include/protocoll/StreamedDataBuffer.h"
 
 char StreamedDataBuffer::read() {
@@ -10,19 +9,28 @@ char StreamedDataBuffer::read() {
     return buffer;
 }
 
-void StreamedDataBuffer::read(const char *buffer, int length) {
+int StreamedDataBuffer::read(const char *buffer, int length)/* throw(Exception) */{
+    if(socket == nullptr || !socket->isConnected())
+        throw StreamClosedException();
+    if(length <= 0){
+        logError("Try to read with length 0!");
+        return 0;
+    }
     int readedBytes = -2;
-    if(encodeCipper != NULL){
+    if(encodeCipper != nullptr){
         char* bbuffer = (char*) malloc(length);
         readedBytes = socket->readBytes((char*) bbuffer,length);
         encodeCipper->cipher(bbuffer,length,(char*) buffer,false);
         free(bbuffer);
     }
     else readedBytes = socket->readBytes((char*) buffer,length);
+    if(readedBytes != length)
+        throw Exception("Didnt readed all bytes: "+to_string(readedBytes)+" of "+to_string(length));
     if(readedBytes == -1)
-        throw new StreamClosedException();
+        throw StreamClosedException();
     if(readedBytes == 0)
-        throw  new OEFException();
+        throw OEFException();
+    return readedBytes;
 }
 
 void StreamedDataBuffer::write(char byte) {

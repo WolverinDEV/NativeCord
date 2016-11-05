@@ -30,7 +30,7 @@ add_subdirectory(libs/cpr)
 include_directories(/usr/lib/jvm/java-8-oracle/include/)
 include_directories(/usr/lib/jvm/java-8-oracle/include/linux)
 
-link_libraries(/usr/lib/jvm/java-8-oracle/jre/lib/i386/server/libjvm.so) #TODO detect automatic
+link_libraries(/usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so) #TODO detect automatic
 #####################################################################
 
 ################### 32 Bit [DONT WORK :/] ###########################

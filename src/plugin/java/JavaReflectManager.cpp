@@ -111,6 +111,16 @@ bool JavaReflectManager::loadFields() {
                          f_playerConnection_playerName == NULL ||
                          f_playerConnection_uuid == NULL, "Cant find playerConnection fields! "+to_string(f_playerConnection_static_players == NULL)+"/"+to_string(f_playerConnection_clientVersion == NULL)+"/"+to_string(f_playerConnection_nativeAdress == NULL)+"/"+to_string(f_playerConnection_playerName == NULL)+"/"+to_string(f_playerConnection_uuid == NULL)+"/"+to_string(clazz_playerConnection == NULL))) return 0;
 
+    clazz_server = env->FindClass("dev/wolveringer/nativecord/api/server/ServerInfo");
+    f_server_registeredServers = env->GetStaticFieldID(clazz_server, "registeredServers", "Ljava/util/List;");
+    f_server_name = env->GetFieldID(clazz_server, "name", "Ljava/lang/String;");
+    f_server_host = env->GetFieldID(clazz_server, "host", "Ljava/lang/String;");
+    f_server_port = env->GetFieldID(clazz_server, "port", "I");
+
+    if(trueError(clazz_server == NULL || f_server_registeredServers == NULL ||
+                         f_server_name == NULL || f_server_host == NULL || f_server_port == NULL, "Cant find server classes/methods "))
+        return 0;
+
     clazz_list = env->FindClass("java/util/ArrayList");
     m_list_add = env->GetMethodID(clazz_list,"add","(Ljava/lang/Object;)Z");
     m_list_remove = env->GetMethodID(clazz_list,"remove","(Ljava/lang/Object;)Z");

@@ -18,12 +18,15 @@
 #include "../server/ScoreboardManager.h"
 #include "../protocoll/ClientPacketHandler.h"
 #include "GameProfile.h"
+#include "../plugin/event/EventType.h"
+#include "../plugin/event/EventHelper.h"
 #include <vector>
 #include <jni.h>
 
 class PlayerConnection : public Connection {
     public:
         friend class ServerConnection;
+        friend class ServerPacketHandler;
 
         static vector<PlayerConnection *> connections;
         static vector<PlayerConnection *> activeConnections;
@@ -51,8 +54,6 @@ class PlayerConnection : public Connection {
         void connect(ServerInfo *target,bool sync = false);
 
         ServerConnection *getCurrentTargetConnection() const;
-
-        void setCurrentTargetConnection(ServerConnection *currentTargetConnection);
 
         int getClientVersion() {
             if (nullptr == handshake) {
@@ -89,7 +90,7 @@ class PlayerConnection : public Connection {
         virtual void closeChannel() override;
 
         void start(){
-            packetHandler->startReader();
+            startReaderTask();
         }
 
         const vector<ServerInfo *> getFallbackServers() const;
@@ -164,9 +165,20 @@ class PlayerConnection : public Connection {
             PlayerConnection::lastDisconnectMessage = lastDisconnectMessage;
         }
 
+    protected:
+        virtual void handleConnectionClosed() override;
+
+        virtual void handleException(Exception *data) override;
+
+        virtual void handlePacket(DataBuffer *data) override;
+
+    public:
+
         static jboolean NATIVE_sendPacket0(JNIEnv* env, jobject caller, jobject storage);
         static void NATIVE_disconnect0(JNIEnv* env, jobject caller, jstring message);
     private:
+        void setCurrentTargetConnection(ServerConnection *currentTargetConnection);
+
         bool dimswitch = false;
         int playerId = -1;
         string name;

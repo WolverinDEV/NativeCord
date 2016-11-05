@@ -27,6 +27,7 @@ class Configuration {
         }
 
         void loadConfig();
+        void saveConfig();
 
         bool isValid() {
             return errors.empty();

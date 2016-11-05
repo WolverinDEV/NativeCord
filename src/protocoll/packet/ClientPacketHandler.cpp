@@ -25,11 +25,6 @@
 // for convenience
 using json = nlohmann::json;
 
-void ClientPacketHandler::streamClosed() {
-    if (pconnection->getCurrentTargetConnection() != NULL)
-        pconnection->getCurrentTargetConnection()->disconnect(NULL);
-}
-
 void ClientPacketHandler::handlePacketHandschake(const int packetId, DataBuffer *buffer) {
     PacketHandshake* handshake;
     switch (packetId) {
@@ -94,7 +89,7 @@ void ClientPacketHandler::handlePacketStatus(int packetId, DataBuffer *buffer) {
             time = buffer->readLong();
             rbuffer = new DataBuffer();
             rbuffer->writeVarInt(0x01);
-            rbuffer->writeLong(TimeUtils::getCurrentTimeMillis());
+            rbuffer->writeLong(time);
             connection->writePacket(rbuffer);
             delete rbuffer;
             break;
@@ -231,7 +226,7 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
                     }
                     ServerInfo* target = ServerInfo::getServerInfo(host.c_str(),port);
                     if(target == NULL){
-                        target = ServerInfo::createTempServerInfo(host,port);
+                        target = ServerInfo::createTempServerInfo(host.append(to_string(port)), host,port);
                     }
                     pconnection->connect(target, false);
 

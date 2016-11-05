@@ -2,8 +2,9 @@
 // Created by wolverindev on 10.10.16.
 //
 
-#include "../../../include/plugin/event/EventHelper.h"
 #include "../../../include/plugin/java/JavaPluginManagerImpl.h"
+#include "../../../include/plugin/event/EventHelper.h"
+#include "../../../include/connection/PlayerConnection.h"
 
 std::string EventHelper::EventTypeName[] = {
         "PLAYER_HANDSCHAKE_EVENT",
@@ -22,8 +23,8 @@ std::string EventHelper::JavaClassMapping[] = {
         "",
         "",
         "",
-        "",
-        "",
+        "dev/wolveringer/nativecord/api/event/PlayerServerConnectEvent",
+        "dev/wolveringer/nativecord/api/event/PlayerServerConnectedEvent",
         ""
 };
 
@@ -32,17 +33,13 @@ jobject EventHelper::createJavaInstance(JavaPluginManagerImpl *impl, EventType t
     if (name.empty())
         return nullptr;
     jclass cls;
-    if (mapping.count(name) < 1)
-        mapping[name] = (cls = impl->getEnv()->FindClass("dev/wolveringer/nativecord/api/event/PlayerHandschakeEvent"));
-    else
-        cls = mapping[name];
-    jobject event = impl->getEnv()->AllocObject(cls);
+    jobject event = impl->getEnv()->AllocObject(impl->getEnv()->FindClass(name.c_str()));
     impl->getEnv()->SetObjectField(event, impl->getRefelectManager()->f_event_storage, impl->getStorageImpl()->toJavaObject(*buffer));
     return event;
 }
 
 DataStorage& EventHelper::callEvent(EventType t, DataStorage &s) {
-    //TODO
+    //TODO cxx event
     JavaPluginManagerImpl::instance->callEvent(t, &s);
     return s;
 }
@@ -59,5 +56,24 @@ void EventHelper::handleHandshake(PlayerConnection* conn, PacketHandshake * pack
     packet->setPort(storage.ints[0]);
     packet->setHost(storage.strings[0]);
     packet->setState(storage.ints[2]);
+}
 
+ServerInfo* EventHelper::callServerConnectEvent(PlayerConnection *con, ServerInfo *ser) {
+    DataStorage storage;
+    storage.longs.push_back((uint64_t)con->getJavaNativeAddress());
+    storage.strings.push_back(ser->getName());
+    storage = callEvent(EventType::PLAYER_SERVER_CONNECT_EVENT, storage);
+    ServerInfo* out = ser;
+    if(ser->getName().compare(storage.strings[0]) > 0){
+        debugMessage("Changing server con name: "+ser->getName()+" to "+storage.strings[0]);
+        out = ServerInfo::getServerInfo(storage.strings[0]);
+    }
+    return out;
+}
+
+void EventHelper::callServerConnectedEvent(PlayerConnection *con) {
+    DataStorage storage;
+    storage.longs.push_back((uint64_t)con->getJavaNativeAddress());
+    storage.strings.push_back(con->getCurrentTargetConnection()->getServerInfo()->getName());
+    storage = callEvent(EventType::PLAYER_SERVER_CONNECT_EVENT, storage);
 }

@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>
-
 #include "../../../include/protocoll/DataBuffer.h"
 
 using namespace std;
@@ -55,13 +54,14 @@ int DataBuffer::readableBytes() {
     return bufferLength - readerindex;
 }
 
-void DataBuffer::read(const char *buffer, int length) {
+int DataBuffer::read(const char *buffer, int length) {
     if(this->buffer == NULL){
         throw Exception("Buffer is null");
     }
     checkReadableBytes(length);
     memcpy((void *) buffer, (const void *) ((long int) (this->buffer) + readerindex), length);
     readerindex += length;
+    return length;
 }
 
 char DataBuffer::read() {

@@ -15,6 +15,7 @@
 #include "../connection/Socket.h"
 #include "../utils/SocketUtil.h"
 #include "../log/LogUtils.h"
+#include "jni.h"
 
 using namespace std;
 class ServerInfo {
@@ -22,9 +23,9 @@ class ServerInfo {
         static vector<ServerInfo*> servers;
         static void loadServers(){
             for (YAML::const_iterator it = Configuration::instance->config["servers"].begin(); it != Configuration::instance->config["servers"].end(); ++it) {
-                if (it->first.as<string>().compare("disable_direct") == 0)
+                if(it->first.as<string>().compare("disable_direct") == 0)
                     continue;
-                servers.push_back(new ServerInfo(it->first.as<string>()));
+                registerServerInList(new ServerInfo(it->first.as<string>()));
             }
         }
 
@@ -52,8 +53,20 @@ class ServerInfo {
             return out;
         }
 
-        static ServerInfo* createTempServerInfo(string host,int port){
-            return new ServerInfo(host.append(to_string(port)) ,host,port,false);
+        static ServerInfo* createTempServerInfo(string name, string host,int port){
+            ServerInfo* info = new ServerInfo(name ,host,port,false);
+            registerServerInList(info);
+            return info;
+        }
+
+        static ServerInfo* createServerInfo(string name, string host,int port){
+            ServerInfo* info = new ServerInfo(name ,host,port,false);
+            Configuration::instance->config["servers"][name]["host"] = host;
+            Configuration::instance->config["servers"][name]["port"] = port;
+            Configuration::instance->config["servers"][name]["visible"] = true;
+            Configuration::instance->saveConfig();
+            registerServerInList(info);
+            return info;
         }
 
         static vector<ServerInfo*> buildDefaultServerQueue(){
@@ -76,9 +89,10 @@ class ServerInfo {
             this->host = Configuration::instance->config["servers"][name]["host"].as<string>();
             this->port = Configuration::instance->config["servers"][name]["port"].as<int>();
             this->visible = Configuration::instance->config["servers"][name]["visible"].as<bool>();
+            createJavaInstance();
         }
 
-        ServerInfo(const string &name, const string &host, int port, bool visible) : name(name), host(host), port(port), visible(visible) {}
+        ServerInfo(const string &name, const string &host, int port, bool visible);
 
         const string &getName() const {
             return name;
@@ -104,7 +118,11 @@ class ServerInfo {
             return SocketUtil::createTCPSocket(host.c_str(), port);
         }
 
+        static jobject NATIVE_registerServer(JNIEnv* env, jclass caller, jstring name, jstring host, jint port, jboolean addToConfig);
     private:
+        void createJavaInstance();
+        static void registerServerInList(ServerInfo* info);
+        jobject javaObject;
         string name;
         string host;
         int port;

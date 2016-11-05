@@ -5,22 +5,99 @@
 #ifndef CBUNGEE_CONNECTION_H
 #define CBUNGEE_CONNECTION_H
 
+#include <zlib.h>
+#include <openssl/evp.h>
 #include "Socket.h"
 #include "../protocoll/StreamedDataBuffer.h"
 #include "../protocoll/Packets.h"
 #include "../chat/ChatMessage.h"
-#include "ConnectionState.h"
 #include "../cryption/Cipper.h"
-#include <zlib.h>
-#include <openssl/evp.h>
+#include "ConnectionState.h"
 
 class Connection {
     public:
+        static void readerTask(void* handlerPtr){ //TODO dont decompress full packet. First only to the packetID
+            Connection *handler = (Connection *) handlerPtr;
+            DataBuffer *buffer;
+            while (1) {
+                try {
+                    if(handler->stream == nullptr){
+                        cout << "Invalid stream" << endl;
+                        break;
+                    }
+                    if(handler->state == ConnectionState::CLOSED){
+                        cout << "Closed channel" << endl;
+                        break;
+                    }
+                    int packetLength = handler->stream->readVarInt();
+                    buffer = handler->stream->readBuffer(packetLength);
+                    if(buffer == nullptr){
+                        break;
+                    }
+                    if(handler->getThreadshold() != -1){
+                        ulong outlength = buffer->readVarInt();
+                        if(outlength > 0) {
+                            DataBuffer* out = new DataBuffer(outlength);
+                            int state = uncompress((Bytef *) out->getBuffer(),
+                                                   (ulong *) &outlength,
+                                                   (Bytef *) buffer->getBuffer()+buffer->getReaderindex(),
+                                                   (ulong  ) buffer->getWriterindex());
+                            switch (state) { //TODO error handling!
+                                case Z_OK:
+                                    break;
+                                case Z_BUF_ERROR:
+                                    debugMessage("Buffer error");
+                                    handler->closeChannel();
+                                    break;
+                                case Z_DATA_ERROR:
+                                    debugMessage("Invaliduffer error");
+                                    handler->closeChannel();
+                                    break;
+                                default:
+                                    debugMessage("Invaliduffer state error "+to_string(state));
+                                    handler->closeChannel();
+                                    break;
+                            }
+                            delete buffer;
+                            buffer = out;
+                        }
+                        else{
+                            buffer->push(-DataBuffer::getVarIntSize(outlength));
+                            //buffer->setReaderindex(0);
+                            //buffer->setWriterindex(packetLength-DataBuffer::getVarIntSize(outlength));
+                            //cout << "Buffer: " << buffer->getWriterindex() << "/" << buffer->getBufferLength() << endl;
+                        }
+                    }
+                    int rindex = buffer->getReaderindex();
+                    buffer->setReaderindex(rindex);
+                    handler->handlePacket(buffer);
+                    delete  buffer; //Memory cleanup
+                    buffer = nullptr;
+                } catch (Exception ex) {
+                    if(nullptr != buffer)
+                        delete buffer;
+                    if (dynamic_cast<StreamClosedException *>(&ex) != NULL) {
+                        cout << "Connection closed!" << endl;
+                    }
+                    cout << "Client reader exception: " << ex.what() << endl;
+                    handler->handleException(&ex);
+                    if(handler->getState() != ConnectionState::CLOSED)
+                        handler->closeChannel();
+                    break;
+                }
+            }
+
+            delete handler->readerThread;
+            handler->readerThread = nullptr;
+            handler->handleConnectionClosed();
+        }
+
         Connection(Socket *socket) : socket(socket), stream(socket != nullptr ? new StreamedDataBuffer(socket) : nullptr) {
 
         }
 
         virtual ~Connection() {
+            stopReaderTask(true);
             delete (stream);
             delete (socket);
         }
@@ -66,11 +143,11 @@ class Connection {
             delete buffer;
         }
 
-        void disconnect(ChatMessage *message) {
+        void disconnect(ChatMessage *message,bool deleteObject = true) {
             closeChannel();
-            if(message)
+            if(deleteObject)
                 delete message;
-        };
+        }
 
         void writePacket(DataBuffer *packetData) {
             pthread_mutex_lock(&mutex);
@@ -85,7 +162,6 @@ class Connection {
                         int state = compress((Bytef *) target->getBuffer(), &compSize, (Bytef *) packetData->getBuffer(), packetData->getWriterindex());
                         switch (state) {
                             case Z_OK:
-                                //cout << "Compressed okey" << endl;
                                 break;
                             case Z_BUF_ERROR:
                                 cout << "Buffer error" << endl;
@@ -127,9 +203,30 @@ class Connection {
             state = ConnectionState::CLOSED;
         }
 
+        void stopReaderTask(bool join = false){
+            if(readerThread != nullptr){
+                pthread_cancel(*readerThread);
+                if(join)
+                    pthread_join(*readerThread, nullptr);
+                delete(readerThread);
+            }
+        }
+
+        void startReaderTask(){
+            if(readerThread == nullptr){
+                readerThread = new pthread_t;
+                pthread_create(readerThread, nullptr, &readerTask, this);
+            }
+        }
+
     protected:
         bool open = false;
+
+        virtual void handleConnectionClosed() = 0;
+        virtual void handleException(Exception* data) = 0;
+        virtual void handlePacket(DataBuffer* data) = 0;
     private:
+        pthread_t* readerThread = nullptr;
         pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
         Socket *socket = nullptr;
         StreamedDataBuffer *stream = nullptr;

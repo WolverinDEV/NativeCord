@@ -14,7 +14,6 @@
 #include "../server/ServerInfo.h"
 
 class PlayerConnection;
-
 class ServerConnection : public Connection {
     public:
         ServerConnection(PlayerConnection *player, ServerInfo *target, bool sockCreate = true) : Connection(sockCreate ? target->createSocket() : nullptr), serverInfo(target), player(player) {
@@ -50,10 +49,17 @@ class ServerConnection : public Connection {
             return (ServerPacketHandler*) phandler;
         }
 
+    protected:
+        virtual void handleConnectionClosed() override;
+
+        virtual void handleException(Exception *data) override;
+
+        virtual void handlePacket(DataBuffer *data) override;
+
     private:
         ServerInfo *serverInfo;
         int playerId = -1;
-        PacketHandler *phandler;
+        ServerPacketHandler *phandler;
         PlayerConnection *player;
 };
 

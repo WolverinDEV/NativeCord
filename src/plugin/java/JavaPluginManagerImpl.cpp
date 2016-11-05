@@ -84,7 +84,8 @@ bool JavaPluginManagerImpl::registerNatives() {
             {"unregisterListener", "(J)V", (void*) &NATIVE_unregisterListener0},
             {"unregisterListener", "(JLjava/lang/Object;)V", (void*) &NATIVE_unregisterListener1},
             {"sendPacket0","(Ldev/wolveringer/nativecord/impl/DataStorage;)Z", (void*) &PlayerConnection::NATIVE_sendPacket0},
-            {"disconnect0","(Ljava/lang/String;)V", (void*) &PlayerConnection::NATIVE_disconnect0}
+            {"disconnect0","(Ljava/lang/String;)V", (void*) &PlayerConnection::NATIVE_disconnect0},
+            {"registerServer0", "(Ljava/lang/String;Ljava/lang/String;IZ)Ljava/lang/Object;", (void*) &ServerInfo::NATIVE_registerServer}
     };
 
     debugMessage("Registering "+to_string(sizeof(methods) / sizeof(*methods))+" native methods");
@@ -94,7 +95,9 @@ bool JavaPluginManagerImpl::registerNatives() {
 }
 
 void JavaPluginManagerImpl::runOperation(std::function<void(JNIEnv *)> func) {
-
+    JNIEnv* env = getEnv();
+    func(env);
+    this->jvm->DetachCurrentThread();
 }
 
 JNIEnv* JavaPluginManagerImpl::getEnv() {
@@ -183,6 +186,7 @@ bool JavaPluginManagerImpl::flushException() {
 }
 
 void JavaPluginManagerImpl::callEvent(EventType type, DataStorage *storage) {
+    debugMessage("Callevent: "+EventHelper::EventTypeName[type]);
     jobject obj = getEnv()->NewGlobalRef(EventHelper::createJavaInstance(this,type,storage));
 
     for(vector<Plugin*>::iterator it = this->plugins.begin(); it != this->plugins.end();it++){

@@ -62,6 +62,12 @@ class JavaReflectManager {
         jfieldID f_playerConnection_adress;
         //TODO server fields....
 
+        jclass clazz_server;
+        jfieldID f_server_registeredServers;
+        jfieldID f_server_name;
+        jfieldID f_server_host;
+        jfieldID f_server_port;
+
         jclass clazz_list;
         jmethodID m_list_add;
         jmethodID m_list_remove;

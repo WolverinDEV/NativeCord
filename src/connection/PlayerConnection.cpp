@@ -11,7 +11,7 @@ vector<PlayerConnection*> PlayerConnection::connections = vector<PlayerConnectio
 vector<PlayerConnection*> PlayerConnection::activeConnections = vector<PlayerConnection*>();
 
 
-//TODO register / derwgister
+//TODO register / deregister
 PlayerConnection::PlayerConnection(sockaddr_in *adress, Socket *socket)  : Connection(socket), adress(adress) {
     PlayerConnection::connections.push_back(this);
     if(JavaPluginManagerImpl::instance != nullptr){
@@ -132,6 +132,7 @@ void* connectMethode(void* parm){
 }
 
 void PlayerConnection::connect(ServerInfo *target, bool sync) {
+    target = EventHelper::callServerConnectEvent(this, target);
     for(vector<ServerConnection*>::iterator it = pendingConnections.begin();it != pendingConnections.end();it++){
         if((*it)->getServerInfo()->getName().compare(target->getName()) == 0){
             sendMessage("§c§l» §7You alredy connecting to this server.");
@@ -245,9 +246,10 @@ void PlayerConnection::setState(ConnectionState state) {
 
 PlayerConnection* getPlayerConnection(jobject player){
     jlong playerId = JavaPluginManagerImpl::instance->getEnv()->GetLongField(player, JavaPluginManagerImpl::instance->getRefelectManager()->f_playerConnection_nativeAdress);
-    for(PlayerConnection* conn : PlayerConnection::connections)
-        if(conn->getJavaNativeAddress() == playerId)
-            return conn;
+    vector<PlayerConnection*> pc = PlayerConnection::connections;
+    for(vector<PlayerConnection*>::iterator current = pc.begin();current != pc.end();current++)
+        if((*current)->getJavaNativeAddress() == playerId)
+            return *current;
     JavaPluginManagerImpl::instance->getEnv()->ThrowNew(JavaPluginManagerImpl::instance->getRefelectManager()->clazz_illegalArgumentException, "Cant find player connection!");
     return nullptr;
 }
@@ -274,4 +276,19 @@ jboolean PlayerConnection::NATIVE_sendPacket0(JNIEnv *env, jobject caller, jobje
         buffer.writeByte(*it);
     conn->writePacket(&buffer);
     return 1;
+}
+
+void PlayerConnection::handleConnectionClosed() {
+    debugMessage("Connection closed");
+    if(getCurrentTargetConnection() != nullptr)
+        getCurrentTargetConnection()->disconnect(new ChatMessage("Player disconnected"));
+}
+
+void PlayerConnection::handleException(Exception *data) {
+    debugMessage("Having exception: "+string(data->what()));
+}
+
+void PlayerConnection::handlePacket(DataBuffer *data) {
+    debugMessage("handling packet");
+    this->packetHandler->handlePacket(data);
 }

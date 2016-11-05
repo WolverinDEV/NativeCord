@@ -3,6 +3,8 @@
 //
 
 #include "../../include/config/Configuration.h"
+#include "../../include/log/LogUtils.h"
+#include "../../include/server/ServerInfo.h"
 #include <sys/stat.h>
 #include <netdb.h>
 #include <algorithm>
@@ -145,19 +147,7 @@ void Configuration::loadConfig() {
      */
 
     if(saveConfig){
-        ofstream confFile;
-        confFile.open (fileName.c_str());
-        if(confFile.bad()){
-            errors.push_back(string("Cant open configuration file!"));
-            return;
-        }
-        confFile << config;
-        confFile.close();
-
-        if(confFile.fail()){
-            errors.push_back(string("Cant write to configuration file!"));
-            return;
-        }
+        Configuration::saveConfig();
     }
 
     /**
@@ -212,4 +202,19 @@ void Configuration::loadConfig() {
         errors.push_back(string("Invalid network compression threshold. (Expression rule: 128 <= compression_threshold(").append(config["network"]["compression_threshold"].as<string>()).append(") <= 8192)"));
 
     //TODO check permissions!
+}
+void Configuration::saveConfig() {
+    ofstream confFile;
+    confFile.open (fileName.c_str());
+    if(confFile.bad()){
+        logError("Cant open configuration file!");
+        return;
+    }
+    confFile << config;
+    confFile.close();
+
+    if(confFile.fail()){
+        logError("Cant write to configuration file!");
+        return;
+    }
 }
