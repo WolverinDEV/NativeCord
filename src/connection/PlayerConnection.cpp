@@ -33,7 +33,6 @@ PlayerConnection::~PlayerConnection(){
     if(this->lastDisconnectMessage != nullptr)
         delete this->lastDisconnectMessage;
     if(this->javaInstance != nullptr){
-        debugMessage("Deleting java reference");
         JavaPluginManagerImpl::instance->getRefelectManager()->unregisterPlayer(this);
         JavaPluginManagerImpl::instance->getEnv()->DeleteGlobalRef(this->javaInstance);
     }
@@ -47,13 +46,11 @@ PlayerConnection::~PlayerConnection(){
         delete *it;
     }
     pendingConnections.clear();
-    cout << "~PlayerConnection" << endl;
 }
 
 void PlayerConnection::disconnect(ChatMessage* message) {
     if(message != NULL) {
         if (getState() == LOGIN) {
-            cout << "Login disconnect" << endl;
             DataBuffer *buffer = new DataBuffer();
             buffer->writeVarInt(0x00);
             buffer->writeString(message->toString());
@@ -188,17 +185,10 @@ string PlayerConnection::generateServerHash() {
     string unencripted = RSAUtil::getPublicEncriptedKey(Cipper::publicKey)->getBase64Buffer();
     string data = base64_decode(unencripted);
 
-    //cout << "Pubkey: " << data.size() << endl;
-    //cout << "Key: " << unencripted << endl;
-    //cout << "Secret: " << secret.size() << "(" << base64_encode((const unsigned char*) secret.data(),secret.size()) << ")" << endl;
-    //cout << "ServerID: " << Cipper::hash << endl;
-
     SHA1_Update(&context, (unsigned char*) Cipper::hash.data(), Cipper::hash.size());
     SHA1_Update(&context, (unsigned char*) secret.data(), secret.size());
     SHA1_Update(&context, (unsigned char*) data.data(), data.size());
     SHA1_Final(md, &context);
-
-    //cout << "SHA1 base: " << base64_encode(md,28) << endl;
 
     if(md[0] & 0x80)
     {
@@ -242,16 +232,42 @@ sockaddr_in *PlayerConnection::getAdress() const {
 void PlayerConnection::setState(ConnectionState state) {
     Connection::setState(state);
     //TODO set java state!
+    if(JavaPluginManagerImpl::instance != nullptr) {
+        jobject obj = nullptr;
+        switch (state) {
+            case HANDSHAKING:
+                obj = JavaPluginManagerImpl::instance->getRefelectManager()->f_playerConnection$state_handshaking;
+                break;
+            case STATUS:
+                obj = JavaPluginManagerImpl::instance->getRefelectManager()->f_playerConnection$state_status;
+                break;
+            case LOGIN:
+                obj = JavaPluginManagerImpl::instance->getRefelectManager()->f_playerConnection$state_login;
+                break;
+            case ENCRIPTING:
+                obj = JavaPluginManagerImpl::instance->getRefelectManager()->f_playerConnection$state_encripting;
+                break;
+            case PLAYING:
+                obj = JavaPluginManagerImpl::instance->getRefelectManager()->f_playerConnection$state_playing;
+                break;
+            case CLOSED:
+                obj = JavaPluginManagerImpl::instance->getRefelectManager()->f_playerConnection$state_disconnected;
+                break;
+        }
+        JavaPluginManagerImpl::instance->getEnv()->SetObjectField(this->javaInstance, JavaPluginManagerImpl::instance->getRefelectManager()->f_playerConnection_connectionState, obj);
+    }
 }
 
 PlayerConnection* getPlayerConnection(jobject player){
-    jlong playerId = JavaPluginManagerImpl::instance->getEnv()->GetLongField(player, JavaPluginManagerImpl::instance->getRefelectManager()->f_playerConnection_nativeAdress);
-    vector<PlayerConnection*> pc = PlayerConnection::connections;
-    for(vector<PlayerConnection*>::iterator current = pc.begin();current != pc.end();current++)
-        if((*current)->getJavaNativeAddress() == playerId)
-            return *current;
-    JavaPluginManagerImpl::instance->getEnv()->ThrowNew(JavaPluginManagerImpl::instance->getRefelectManager()->clazz_illegalArgumentException, "Cant find player connection!");
-    return nullptr;
+    return JavaPluginManagerImpl::instance->runOperation([player](JNIEnv* env){
+        jlong playerId = JavaPluginManagerImpl::instance->getEnv()->GetLongField(player, JavaPluginManagerImpl::instance->getRefelectManager()->f_playerConnection_nativeAdress);
+        vector<PlayerConnection*> pc = PlayerConnection::connections;
+        for(vector<PlayerConnection*>::iterator current = pc.begin();current != pc.end();current++)
+            if((*current)->getJavaNativeAddress() == playerId)
+                return *current;
+        JavaPluginManagerImpl::instance->getEnv()->ThrowNew(JavaPluginManagerImpl::instance->getRefelectManager()->clazz_illegalArgumentException, "Cant find player connection!");
+        return (PlayerConnection*) nullptr;
+    });
 }
 
 void PlayerConnection::NATIVE_disconnect0(JNIEnv *env, jobject caller, jstring message) {

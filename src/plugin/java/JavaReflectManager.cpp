@@ -99,6 +99,7 @@ bool JavaReflectManager::loadFields() {
 
     clazz_playerConnection = env->FindClass("dev/wolveringer/nativecord/api/player/PlayerConnection");
 
+    f_playerConnection_connectionState = env->GetFieldID(clazz_playerConnection, "connectionState", "Ldev/wolveringer/nativecord/api/player/PlayerConnection$State;");
     f_playerConnection_static_players = env->GetStaticFieldID(clazz_playerConnection, "connections","Ljava/util/ArrayList;");
     f_playerConnection_nativeAdress = env->GetFieldID(clazz_playerConnection, "nativeAdress", "J");
     f_playerConnection_clientVersion = env->GetFieldID(clazz_playerConnection, "connectionVersion","I");
@@ -111,6 +112,18 @@ bool JavaReflectManager::loadFields() {
                          f_playerConnection_playerName == NULL ||
                          f_playerConnection_uuid == NULL, "Cant find playerConnection fields! "+to_string(f_playerConnection_static_players == NULL)+"/"+to_string(f_playerConnection_clientVersion == NULL)+"/"+to_string(f_playerConnection_nativeAdress == NULL)+"/"+to_string(f_playerConnection_playerName == NULL)+"/"+to_string(f_playerConnection_uuid == NULL)+"/"+to_string(clazz_playerConnection == NULL))) return 0;
 
+    clazz_playerConnection$state = env->FindClass("dev/wolveringer/nativecord/api/player/PlayerConnection$State");
+    f_playerConnection$state_status = env->GetStaticObjectField(clazz_playerConnection$state, env->GetStaticFieldID(clazz_playerConnection$state, "STATUS","Ldev/wolveringer/nativecord/api/player/PlayerConnection$State;"));
+    f_playerConnection$state_handshaking = env->GetStaticObjectField(clazz_playerConnection$state, env->GetStaticFieldID(clazz_playerConnection$state, "HANDSHAKING","Ldev/wolveringer/nativecord/api/player/PlayerConnection$State;"));
+    f_playerConnection$state_encripting = env->GetStaticObjectField(clazz_playerConnection$state, env->GetStaticFieldID(clazz_playerConnection$state, "ENCRIPTING","Ldev/wolveringer/nativecord/api/player/PlayerConnection$State;"));
+    f_playerConnection$state_playing = env->GetStaticObjectField(clazz_playerConnection$state, env->GetStaticFieldID(clazz_playerConnection$state, "PLAYING","Ldev/wolveringer/nativecord/api/player/PlayerConnection$State;"));
+    f_playerConnection$state_disconnected = env->GetStaticObjectField(clazz_playerConnection$state, env->GetStaticFieldID(clazz_playerConnection$state, "DISCONNECTED","Ldev/wolveringer/nativecord/api/player/PlayerConnection$State;"));
+    f_playerConnection$state_login = env->GetStaticObjectField(clazz_playerConnection$state, env->GetStaticFieldID(clazz_playerConnection$state, "LOGIN","Ldev/wolveringer/nativecord/api/player/PlayerConnection$State;"));
+
+    if(trueError(clazz_playerConnection$state == NULL || f_playerConnection$state_status == NULL || f_playerConnection$state_handshaking == NULL ||
+                         f_playerConnection$state_encripting == NULL || f_playerConnection$state_playing == NULL || f_playerConnection$state_disconnected == NULL ||
+                         f_playerConnection$state_login == NULL , "Cant load all enums field from connection state"))
+        return 0;
     clazz_server = env->FindClass("dev/wolveringer/nativecord/api/server/ServerInfo");
     f_server_registeredServers = env->GetStaticFieldID(clazz_server, "registeredServers", "Ljava/util/List;");
     f_server_name = env->GetFieldID(clazz_server, "name", "Ljava/lang/String;");
@@ -148,12 +161,12 @@ std::string JavaReflectManager::methodeToString(jobject methode) {
 }
 
 jobject JavaReflectManager::createPlayerInstance(PlayerConnection *connection) {
-    JNIEnv* env = handle.getEnv();
-    jobject playerInstance = env->AllocObject(clazz_playerConnection);
+    return (jobject) handle.runOperation([&, connection](JNIEnv* env){
+        jobject playerInstance = env->AllocObject(clazz_playerConnection);
 
-    env->SetLongField(playerInstance, f_playerConnection_nativeAdress, (jlong) connection->getJavaNativeAddress());
-    //TODO set adress field!
-    return env->NewGlobalRef(playerInstance);
+        env->SetLongField(playerInstance, f_playerConnection_nativeAdress, (jlong) connection->getJavaNativeAddress());
+        return (void*) env->NewGlobalRef(playerInstance);
+    });
 }
 
 void JavaReflectManager::registerPlayer(PlayerConnection *connection) {
@@ -162,6 +175,7 @@ void JavaReflectManager::registerPlayer(PlayerConnection *connection) {
     if(!env->CallBooleanMethod(list, m_list_add, connection->getJavaInstance())){
         logError("Cant add player ("+to_string((uint64_t)connection)+") to existing player connections!");
     }
+    handle.destroyCurrentThreadEnv();
 } //TODO
 void JavaReflectManager::unregisterPlayer(PlayerConnection *connection) {
     JNIEnv* env = handle.getEnv();
@@ -169,4 +183,5 @@ void JavaReflectManager::unregisterPlayer(PlayerConnection *connection) {
     if(!env->CallBooleanMethod(list, m_list_remove, connection->getJavaInstance())){
         logError("Cant remove player ("+to_string((uint64_t)connection)+")["+connection->getName()+"] from existing player connections!");
     }
+    handle.destroyCurrentThreadEnv();
 } //TODO

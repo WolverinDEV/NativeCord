@@ -9,6 +9,7 @@ enum ConnectionState {
     HANDSHAKING,
     STATUS,
     LOGIN,
+    ENCRIPTING,
     PLAYING,
     CLOSED
 };

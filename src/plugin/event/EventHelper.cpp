@@ -33,8 +33,10 @@ jobject EventHelper::createJavaInstance(JavaPluginManagerImpl *impl, EventType t
     if (name.empty())
         return nullptr;
     jclass cls;
+
     jobject event = impl->getEnv()->AllocObject(impl->getEnv()->FindClass(name.c_str()));
-    impl->getEnv()->SetObjectField(event, impl->getRefelectManager()->f_event_storage, impl->getStorageImpl()->toJavaObject(*buffer));
+    jobject  obj = impl->getStorageImpl()->toJavaObject(*buffer);
+    impl->getEnv()->SetObjectField(event, impl->getRefelectManager()->f_event_storage, obj);
     return event;
 }
 

@@ -48,7 +48,7 @@ void ClientPacketHandler::handlePacketHandschake(const int packetId, DataBuffer 
             if(JavaPluginManagerImpl::instance != nullptr){
                 EventHelper::handleHandshake(this->pconnection, handshake);
             }
-            debugMessage("Client Version: " + to_string(handshake->getClientVersion()));#
+            debugMessage("Client Version: " + to_string(handshake->getClientVersion()));
             debugMessage("State:   " + to_string(handshake->getState()));
             break;
         default:

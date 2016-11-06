@@ -41,9 +41,10 @@ class JavaPluginManagerImpl : public PluginManager{
 
         DataStorageImpl *storageImpl;
 
-        void runOperation(std::function<void(JNIEnv*)>);
+        void* runOperation(std::function<void*(JNIEnv*)>);
 
         JNIEnv* getEnv();
+        void destroyCurrentThreadEnv();
 
         bool flushException();
 

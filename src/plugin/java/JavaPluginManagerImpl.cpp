@@ -6,11 +6,18 @@
 #include "../../../include/plugin/java/JavaPlugin.h"
 #include <sys/types.h>
 
+struct EnvThreadLocal {
+    JNIEnv* env;
+    uint64_t lastAccessTime;
+};
+
 void env_destroy(void * env)
 {
-    JNIEnv* e = (JNIEnv*) env;
+    EnvThreadLocal* e = (EnvThreadLocal*) env;
+    if(e == nullptr || e->env == nullptr)
+        return;
     JavaVM* jvm;
-    e->GetJavaVM(&jvm);
+    e->env->GetJavaVM(&jvm);
     jvm->DetachCurrentThread();
     debugMessage("Destroy JNIEnv attachment!");
 }
@@ -124,22 +131,36 @@ bool JavaPluginManagerImpl::registerNatives() {
  * @param func
  */
 
-void JavaPluginManagerImpl::runOperation(std::function<void(JNIEnv *)> func) {
-    JNIEnv* env = getEnv();
-    func(env);
-    this->jvm->DetachCurrentThread();
+void* JavaPluginManagerImpl::runOperation(std::function<void*(JNIEnv *)> func) {
+    /*
+    JNIEnv* ptr = nullptr;
+    EnvThreadLocal* localData = (EnvThreadLocal*) pthread_getspecific(ENV_KEY);
+
+    bool detach = true;
+    if(nullptr != localData && nullptr != (ptr = localData->env)){
+        detach = false;
+    } else
+        ptr = getEnv();
+
+    void* out = func(ptr);
+    if(detach && false)
+        destroyCurrentThreadEnv();
+    return out;
+     */
+    return func(getEnv()); //Cleanup automatikly by thread key
 }
 
 JNIEnv* JavaPluginManagerImpl::getEnv() {
-    JNIEnv* ptr = nullptr;
+    EnvThreadLocal* ptr = nullptr;
 
-    if(nullptr == (ptr = (JNIEnv*) pthread_getspecific(ENV_KEY))){
+    if(nullptr == (ptr = (EnvThreadLocal*) pthread_getspecific(ENV_KEY))){
         debugMessage("Create JNIEnv attachment!");
-        this->jvm->AttachCurrentThread((void**) &ptr, NULL);
+        ptr = new EnvThreadLocal;
+        this->jvm->AttachCurrentThread((void**) &(ptr->env), NULL);
         pthread_setspecific(ENV_KEY, ptr);
     }
-
-    return ptr;
+    ptr->lastAccessTime = TimeUtils::getCurrentTimeMillis();
+    return ptr->env;
 
    /* //Old
     switch (this->jvm->GetEnv((void**) &ptr, JNI_VERSION_1_6)){
@@ -152,6 +173,17 @@ JNIEnv* JavaPluginManagerImpl::getEnv() {
             debugMessage("JVM successfull attached from "+to_string(pthread_self()));
     };
     */
+}
+
+void JavaPluginManagerImpl::destroyCurrentThreadEnv() {
+    EnvThreadLocal* ptr = nullptr;
+    if(nullptr != (ptr = (EnvThreadLocal*) pthread_getspecific(ENV_KEY))){
+        ptr->env = nullptr;
+        pthread_setspecific(ENV_KEY, nullptr);
+        jvm->DetachCurrentThread();
+        delete ptr;
+        debugMessage("Destroy env!");
+    }
 }
 
 bool JavaPluginManagerImpl::stopJavaVM() {

@@ -62,6 +62,14 @@ class JavaReflectManager {
         jfieldID f_playerConnection_adress;
         //TODO server fields....
 
+        jclass clazz_playerConnection$state;
+        jobject f_playerConnection$state_handshaking;
+        jobject f_playerConnection$state_login;
+        jobject f_playerConnection$state_encripting;
+        jobject f_playerConnection$state_playing;
+        jobject f_playerConnection$state_status;
+        jobject f_playerConnection$state_disconnected;
+
         jclass clazz_server;
         jfieldID f_server_registeredServers;
         jfieldID f_server_name;
