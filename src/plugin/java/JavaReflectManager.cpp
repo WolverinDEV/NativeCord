@@ -7,7 +7,7 @@
 
 bool trueError(bool boolean, string message){
     if(boolean){
-        logError(message);
+        logFatal(message);
     }
     return boolean;
 }
@@ -130,6 +130,8 @@ bool JavaReflectManager::loadFields() {
     clazz_event = env->FindClass("dev/wolveringer/nativecord/api/event/Event");
     f_event_storage = env->GetFieldID(clazz_event, "storage","Ldev/wolveringer/nativecord/impl/DataStorage;");
     if(trueError(clazz_event == NULL || f_event_storage == NULL, "Some event fields are null!")) return 0;
+
+    clazz_console = env->FindClass("dev/wolveringer/nativecord/terminal/Console");
     return 1;
 }
 

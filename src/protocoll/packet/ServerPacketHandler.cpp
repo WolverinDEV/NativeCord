@@ -61,15 +61,15 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
             break;
         case 0x01:
             removeFromPending();
-            throw  new Exception("Server is in online mode!");
+            throw Exception("Server is in online mode!");
         case 0x02:
             buffer->markReaderIndex();
-            cout << "Target server accept login!" << endl;
+            debugMessage("Target server accept login from "+((ServerConnection*)connection)->getPlayerConnection()->getName());
             uuid_t playerUUID;
             uuid_parse(buffer->readString().c_str(),playerUUID);
             username = buffer->readString();
-            cout << "Username: " << username << endl;
-            cout << "UUID:     " << UUIDUtils::uuidToString(playerUUID) << endl;
+            debugMessage("Username: " + username);
+            debugMessage("UUID:     " + UUIDUtils::uuidToString(playerUUID));
             connection->setState(ConnectionState::PLAYING);
 
             old = ((ServerConnection*)connection)->getPlayerConnection()->getCurrentTargetConnection();
@@ -99,7 +99,7 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
             break;
         case 0x03:
             int t = buffer->readVarInt();
-            cout << "Setting server packet threadshold to " << t << endl;
+            debugMessage("Setting server packet threadshold to " + to_string(t));
             connection->setThreadshold(t);
             break;
     }
@@ -126,9 +126,9 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
             del = false;
         }
         ((ServerConnection*)connection)->setPlayerId(playerId);
-        cout << "PacketID " << packetId << endl;
-        cout << "Your entity id: " << ((ServerConnection*)connection)->getPlayerConnection()->getPlayerId() << endl;
-        cout << "Server entity id: " << playerId << endl;
+        debugMessage("PacketID " + to_string(packetId));
+        debugMessage("Your entity id: " + to_string(((ServerConnection*)connection)->getPlayerConnection()->getPlayerId()));
+        debugMessage("Server entity id: " + to_string(playerId));
         if(del) {
             //Dim Diff game type
             char gamemode = buffer->read();

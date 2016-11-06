@@ -109,7 +109,7 @@ int main(int argc, char** argv) {
         Configuration::instance->loadConfig();
         cout << "Loading configuration" << endl;
         if(!Configuration::instance->isValid()){
-            logError("Configuration not valid!");
+            logFatal("Configuration not valid!");
             vector<string> errors = Configuration::instance->getErrors();
             if(errors.size() == 1)
                 logError("Error:");

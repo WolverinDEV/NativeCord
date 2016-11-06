@@ -33,7 +33,7 @@ JavaPluginManagerImpl::~JavaPluginManagerImpl() {
 
 JavaPluginManagerImpl::JavaPluginManagerImpl() {
     JavaPluginManagerImpl::instance = this;
-    cout << "Create java plugin manager" << endl;
+    debugMessage("Create java plugin manager");
 }
 
 bool JavaPluginManagerImpl::startJavaVM() {
@@ -76,23 +76,53 @@ bool JavaPluginManagerImpl::startJavaVM() {
 }
 
 bool JavaPluginManagerImpl::registerNatives() {
-    static JNINativeMethod methods[] = {
+    JNINativeMethod methodsPluginManager[] = {
             {"registerPlugin0", "(Ldev/wolveringer/nativecord/plugin/Plugin;)J", (void *)&NATIVE_registerPlugin},
             {"enablePlugin", "(J)V", (void*) &NATIVE_enablePlugin},
             {"disablePlugin", "(J)V", (void*) &NATIVE_disablePlugin},
             {"registerListener", "(JLjava/lang/Object;ILjava/lang/reflect/Method;)V", (void*) &NATIVE_registerListener},
             {"unregisterListener", "(J)V", (void*) &NATIVE_unregisterListener0},
-            {"unregisterListener", "(JLjava/lang/Object;)V", (void*) &NATIVE_unregisterListener1},
-            {"sendPacket0","(Ldev/wolveringer/nativecord/impl/DataStorage;)Z", (void*) &PlayerConnection::NATIVE_sendPacket0},
-            {"disconnect0","(Ljava/lang/String;)V", (void*) &PlayerConnection::NATIVE_disconnect0},
-            {"registerServer0", "(Ljava/lang/String;Ljava/lang/String;IZ)Ljava/lang/Object;", (void*) &ServerInfo::NATIVE_registerServer}
+            {"unregisterListener", "(JLjava/lang/Object;)V", (void*) &NATIVE_unregisterListener1}
     };
 
-    debugMessage("Registering "+to_string(sizeof(methods) / sizeof(*methods))+" native methods");
-    getEnv()->RegisterNatives(reflectManager->clazz_pluginManagerImpl, methods, sizeof(methods) / sizeof(*methods));
+    debugMessage("Registering "+to_string(sizeof(methodsPluginManager) / sizeof(*methodsPluginManager))+" native methodsPluginManager in JavaPluginManagerImpl");
+    getEnv()->RegisterNatives(reflectManager->clazz_pluginManagerImpl, methodsPluginManager, sizeof(methodsPluginManager) / sizeof(*methodsPluginManager));
+
+    JNINativeMethod methodsConsole[] = {
+            {"logMessage", "(Ljava/lang/String;)V", (void*) &NATIVE_logMessage},
+            {"logError", "(Ljava/lang/String;)V", (void*) &NATIVE_logError},
+            {"debugMessage", "(Ljava/lang/String;)V", (void*) &NATIVE_debugMessage}
+    };
+
+    debugMessage("Registering "+to_string(sizeof(methodsConsole) / sizeof(*methodsConsole))+" native methodsPluginManager in Console");
+    getEnv()->RegisterNatives(reflectManager->clazz_console, methodsConsole, sizeof(methodsConsole) / sizeof(*methodsConsole));
+
+    JNINativeMethod methodsPlayer[] = {
+            {"sendPacket0","(Ldev/wolveringer/nativecord/impl/DataStorage;)Z", (void*) &PlayerConnection::NATIVE_sendPacket0},
+            {"disconnect0","(Ljava/lang/String;)V", (void*) &PlayerConnection::NATIVE_disconnect0}
+    };
+
+    debugMessage("Registering "+to_string(sizeof(methodsPlayer) / sizeof(*methodsPlayer))+" native methodsPluginManager in PlayerConnection");
+    getEnv()->RegisterNatives(reflectManager->clazz_playerConnection, methodsPlayer, sizeof(methodsPlayer) / sizeof(*methodsPlayer));
+
+    JNINativeMethod methodsServer[] = {
+            {"registerServer0", "(Ljava/lang/String;Ljava/lang/String;IZ)Ldev/wolveringer/nativecord/api/server/ServerInfo;", (void*) &ServerInfo::NATIVE_registerServer}
+    };
+
+    debugMessage("Registering "+to_string(sizeof(methodsServer) / sizeof(*methodsServer))+" native methodsPluginManager in Server");
+    getEnv()->RegisterNatives(reflectManager->clazz_server, methodsServer, sizeof(methodsServer) / sizeof(*methodsServer));
+
     flushException();
     return 1;
 }
+
+/**
+ * //Register system streams
+            {"logMessage", "(Ljava/lang/String;)V", (void*) &NATIVE_logMessage},
+            {"logError", "(Ljava/lang/String;)V", (void*) &NATIVE_logError},
+            {"debugMessage", "(Ljava/lang/String;)V", (void*) &NATIVE_debugMessage},
+ * @param func
+ */
 
 void JavaPluginManagerImpl::runOperation(std::function<void(JNIEnv *)> func) {
     JNIEnv* env = getEnv();
@@ -234,14 +264,11 @@ void JavaPluginManagerImpl::NATIVE_registerListener(JNIEnv *env, jobject jmanage
     string eventName = clazzName+"#"+manager->getRefelectManager()->methodeToString(ref_methode)+"(...)";
     if(plugin->isEventListenerRegistered((EventType) eventId, eventName)){
         env->ThrowNew(manager->getRefelectManager()->clazz_illegalArgumentException, ("Event handler "+eventName+" alredyregistered!").c_str());
-        debugMessage("Alredy registered!");
         return;
     }
-    cout << "Methode id: " << methodeId << endl;
 
     jobject listenerInstance = env->NewGlobalRef(listenerClassInstance);
     plugin->registerEventListener((EventType) eventId, eventName, [eventId, ref_methode, manager, eventName, clazzName, listenerInstance, methodeId](void* data){ //TODO void* ptr check!
-        cout << "Methode id: " << methodeId << endl;
         JavaPluginManagerImpl::instance->getEnv()->CallObjectMethod(listenerInstance, methodeId, data); //*((jobject*) data)
         return 0;
     });

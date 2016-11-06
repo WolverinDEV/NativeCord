@@ -45,15 +45,14 @@ void ClientPacketHandler::handlePacketHandschake(const int packetId, DataBuffer 
                     break;
             }
 
-            cout << "Having handshake." << endl;
             if(JavaPluginManagerImpl::instance != nullptr){
                 EventHelper::handleHandshake(this->pconnection, handshake);
             }
-            cout << "Version: " << handshake->getClientVersion() << endl;
-            cout << "State:   " << handshake->getState() << endl;
+            debugMessage("Client Version: " + to_string(handshake->getClientVersion()));#
+            debugMessage("State:   " + to_string(handshake->getState()));
             break;
         default:
-            std::cout << "Cant handle packet (" << packetId << ") at handshake! Disconnecting client!" << std::endl;
+            debugMessage("Cant handle packet (" + to_string(packetId) + ") at handshake! Disconnecting client!");
             connection->getSocket()->closeSocket();
             //TODO memory clear
             break;
@@ -70,7 +69,7 @@ void ClientPacketHandler::handlePacketStatus(int packetId, DataBuffer *buffer) {
     uint64_t time;
     switch (packetId) {
         case 0x00:
-            cout << "Requesting status" << endl;
+            debugMessage("Requesting status");
             rbuffer = new DataBuffer();
             rbuffer->writeVarInt(0x00);
             response = new json();
@@ -94,7 +93,7 @@ void ClientPacketHandler::handlePacketStatus(int packetId, DataBuffer *buffer) {
             delete rbuffer;
             break;
         default:
-            cout << "Cant handle packet (" << packetId << ") at status! Disconnecting client!" << endl;
+            debugMessage("Cant handle packet (" + to_string(packetId) + ") at status! Disconnecting client!");
             connection->getSocket()->closeSocket();
             //TODO memory clear
     }
@@ -107,7 +106,7 @@ void sendSuccessfullLoggedIn(PlayerConnection *pconnection){
     }
 
     ServerInfo*  target;
-    cout << "Player ["<<pconnection->getName()<<"] connecting" << endl;
+    debugMessage("Player ["+pconnection->getName()+"] connecting");
     if(!isSupportedVersion(pconnection->getHandshake()->getClientVersion())){
         pconnection->disconnect(new ChatMessage(string("§fNative-Proxy:\n§cNativecord dosnt support your minecraft version.")));
         return;
@@ -128,8 +127,8 @@ void sendSuccessfullLoggedIn(PlayerConnection *pconnection){
 void sendLoginVerify(PlayerConnection *pconnection){
     string unencripted = RSAUtil::getPublicEncriptedKey(Cipper::publicKey)->getBase64Buffer();
     string data = base64_decode(unencripted);
-    cout << "Send data length: " << data.length() << endl;
-    cout << "Data: " << unencripted << endl;
+    debugMessage("Send data length: " + data.length());
+    debugMessage("Data: " + unencripted);
     PacketLoginEncryption* enc = new PacketLoginEncryption(Cipper::hash,(char*) data.data(),data.length(),(char*) Cipper::hash.data(),Cipper::hash.length());
     pconnection->writePacket(-1, enc);
 }
@@ -149,13 +148,13 @@ void handleEncriptionResponse(PlayerConnection* connection, DataBuffer*& buffer)
     }
 
     auto r = cpr::GetCallback([connection](cpr::Response r) {
-        cout << "2-Response: " << r.text << endl;
-        cout << "Code: " << r.status_code << endl;
+        debugMessage("2-Response: " + r.text);
+        debugMessage("Code: " + r.status_code);
         if(r.status_code == 204){
             connection->disconnect(new ChatMessage("§cCant verify with mojang!"));
         } else{
             connection->setProfile(new GameProfile(json::parse(r.text)));
-            cout << "Name: " << connection->getProfile()->getName() << endl;
+            debugMessage("Name: " + connection->getProfile()->getName());
             sendSuccessfullLoggedIn(connection);
         }
     }, cpr::Url{"https://sessionserver.mojang.com:443/session/minecraft/hasJoined"}, cpr::Parameters{{"username", connection->getName()}, {"serverId", connection->generateServerHash()}}, cpr::Header{{"User-Agent", "NativeCord"}}, cpr::Timeout{5000}, cpr::VerifySsl{false});
@@ -178,7 +177,7 @@ void ClientPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
             handleEncriptionResponse(pconnection,buffer);
             break;
         default:
-            std::cout << "Cant handle packet (" << packetId << ") at login! Disconnecting client!" << std::endl;
+            debugMessage("Cant handle packet (" + to_string(packetId) + ") at login! Disconnecting client!");
             pconnection->disconnect(new ChatMessage("Invalid packet."));
             //TODO memory clear
             //delete connection;
@@ -200,7 +199,7 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
     if(pconnection->getClientVersion() >= 107 && packetId == 0x02 || pconnection->getClientVersion() == 47 && packetId == 0x01){
         string message = buffer->readString();
         vector<string> parts = StringUtils::split(message," ");
-        cout << "Having chat message: " << message << " ("<<parts[0].c_str()<< ")" << endl;
+        debugMessage("Having chat message: " + message + " (" + parts[0] + ")");
         if(strcmp(parts[0].c_str(),"/ncord") == 0){
             pconnection->sendMessage("§5§l» §7NativeCord by WolverinDEV version 0.3-ALPHA");
             return;

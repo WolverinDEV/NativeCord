@@ -75,6 +75,8 @@ class JavaReflectManager {
         jclass clazz_event;
         jfieldID f_event_storage;
 
+        jclass clazz_console;
+
         std::string classToString(jobject clazz);
         std::string methodeToString(jobject methode);
 
