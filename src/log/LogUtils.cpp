@@ -4,11 +4,13 @@
 
 #include "../../include/log/LogUtils.h"
 #include "../../include/utils/StringUtil.h"
+#include "../../include/log/Terminal.h"
 
 using namespace std;
 pthread_mutex_t writeMutex = PTHREAD_MUTEX_INITIALIZER;
 
-void printAnsi(ostream& stream,string message,string defaultBefore = ""){
+void printAnsi(string message,string defaultBefore = ""){
+    stringstream stream;
     pthread_mutex_lock(&writeMutex);
     vector<string> parts = StringUtils::split(message, "§");
 
@@ -77,28 +79,29 @@ void printAnsi(ostream& stream,string message,string defaultBefore = ""){
             first = false;
         stream << (*it).substr(index);
     }
-    stream << ANSI_RESET << endl;
+    stream << ANSI_RESET;
+    Terminal::instance->printMessage(stream.str());
     pthread_mutex_unlock(&writeMutex);
 }
 
-void printMessage(ostream& stream, string prefix, string& message,string def = ""){
+void printMessage(string prefix, string& message,string def = ""){
     vector<string> strings = StringUtils::split(message, "\n");
     for(vector<string>::iterator it = strings.begin(); it != strings.end();it++) {
-        printAnsi(stream, prefix + *it, def);
+        printAnsi(prefix + *it, def);
     }
 }
 
 void logMessage(std::string message){
-    printMessage(cout, "§7[§6§lLOG§7] §r", message);
+    printMessage("§7[§6§lLOG§7] §r", message);
 }
 void logError(std::string message){
-    printMessage(cout, "§7[§cERROR§7] §r", message);
+    printMessage("§7[§cERROR§7] §r", message);
 }
 void logFatal(std::string message){
-    printMessage(cout, "§7[§4"+string(ANSI_BOLD)+ANSI_REVERSE+"FATAL§7] §r", message);
+    printMessage("§7[§4"+string(ANSI_BOLD)+ANSI_REVERSE+"FATAL§7] §r", message);
 }
 void debugMessage(std::string message){
-    printMessage(cout, "§7[§3DEBUG§7] §r", message);
+    printMessage("§7[§3DEBUG§7] §r", message);
 }
 
 

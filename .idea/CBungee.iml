@@ -34,6 +34,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/numbers/BigInteger.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/numbers/BigIntegerAlgorithms.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/chat/ChatMessage.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/log/Terminal.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/log/LogUtils.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/encription/Cipper.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/server/ServerInfo.cpp" isTestSource="false" />
@@ -94,7 +95,7 @@
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_sleep.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_xattr.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_msgs.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_binmode.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_vms.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_msgs.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_vms.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_homedir.h" isTestSource="false" />
@@ -102,7 +103,6 @@
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_hugehelp.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_cb_dbg.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_homedir.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_vms.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_parsecfg.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_dirhie.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_convert.h" isTestSource="false" />
@@ -140,6 +140,7 @@
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_cb_rea.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_writeout.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_panykey.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/slist_wc.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_cb_rea.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_writeout.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_cb_prg.h" isTestSource="false" />
@@ -160,10 +161,10 @@
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_getparam.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_setopt.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_strdup.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/slist_wc.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_setopt.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_xattr.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/slist_wc.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_setopt.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_binmode.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/libcurl.pc.in" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/md5.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/ldap.c" isTestSource="false" />
@@ -438,8 +439,9 @@
       <sourceFolder url="file://$MODULE_DIR$/include/plugin/java/JavaReflectManager.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/plugin/PluginManager.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/plugin/Plugin.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/include/log/LogUtils.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/config/Configuration.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/log/LogUtils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/log/Terminal.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/numbers/BigIntegerUtils.hh" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/numbers/BigIntegerAlgorithms.hh" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/numbers/BigUnsignedInABase.hh" isTestSource="false" />

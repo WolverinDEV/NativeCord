@@ -17,7 +17,13 @@
 #include "include/plugin/PluginManager.h"
 #include "include/log/LogUtils.h"
 #include "include/plugin/java/JavaPluginManagerImpl.h"
+#include "include/log/Terminal.h"
 #include <vector>
+
+#include<stdio.h>
+#include<curses.h>
+#include<unistd.h>
+
 using namespace std;
 
 void error(const char* message){
@@ -75,7 +81,18 @@ void exitNativeCoord(){
     JavaPluginManagerImpl::instance->disable(); // Close the process
 }
 
+int preloadV(){
+    Terminal::setupTerminal();
+    Terminal::instance = new Terminal();
+    Terminal::instance->startReader();
+    return 0;
+}
+
+int preload = preloadV();
+
 int main(int argc, char** argv) {
+    logMessage("Hello world");
+
     JavaPluginManagerImpl* manager = new JavaPluginManagerImpl();
     if(!manager->enable()){
         logError("Cant enable plugin manager!");
@@ -125,20 +142,8 @@ int main(int argc, char** argv) {
         pthread_create(&threadHandle,NULL,(void* (*)(void*)) &clientConnect,NULL);
         //pthread_join(threadHandle,NULL);
 
-
-        string line;
         while (1){
-            getline(cin, line);
-            cout << "Having line: " << line << endl;
-            if(strcmp(line.c_str(),"end") == 0){
-                cout << "Stpping nativecord" << endl;
-                vector<PlayerConnection*> ccopy(PlayerConnection::connections);
-                for(vector<PlayerConnection*>::iterator it =ccopy.begin(); it != ccopy.end();it++)
-                    (*it)->disconnect(new ChatMessage("§cNativecord is shuting down."));
-                cout << "Exit nativecord!" << endl;
-                exitNativeCoord();
-                return 0;
-            }
+            sleep(1000);
         }
     }catch(Exception* ex){
         cout << "Exception: " << ex->what() << endl;

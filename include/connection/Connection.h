@@ -89,7 +89,6 @@ class Connection {
 
             delete handler->readerThread;
             handler->readerThread = nullptr;
-            handler->handleConnectionClosed();
         }
 
         Connection(Socket *socket) : socket(socket), stream(socket != nullptr ? new StreamedDataBuffer(socket) : nullptr) {
