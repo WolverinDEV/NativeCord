@@ -94,12 +94,7 @@ class Terminal {
         }
 
     protected:
-        virtual void handleLine(string message){
-            printMessage("Having line: "+message, false);
-            if(message.compare("stop") == 0 || message.compare("end") == 0 || message.compare("exit") == 0){
-                printMessage("§cStopping nativecord");
-            }
-        }
+        virtual void handleLine(string message);
     private:
         static struct termios orig_termios;
 

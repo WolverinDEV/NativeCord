@@ -7,7 +7,6 @@
 #include <iterator>
 #include <iostream>
 #include <unistd.h>
-#include <string.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include "cpr/cpr.h"
@@ -15,14 +14,9 @@
 #include "include/config/Configuration.h"
 #include "include/connection/PlayerConnection.h"
 #include "include/plugin/PluginManager.h"
-#include "include/log/LogUtils.h"
 #include "include/plugin/java/JavaPluginManagerImpl.h"
 #include "include/log/Terminal.h"
-#include <vector>
-
-#include<stdio.h>
-#include<curses.h>
-#include<unistd.h>
+#include "NativeCord.h"
 
 using namespace std;
 
@@ -67,16 +61,17 @@ void clientConnect(){
     }
 }
 
-pthread_t threadHandle;
-void exitNativeCoord(){
+pthread_t NativeCord::clientAcceptThread;
+
+void NativeCord::exitNativeCoord(){
     PlayerConnection::connections.clear();
     PlayerConnection::activeConnections.clear();
-    pthread_cancel(threadHandle);
-    pthread_join(threadHandle, NULL);
+    pthread_cancel(NativeCord::clientAcceptThread);
+    pthread_join(NativeCord::clientAcceptThread, NULL);
     ServerInfo::reset();
 
-    cout << "Buffers: " << DataBuffer::creations << endl;
-    cout << "Chat instances: " << ChatMessage::count << endl;
+    debugMessage("Buffers: " + to_string(DataBuffer::creations));
+    debugMessage("Chat instances: " + to_string(ChatMessage::count));
 
     JavaPluginManagerImpl::instance->disable(); // Close the process
 }
@@ -87,7 +82,6 @@ int preloadV(){
     Terminal::instance->startReader();
     return 0;
 }
-
 int preload = preloadV();
 
 int main(int argc, char** argv) {
@@ -112,6 +106,8 @@ int main(int argc, char** argv) {
     DataStorage* out = manager->storageImpl->fromJavaObject(jobj);
     cout << out->_toString() << endl;
     */
+
+    //TODO load plugin right
     if(manager->getLoadedPlugins().size() > 0) {
         manager->enablePlugin(manager->getLoadedPlugins()[0]);
         DataStorage storage;
@@ -139,14 +135,16 @@ int main(int argc, char** argv) {
         }
         ServerInfo::loadServers();
         logMessage("Configuration successfull loaded.");
-        pthread_create(&threadHandle,NULL,(void* (*)(void*)) &clientConnect,NULL);
-        //pthread_join(threadHandle,NULL);
+        pthread_create(&(NativeCord::clientAcceptThread),NULL,(void* (*)(void*)) &clientConnect,NULL);
+        //pthread_join(clientAcceptThread,NULL);
 
         while (1){
             sleep(1000);
         }
     }catch(Exception* ex){
-        cout << "Exception: " << ex->what() << endl;
+        logFatal("Having error on main thread: "+string(ex->what()));
+        logMessage("Exiting");
+        return 1;
     }
     return 0;
 }

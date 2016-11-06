@@ -424,6 +424,7 @@
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/server.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/post_tests.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/head_tests.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/NativeCord.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/json/json.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/cryption/Cipper.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/cryption/RSAUtil.h" isTestSource="false" />
