@@ -96,7 +96,9 @@ class Connection {
         }
 
         virtual ~Connection() {
+            debugMessage("§cDeleting connection");
             stopReaderTask(true);
+            debugMessage("§cReader task stopped");
             delete (stream);
             delete (socket);
         }
@@ -150,8 +152,10 @@ class Connection {
 
         void writePacket(DataBuffer *packetData) {
             pthread_mutex_lock(&mutex);
-            if(getState() == ConnectionState::CLOSED)
+            if(getState() == ConnectionState::CLOSED){
+                pthread_mutex_unlock(&mutex);
                 return;
+            }
             DataBuffer *target = nullptr;
             try{
                 if (threadshold != -1) {
@@ -188,8 +192,10 @@ class Connection {
                 }
             }catch(Exception* ex){
                 cout << "Having exception on write: " << ex->what() << endl;
+                pthread_mutex_unlock(&mutex);
                 closeChannel();
                 delete ex;
+                return;
             }
             if(target != nullptr)
                 delete target;
@@ -205,8 +211,10 @@ class Connection {
         void stopReaderTask(bool join = false){
             if(readerThread != nullptr){
                 pthread_cancel(*readerThread);
-                if(join)
+                if(join){
+                    debugMessage("Joining");
                     pthread_join(*readerThread, nullptr);
+                }
                 delete(readerThread);
             }
         }

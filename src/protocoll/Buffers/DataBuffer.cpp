@@ -66,7 +66,6 @@ int DataBuffer::read(const char *buffer, int length) {
 
 char DataBuffer::read() {
     if(this->buffer == NULL){
-        cout << "Null buffer" << endl;
         return 0;
     }
     checkReadableBytes(1);

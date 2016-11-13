@@ -44,19 +44,19 @@
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/session.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/body.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/payload.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/multipart.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/proxies.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/curlholder.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/error.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/max_redirects.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/cprtypes.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/cookies.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/multipart.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/digest.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/timeout.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/response.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/parameters.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/api.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/auth.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/cookies.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/cpr.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/util.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/include/cpr/defines.h" isTestSource="false" />
@@ -443,6 +443,7 @@
       <sourceFolder url="file://$MODULE_DIR$/include/utils/HTTPUtil.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/utils/EntityRewrite.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/utils/StringUtil.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/utils/VectorUtils.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/utils/Base64Utils.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/NativeCord.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/json/json.hpp" isTestSource="false" />

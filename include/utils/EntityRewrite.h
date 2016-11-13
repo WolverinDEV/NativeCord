@@ -7,20 +7,21 @@
 
 class EntityRewrite{
 public:
+        static int getEntityId(int old,int _new, int current){
+            if(current == _new)
+                return old;
+            return _new;
+        }
+
     static void replaceEntityId(int pid,DataBuffer* buffer,int old,int _new){
         if(old == _new)
             return;
         int current = buffer->readVarInt();
-        if(current == _new){
-            int temp = old;
-            old = _new;
-            _new = temp;
-        }else if(current != old)
-            return;
+        _new = getEntityId(old,_new,current);
         if(DataBuffer::getVarIntSize(old) != DataBuffer::getVarIntSize(_new)){
             if(DataBuffer::getVarIntSize(old) > DataBuffer::getVarIntSize(_new)){
                 //cout << "Push -1" << endl;
-                buffer->push(-1);
+                buffer->push(-(DataBuffer::getVarIntSize(old) - DataBuffer::getVarIntSize(_new)));
                 buffer->setWriterindex(0);
                 buffer->writeVarInt(pid);
                 buffer->writeVarInt(_new);
@@ -28,7 +29,7 @@ public:
                 return;
             } else {
                 //cout << "Push 1" << endl;
-                buffer->push(1);
+                buffer->push(DataBuffer::getVarIntSize(_new) - DataBuffer::getVarIntSize(old));
                 buffer->setWriterindex(0);
                 buffer->writeVarInt(pid);
                 buffer->writeVarInt(_new);
@@ -70,9 +71,21 @@ public:
     }
 
     static void entityRewrite47Server(int packetId, DataBuffer *buffer, int currentEntityId, int targetEntitryId){ //TODO 0x0D | 0x2D | 0x42
-        if(packetId == 0x04 || packetId == 0x0A || packetId == 0x0B || packetId == 0x0C || packetId >= 0x0E && packetId <= 0x1E || packetId == 0x20 || packetId == 0x25 || packetId == 0x2C || packetId == 0x49){
+        if(packetId == 0x04 || packetId == 0x0A || packetId == 0x0B || packetId == 0x0C || (packetId >= 0x0E && packetId <= 0x1E && packetId != 0x1A) || packetId == 0x20 || packetId == 0x25 || packetId == 0x2C || packetId == 0x49){
             replaceEntityId(packetId,buffer,currentEntityId,targetEntitryId);
         }
+
+        int currentIndex = buffer->getReaderindex();
+        int writerIndex = buffer->getWriterindex();
+
+        if(packetId == 0x1A){
+            int current = getEntityId(currentEntityId, targetEntitryId, buffer->readInt());
+            buffer->setWriterindex(currentIndex);
+            buffer->writeInt(current);
+        }
+
+        buffer->setWriterindex(writerIndex);
+        buffer->setReaderindex(currentIndex);
     }
 
     static void entityRewrite47Client(int packetId, DataBuffer *buffer, int currentEntityId, int targetEntitryId){ //TODO Nothink

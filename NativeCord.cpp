@@ -64,6 +64,13 @@ void clientConnect(){
 pthread_t NativeCord::clientAcceptThread;
 
 void NativeCord::exitNativeCoord(){
+    vector<PlayerConnection*> connections (PlayerConnection::activeConnections);
+
+    ChatMessage disconnectMessage ("Nativecord is shutting down.");
+    for(vector<PlayerConnection*>::iterator it = connections.begin(); it != connections.end(); it++){
+        it.operator*()->disconnect(&disconnectMessage, false);
+    }
+
     PlayerConnection::connections.clear();
     PlayerConnection::activeConnections.clear();
     pthread_cancel(NativeCord::clientAcceptThread);
@@ -98,7 +105,7 @@ int main(int argc, char** argv) {
     for(vector<Plugin*>::iterator it = plugins.begin(); it != plugins.end(); it++) {
         Plugin* plugin = *it;
         stringstream ss;
-        ss << "Plugin: " << plugin->getName() << " (Version: " << plugin->getVersion() << ") Authors: ";
+        ss << "Enabling plugin " << plugin->getName() << " (Version: " << plugin->getVersion() << ") Authors: ";
         vector<string> v (plugin->getAuthors());
         if(!v.empty()){
             bool first = true;
@@ -111,6 +118,7 @@ int main(int argc, char** argv) {
         }else
             ss << "unknown";
         logMessage(ss.str());
+        JavaPluginManagerImpl::instance->enablePlugin(*it);
     }
     //manager->disable();
     //delete manager;

@@ -301,14 +301,13 @@ private:
 
         virtual void checkReadableBytes(int bytes) {
             if (readableBytes() < bytes)
-                throw new Exception("Cant read n bytes!");
+                throw Exception("Cant read n bytes!");
         }
 
         virtual void checkWriteableBytes(int bytes) {
             int n = writeableBytes();
             if (n != -1 && n < bytes) {
-                cout << "N: " << n << " B: " << bytes << " F: " << (bool) fixedLength << endl;
-                throw new Exception("Cant write n bytes!");
+                throw Exception("Cant write n bytes!");
             }
         }
 

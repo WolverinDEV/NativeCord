@@ -6,6 +6,7 @@
 #include "../../include/plugin/java/JavaPluginManagerImpl.h"
 #include "../../include/cryption/RSAUtil.h"
 #include "../../include/utils/Base64Utils.h"
+#include "../../include/utils/VectorUtils.h"
 
 vector<PlayerConnection*> PlayerConnection::connections = vector<PlayerConnection*>(); //activeConnections
 vector<PlayerConnection*> PlayerConnection::activeConnections = vector<PlayerConnection*>();
@@ -23,8 +24,11 @@ PlayerConnection::PlayerConnection(sockaddr_in *adress, Socket *socket)  : Conne
 }
 
 PlayerConnection::~PlayerConnection(){
+    debugMessage("§cDeleting player connection");
     delete (this->handshake);
+    debugMessage("§cDeleting target");
     delete (this->currentTargetConnection);
+    debugMessage("§cDeleting target done");
     delete (this->tabManager);
     delete (this->scoreManager);
     delete (this->packetHandler);
@@ -33,9 +37,10 @@ PlayerConnection::~PlayerConnection(){
     if(this->lastDisconnectMessage != nullptr)
         delete this->lastDisconnectMessage;
     if(this->javaInstance != nullptr){
+        debugMessage("Removing java instance");
         JavaPluginManagerImpl::instance->getRefelectManager()->unregisterPlayer(this);
         JavaPluginManagerImpl::instance->getEnv()->DeleteGlobalRef(this->javaInstance);
-    }
+    } else debugMessage("No java instance");
     for(std::vector<ServerConnection*>::iterator it = this->pendingConnections.begin(); it != this->pendingConnections.end(); ++it) {
         if ((*it)->getState() == ConnectionState::CLOSED) {
             //delete *it;
@@ -48,7 +53,7 @@ PlayerConnection::~PlayerConnection(){
     pendingConnections.clear();
 }
 
-void PlayerConnection::disconnect(ChatMessage* message) {
+void PlayerConnection::disconnect(ChatMessage* message, bool deleteMessage = true) {
     if(message != NULL) {
         if (getState() == LOGIN) {
             DataBuffer *buffer = new DataBuffer();
@@ -59,6 +64,7 @@ void PlayerConnection::disconnect(ChatMessage* message) {
         } else if (getState() == PLAYING) {
             writePacket(getClientVersion(), new PacketPlayDisconnect(message));
         }
+        if(deleteMessage)
         delete message;
     }
     closeChannel();
@@ -161,10 +167,8 @@ void PlayerConnection::closeChannel() {
         return;
     this->open = false;
     Connection::closeChannel();
-    PlayerConnection::connections.erase(std::find(PlayerConnection::connections.begin(),PlayerConnection::connections.end(), this));
-    vector<PlayerConnection*>::iterator rit = std::find(PlayerConnection::activeConnections.begin(),PlayerConnection::activeConnections.end(), this);
-    if(rit != PlayerConnection::activeConnections.end())
-        PlayerConnection::activeConnections.erase(rit);
+    VectorUtils::remove(PlayerConnection::connections, this);
+    VectorUtils::remove(PlayerConnection::activeConnections, this);
     pthread_t  thread;
     pthread_create(&thread,NULL,&runlater,this);
 }

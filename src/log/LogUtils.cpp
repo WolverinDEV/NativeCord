@@ -23,7 +23,7 @@ void logMessage(std::string message){
     printMessage("§7[§6§lLOG§7] §r", message);
 }
 void logError(std::string message){
-    printMessage("§7[§cERROR§7] §r", message);
+    printMessage("§7[§cERROR§7] §r"ANSI_RED, message);
 }
 void logFatal(std::string message){
     printMessage("§7[§4"+string(ANSI_BOLD)+ANSI_REVERSE+"FATAL§7] §r", message);
@@ -40,5 +40,5 @@ void NATIVE_debugMessage(JNIEnv* env,jclass,jstring message){
     debugMessage(string("§7[§5JAVA§7] §r")+env->GetStringUTFChars(message, 0));
 }
 void NATIVE_logError(JNIEnv* env,jclass,jstring message){
-    logError(string("§7[§5JAVA§7] §r")+env->GetStringUTFChars(message, 0));
+    logError(string("§7[§5JAVA§7] §r"ANSI_RED)+env->GetStringUTFChars(message, 0));
 }

@@ -35,7 +35,7 @@ class PlayerConnection : public Connection {
 
         ~PlayerConnection();
 
-        void disconnect(ChatMessage *message);
+        void disconnect(ChatMessage *message, bool deleteMessage = true);
 
         PacketHandshake *getHandshake() const {
             return handshake;
