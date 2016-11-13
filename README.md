@@ -51,5 +51,5 @@ TODO List:
 - May be add Minecraft 1.7 support
 
 Buglist:
+- Entity rewrite not working right!
 - Currently no known bugs. Most bugs are on the todo list as a future.
-- Cant change network host (dont bind on that)
