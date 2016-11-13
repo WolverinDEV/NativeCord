@@ -17,6 +17,7 @@
 #include "../../../include/cryption/RSAUtil.h"
 #include "../../../include/utils/Base64Utils.h"
 #import "cpr/cpr.h"
+#include "../../../include/NativeCord.h"
 #include "../../../include/utils/HTTPUtil.h"
 #include "../../../include/plugin/event/EventHelper.h"
 #include "../../../include/plugin/java/JavaPluginManagerImpl.h"
@@ -200,7 +201,7 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
         vector<string> parts = StringUtils::split(message," ");
         debugMessage("Having chat message: " + message + " (" + parts[0] + ")");
         if(strcmp(parts[0].c_str(),"/ncord") == 0){
-            pconnection->sendMessage("§5§l» §7NativeCord by WolverinDEV version 0.3-ALPHA");
+            pconnection->sendMessage("§5§l» §7NativeCord by WolverinDEV version " NATIVECORD_VERSION);
             return;
         }
         if(strcmp(parts[0].c_str(),"/server") == 0){

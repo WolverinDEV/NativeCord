@@ -24,11 +24,8 @@ PlayerConnection::PlayerConnection(sockaddr_in *adress, Socket *socket)  : Conne
 }
 
 PlayerConnection::~PlayerConnection(){
-    debugMessage("§cDeleting player connection");
     delete (this->handshake);
-    debugMessage("§cDeleting target");
     delete (this->currentTargetConnection);
-    debugMessage("§cDeleting target done");
     delete (this->tabManager);
     delete (this->scoreManager);
     delete (this->packetHandler);
@@ -37,10 +34,9 @@ PlayerConnection::~PlayerConnection(){
     if(this->lastDisconnectMessage != nullptr)
         delete this->lastDisconnectMessage;
     if(this->javaInstance != nullptr){
-        debugMessage("Removing java instance");
         JavaPluginManagerImpl::instance->getRefelectManager()->unregisterPlayer(this);
         JavaPluginManagerImpl::instance->getEnv()->DeleteGlobalRef(this->javaInstance);
-    } else debugMessage("No java instance");
+    }
     for(std::vector<ServerConnection*>::iterator it = this->pendingConnections.begin(); it != this->pendingConnections.end(); ++it) {
         if ((*it)->getState() == ConnectionState::CLOSED) {
             //delete *it;
@@ -97,7 +93,7 @@ void PlayerConnection::sendMessage(string message) {
 }
 void PlayerConnection::sendMessage(ChatMessage* message) {
     DataBuffer* buffer = new DataBuffer();
-    buffer->writeVarInt(getClientVersion() == 46 ? 0x02 : 0x0F);
+    buffer->writeVarInt(getClientVersion() == 47 ? 0x02 : 0x0F);
     buffer->writeString(message->toString());
     buffer->write(0);
     writePacket(buffer);

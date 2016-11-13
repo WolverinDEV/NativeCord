@@ -42,5 +42,7 @@ link_libraries(/usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so) #TODO 
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
 
+add_definitions(-DNATIVECORD_VERSION="0.5 ALPHA")
+
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} ${CPR_LIBRARIES})

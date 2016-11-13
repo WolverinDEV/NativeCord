@@ -134,7 +134,6 @@
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_cb_rea.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_writeout.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_panykey.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/slist_wc.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_cb_rea.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_writeout.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_cb_prg.h" isTestSource="false" />
@@ -155,10 +154,11 @@
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_getparam.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_setopt.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_strdup.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_setopt.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/slist_wc.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_xattr.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/slist_wc.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_binmode.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_setopt.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/libcurl.pc.in" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/md5.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/ldap.c" isTestSource="false" />

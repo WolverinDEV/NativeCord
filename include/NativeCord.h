@@ -7,7 +7,14 @@
 
 #include <pthread.h>
 
+#ifndef NATIVECORD_VERSION
+    #define NATIVECORD_VERSION "unknown"
+#else
+    //Defined over cmake
+#endif
+
 namespace NativeCord {
+
     extern void exitNativeCoord();
     extern pthread_t clientAcceptThread;
 }
