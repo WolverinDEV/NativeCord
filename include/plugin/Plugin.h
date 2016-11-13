@@ -27,6 +27,7 @@ class Plugin {
 
         virtual std::string getName() = 0;
         virtual std::string getVersion() = 0;
+        virtual vector<std::string> getAuthors() = 0;
 
         virtual void onLoad(){};
         virtual void onEnable(){};

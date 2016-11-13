@@ -14,12 +14,39 @@ JavaPlugin::~JavaPlugin() {
 }
 
 string JavaPlugin::getName() {
-    return "nundefined";
+    return string((char*) JavaPluginManagerImpl::instance->runOperation([&](JNIEnv* env){
+        jobject description = env->GetObjectField(this->pluginInstance, JavaPluginManagerImpl::instance->getRefelectManager()->f_plugin_description);
+        jstring field = (jstring) env->GetObjectField(description, JavaPluginManagerImpl::instance->getRefelectManager()->f_pluginDescription_name);
+        jboolean _false = JNI_FALSE;
+        return (void*) env->GetStringUTFChars(field, &_false);
+    }));
 }
 
 string JavaPlugin::getVersion() {
-    return "nundefined";
+    return string((char*) JavaPluginManagerImpl::instance->runOperation([&](JNIEnv* env){
+        jobject description = env->GetObjectField(this->pluginInstance, JavaPluginManagerImpl::instance->getRefelectManager()->f_plugin_description);
+        jstring field = (jstring) env->GetObjectField(description, JavaPluginManagerImpl::instance->getRefelectManager()->f_pluginDescription_version);
+        jboolean _false = JNI_FALSE;
+        return (void*) env->GetStringUTFChars(field, &_false);
+    }));
 }
+
+vector<string> JavaPlugin::getAuthors() {
+    JNIEnv* env = JavaPluginManagerImpl::instance->getEnv();
+    jobject description = env->GetObjectField(this->pluginInstance, JavaPluginManagerImpl::instance->getRefelectManager()->f_plugin_description);
+    jobject authorList = env->GetObjectField(description, JavaPluginManagerImpl::instance->getRefelectManager()->f_pluginDescription_authors);
+
+    int size = env->CallIntMethod(authorList, JavaPluginManagerImpl::instance->getRefelectManager()->m_list_size);
+    vector<string> authors;
+    jboolean _false = JNI_FALSE;
+
+    for(int i = 0;i<size;i++){
+        jstring author = (jstring) env->CallObjectMethod(authorList, JavaPluginManagerImpl::instance->getRefelectManager()->m_list_get, (jint) i);
+        authors.push_back(string(env->GetStringUTFChars(author, &_false)));
+    }
+    return authors;
+}
+
 
 void JavaPlugin::load() {
     debugMessage("Invoke load methods ("+to_string((long) this->pluginInstance)+")");

@@ -53,6 +53,7 @@ bool JavaReflectManager::loadFields() {
         logError("Cant find field nativePluginAddress in plugin class!");
         return 0;
     }
+    f_plugin_description = env->GetFieldID(clazz_plugin, "description","Ldev/wolveringer/nativecord/plugin/PluginDescription;");
 
     m_plugin_load = env->GetMethodID(clazz_plugin,"load","()V");
     m_plugin_enable = env->GetMethodID(clazz_plugin,"enable","()V");
@@ -62,6 +63,12 @@ bool JavaReflectManager::loadFields() {
         return 0;
     }
 
+    clazz_pluginDescription = env->FindClass("dev/wolveringer/nativecord/plugin/PluginDescription");
+    f_pluginDescription_authors = env->GetFieldID(clazz_pluginDescription, "authors", "Ljava/util/List;");
+    f_pluginDescription_name = env->GetFieldID(clazz_pluginDescription, "name", "Ljava/lang/String;");
+    f_pluginDescription_version = env->GetFieldID(clazz_pluginDescription, "version", "Ljava/lang/String;");
+    if(trueError(clazz_pluginDescription == NULL || f_pluginDescription_authors == NULL || f_pluginDescription_name == NULL || f_pluginDescription_version == NULL, "Some plugin description fields are null. ("+to_string(clazz_pluginDescription == NULL)+"/"+to_string(f_pluginDescription_authors == NULL)+"/"+to_string(f_pluginDescription_name == NULL)+")"))
+        return 0;
 
     clazz_datastorage = env->FindClass("dev/wolveringer/nativecord/impl/DataStorage");
     if(clazz_datastorage == NULL){
@@ -137,8 +144,10 @@ bool JavaReflectManager::loadFields() {
     clazz_list = env->FindClass("java/util/ArrayList");
     m_list_add = env->GetMethodID(clazz_list,"add","(Ljava/lang/Object;)Z");
     m_list_remove = env->GetMethodID(clazz_list,"remove","(Ljava/lang/Object;)Z");
+    m_list_size = env->GetMethodID(clazz_list,"size","()I");
+    m_list_get = env->GetMethodID(clazz_list,"get","(I)Ljava/lang/Object;");
 
-    if(trueError(m_list_add == NULL || m_list_remove == NULL, "Some list fields are null!")) return 0;
+    if(trueError(m_list_add == NULL || m_list_remove == NULL || m_list_size == NULL || m_list_get == NULL, "Some list fields are null!")) return 0;
 
     clazz_event = env->FindClass("dev/wolveringer/nativecord/api/event/Event");
     f_event_storage = env->GetFieldID(clazz_event, "storage","Ldev/wolveringer/nativecord/impl/DataStorage;");

@@ -34,7 +34,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/numbers/BigInteger.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/numbers/BigIntegerAlgorithms.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/chat/ChatMessage.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/log/Terminal.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/log/LogUtils.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/encription/Cipper.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/server/ServerInfo.cpp" isTestSource="false" />
@@ -95,7 +94,7 @@
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_sleep.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_xattr.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_msgs.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_vms.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_binmode.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_msgs.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_vms.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_homedir.h" isTestSource="false" />
@@ -103,6 +102,7 @@
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_hugehelp.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_cb_dbg.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_homedir.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_vms.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_parsecfg.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_dirhie.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_convert.h" isTestSource="false" />
@@ -164,7 +164,6 @@
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_setopt.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_xattr.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/slist_wc.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/src/tool_binmode.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/libcurl.pc.in" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/md5.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/ldap.c" isTestSource="false" />
@@ -440,9 +439,8 @@
       <sourceFolder url="file://$MODULE_DIR$/include/plugin/java/JavaReflectManager.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/plugin/PluginManager.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/plugin/Plugin.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/include/config/Configuration.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/log/LogUtils.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/include/log/Terminal.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/config/Configuration.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/numbers/BigIntegerUtils.hh" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/numbers/BigIntegerAlgorithms.hh" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/numbers/BigUnsignedInABase.hh" isTestSource="false" />
@@ -482,8 +480,8 @@
       <library name="Header Search Paths">
         <CLASSES>
           <root url="file:///usr/lib/jvm/java-8-oracle/include" />
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.8/include" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
           <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/CBungee-7d74d14a/7d74d14a/Release/libs/cpr/opt/curl" />
@@ -493,8 +491,8 @@
         </CLASSES>
         <SOURCES>
           <root url="file:///usr/lib/jvm/java-8-oracle/include" />
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.8/include" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
           <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/CBungee-7d74d14a/7d74d14a/Release/libs/cpr/opt/curl" />

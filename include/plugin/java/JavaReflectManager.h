@@ -28,9 +28,15 @@ class JavaReflectManager {
 
         jclass clazz_plugin;
         jfieldID f_plugin_nPluginId;
+        jfieldID f_plugin_description;
         jmethodID m_plugin_load;
         jmethodID m_plugin_enable;
         jmethodID m_plugin_disable;
+
+        jclass clazz_pluginDescription;
+        jfieldID f_pluginDescription_name;
+        jfieldID f_pluginDescription_version;
+        jfieldID f_pluginDescription_authors;
 
         jclass clazz_datastorage;
         jfieldID f_datastorage_stringLength;
@@ -79,6 +85,8 @@ class JavaReflectManager {
         jclass clazz_list;
         jmethodID m_list_add;
         jmethodID m_list_remove;
+        jmethodID m_list_size;
+        jmethodID m_list_get;
 
         jclass clazz_event;
         jfieldID f_event_storage;

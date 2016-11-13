@@ -9,13 +9,13 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <CXXTerminal/Terminal.h>
 #include "cpr/cpr.h"
 #include "include/utils/SocketUtil.h"
 #include "include/config/Configuration.h"
 #include "include/connection/PlayerConnection.h"
 #include "include/plugin/PluginManager.h"
 #include "include/plugin/java/JavaPluginManagerImpl.h"
-#include "include/log/Terminal.h"
 #include "NativeCord.h"
 
 using namespace std;
@@ -76,13 +76,13 @@ void NativeCord::exitNativeCoord(){
     JavaPluginManagerImpl::instance->disable(); // Close the process
 }
 
+
 int preloadV(){
-    Terminal::setupTerminal();
-    Terminal::instance = new Terminal();
-    Terminal::instance->startReader();
+    Terminal::setup();
     return 0;
 }
 int preload = preloadV();
+
 
 int main(int argc, char** argv) {
     logMessage("Hello world");
@@ -93,25 +93,24 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    /*
-    DataStorage* handle = new DataStorage;
-    handle->longs.push_back(2222);
-    handle->ints.push_back(123);
-    handle->bytes.push_back(125);
-    handle->floats.push_back(1.23);
-    handle->doubles.push_back(3.21);
-    handle->strings.push_back("Hello world");
-    jobject  jobj = manager->storageImpl->toJavaObject(*handle);
-
-    DataStorage* out = manager->storageImpl->fromJavaObject(jobj);
-    cout << out->_toString() << endl;
-    */
-
     //TODO load plugin right
-    if(manager->getLoadedPlugins().size() > 0) {
-        manager->enablePlugin(manager->getLoadedPlugins()[0]);
-        DataStorage storage;
-        manager->callEvent(EventType::PLAYER_HANDSCHAKE_EVENT, &storage);
+    vector<Plugin*> plugins (manager->getLoadedPlugins());
+    for(vector<Plugin*>::iterator it = plugins.begin(); it != plugins.end(); it++) {
+        Plugin* plugin = *it;
+        stringstream ss;
+        ss << "Plugin: " << plugin->getName() << " (Version: " << plugin->getVersion() << ") Authors: ";
+        vector<string> v (plugin->getAuthors());
+        if(!v.empty()){
+            bool first = true;
+            for(vector<string>::iterator ait = v.begin(); ait != v.end(); ait++){
+                if(!first)
+                    ss << ", ";
+                ss  << *ait;
+                first = false;
+            }
+        }else
+            ss << "unknown";
+        logMessage(ss.str());
     }
     //manager->disable();
     //delete manager;
@@ -139,7 +138,13 @@ int main(int argc, char** argv) {
         //pthread_join(clientAcceptThread,NULL);
 
         while (1){
-            sleep(1000);
+            string command = Terminal::getInstance()->readLine(ANSI_GRAY ANSI_BOLD"> "ANSI_PURPLE);
+            logMessage("§aHaving command "+command);
+
+            if(command.compare("end") == 0){
+                NativeCord::exitNativeCoord();
+                return 0;
+            }
         }
     }catch(Exception* ex){
         logFatal("Having error on main thread: "+string(ex->what()));

@@ -23,6 +23,9 @@ class JavaPlugin : public Plugin {
         virtual string getName() override;
 
         virtual string getVersion() override;
+
+        virtual vector<string> getAuthors() override;
+
     private:
         int checkSumA(){
             return -1;
