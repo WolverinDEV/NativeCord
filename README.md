@@ -1,4 +1,4 @@
-# NativeCord A very fast C++ proxy for minecraft.
+# NativeCord, A very fast C++ proxy for minecraft.
 
 [![Join the chat at https://gitter.im/WolverinDEV/NativeCord](https://badges.gitter.im/WolverinDEV/NativeCord.svg)](https://gitter.im/WolverinDEV/NativeCord?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
