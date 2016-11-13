@@ -309,6 +309,5 @@ void PlayerConnection::handleException(Exception *data) {
 }
 
 void PlayerConnection::handlePacket(DataBuffer *data) {
-    debugMessage("handling packet");
     this->packetHandler->handlePacket(data);
 }

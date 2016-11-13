@@ -22,11 +22,9 @@ class Connection {
             while (1) {
                 try {
                     if(handler->stream == nullptr){
-                        cout << "Invalid stream" << endl;
                         break;
                     }
                     if(handler->state == ConnectionState::CLOSED){
-                        cout << "Closed channel" << endl;
                         break;
                     }
                     int packetLength = handler->stream->readVarInt();
@@ -79,7 +77,6 @@ class Connection {
                     if (dynamic_cast<StreamClosedException *>(&ex) != NULL) {
                         cout << "Connection closed!" << endl;
                     }
-                    cout << "Client reader exception: " << ex.what() << endl;
                     handler->handleException(&ex);
                     if(handler->getState() != ConnectionState::CLOSED)
                         handler->closeChannel();
@@ -191,7 +188,6 @@ class Connection {
                     stream->write(packetData->getBuffer(), packetData->getWriterindex());
                 }
             }catch(Exception* ex){
-                cout << "Having exception on write: " << ex->what() << endl;
                 pthread_mutex_unlock(&mutex);
                 closeChannel();
                 delete ex;

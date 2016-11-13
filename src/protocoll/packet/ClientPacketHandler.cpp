@@ -29,7 +29,6 @@ void ClientPacketHandler::handlePacketHandschake(const int packetId, DataBuffer 
     PacketHandshake* handshake;
     switch (packetId) {
         case 0x00:
-            cout << "Read packet" << endl;
             handshake = new PacketHandshake();
             handshake->read(-1, buffer);
             pconnection->setHandshake(handshake);
@@ -41,7 +40,7 @@ void ClientPacketHandler::handlePacketHandschake(const int packetId, DataBuffer 
                     connection->setState(ConnectionState ::LOGIN);
                     break;
                 default:
-                    cout << "Cant find state: " << handshake->getState() << endl;
+                    logError("Handschake: Cant find state "+handshake->getState());
                     break;
             }
 
