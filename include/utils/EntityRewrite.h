@@ -73,6 +73,7 @@ public:
     static void entityRewrite47Server(int packetId, DataBuffer *buffer, int currentEntityId, int targetEntitryId){ //TODO 0x0D | 0x2D | 0x42
         if(packetId == 0x04 || packetId == 0x0A || packetId == 0x0B || packetId == 0x0C || (packetId >= 0x0E && packetId <= 0x1E && packetId != 0x1A) || packetId == 0x20 || packetId == 0x25 || packetId == 0x2C || packetId == 0x49){
             replaceEntityId(packetId,buffer,currentEntityId,targetEntitryId);
+            return;
         }
 
         int currentIndex = buffer->getReaderindex();

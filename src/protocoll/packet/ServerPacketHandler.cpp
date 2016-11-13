@@ -118,7 +118,7 @@ void entityRewriteServer(int packetId, DataBuffer *buffer, ServerConnection *con
 void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
     int rindex = buffer->getReaderindex();
     int clientVersion = ((ServerConnection*)connection)->getPlayerConnection()->getClientVersion();
-    if(packetId == 0x23 && clientVersion > 46 || packetId == 0x01 && clientVersion == 46) { //TODO 1.8 The packed sended twice or somethink like that lol? idk
+    if(packetId == 0x23 && clientVersion > 47 || packetId == 0x01 && clientVersion == 47) { //TODO 1.8 The packed sended twice or somethink like that lol? idk
         int playerId = buffer->readInt();
         bool del = true; //First time must send
         if(((ServerConnection*)connection)->getPlayerConnection()->getPlayerId() == -1) { //player version isnt defined
@@ -142,13 +142,13 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
         if(del)
           return;
     }
-    if(packetId == 0x2D && clientVersion > 46 || packetId == 0x38 && clientVersion == 46) {
+    if(packetId == 0x2D && clientVersion > 47 || packetId == 0x38 && clientVersion == 47) {
         ((ServerConnection *) connection)->getPlayerConnection()->getTabManager()->handleTabPacket(buffer);
     }
-    if(packetId == 0x3F && clientVersion > 46 || packetId == 0x3B && clientVersion == 46) {
+    if(packetId == 0x3F && clientVersion > 47 || packetId == 0x3B && clientVersion == 47) {
         ((ServerConnection *) connection)->getPlayerConnection()->getScoreboardManager()->handleObjectivePacket(buffer);
     }
-    if(packetId == 0x1A && clientVersion > 46 || packetId == 0x40 && clientVersion == 46) {
+    if(packetId == 0x1A && clientVersion > 47 || packetId == 0x40 && clientVersion == 47) {
         //Kick packet
         if(!((ServerConnection*)connection)->getPlayerConnection()->getFallbackServers().empty()){
             ((ServerConnection*)connection)->getPlayerConnection()->sendDimswitch();
