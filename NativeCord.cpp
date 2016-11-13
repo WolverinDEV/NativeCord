@@ -16,7 +16,7 @@
 #include "include/connection/PlayerConnection.h"
 #include "include/plugin/PluginManager.h"
 #include "include/plugin/java/JavaPluginManagerImpl.h"
-#include "NativeCord.h"
+#include "include/NativeCord.h"
 
 using namespace std;
 
