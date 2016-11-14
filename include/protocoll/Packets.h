@@ -209,12 +209,11 @@ public:
         buffer->writeInt(dimension);
         buffer->write(difficulty);
         buffer->write(gamemode);
-        cout << "Write level: " << level.c_str() << endl;
         buffer->writeString(level);
     }
 
     virtual int getPacketId(int clientVersion) override {
-        return clientVersion > 46 ? 0x33 : 0x07;
+        return clientVersion > 47 ? 0x33 : 0x07;
     }
 
 private:
@@ -255,7 +254,7 @@ public:
     }
 
     virtual int getPacketId(int clientVersion) override {
-        return clientVersion == 46 ? 0x40 : 0x1A;
+        return clientVersion == 47 ? 0x40 : 0x1A;
     }
         ChatMessage* getMessage(){
             return message;

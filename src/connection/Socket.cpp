@@ -4,13 +4,9 @@
 
 #include <poll.h>
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #include "../../include/connection/Socket.h"
 #include "../../include/log/LogUtils.h"
@@ -36,8 +32,8 @@ int Socket::readBytes(char *buffer, int length, int timeout = 5000) {
     while (readed != length){
         if(!connected)
             return -1;
-        if(!hasData(timeout-(TimeUtils::getCurrentTimeMillis()-start)))
-            return 0;
+        //if(!hasData(timeout-(TimeUtils::getCurrentTimeMillis()-start)))
+        //return 0;
         int r = read(this->fd,buffer+readed,length-readed);
         if(r > 0) {
             readed += r;
@@ -53,9 +49,11 @@ int Socket::readBytes(char *buffer, int length, int timeout = 5000) {
         if(r == 0)
             return r;
 #endif
-        if(r <= 0){
-            return r;
-        }
+        if(r < 0)
+            if(errno != EAGAIN){
+                debugMessage("Read error: "+errno);
+                return r;
+            }
         if(TimeUtils::getCurrentTimeMillis()-start > timeout)
             return 0;
         usleep(1000);
@@ -110,7 +108,15 @@ int Socket::getFd() const {
 void Socket::connect() {
     fd = SocketUtil::createTCPFD(this->host.c_str(), this->port);
     if(fd > 0){
-        this->pollFd.fd = fd;
+        setFD(fd);
         connected = true;
     }
+}
+
+void Socket::setFD(int fd) {
+    this->pollFd.fd = fd;
+    int flags = fcntl(fd, F_GETFL, 0);
+    if(fcntl(fd, F_SETFL, flags | O_NONBLOCK) != 0)
+        logError("§cCant set nonblock");
+    debugMessage("Changed fd to "+to_string(fd));
 }

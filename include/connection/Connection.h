@@ -115,7 +115,7 @@ class Connection {
             return stream;
         }
 
-        ConnectionState getState() const {
+        ConnectionState getState() {
             return state;
         }
 
@@ -222,8 +222,10 @@ class Connection {
             }
         }
 
-    protected:
         bool open = false;
+        bool closing = false;
+    protected:
+        ConnectionState state = ConnectionState::HANDSHAKING;
 
         virtual void handleConnectionClosed() = 0;
         virtual void handleException(Exception* data) = 0;
@@ -233,7 +235,6 @@ class Connection {
         pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
         Socket *socket = nullptr;
         StreamedDataBuffer *stream = nullptr;
-        ConnectionState state = ConnectionState::HANDSHAKING;
         int threadshold = -1;
 };
 

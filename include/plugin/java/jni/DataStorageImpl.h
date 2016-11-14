@@ -19,7 +19,7 @@ class DataStorageImpl {
         DataStorageImpl(JavaPluginManagerImpl& handle) : handle(handle) {
 
         }
-        DataStorage* fromJavaObject(jobject object);
+        DataStorage fromJavaObject(jobject object);
         void fromJavaObject(jobject object,DataStorage* buffer);
 
         jobject toJavaObject(DataStorage& storage);

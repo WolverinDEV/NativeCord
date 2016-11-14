@@ -48,10 +48,12 @@ ServerInfo *ServerConnection::getServerInfo() const {
 }
 
 void ServerConnection::handleConnectionClosed() {
+    getPlayerConnection()->setCurrentTargetConnection(nullptr);
     if(getPlayerConnection()->getState() == ConnectionState::LOGIN) {
         getPlayerConnection()->connectToNextFallback();
+        return;
     }
-    if(getPlayerConnection()->getCurrentTargetConnection() == nullptr && getPlayerConnection()->getCurrentTargetConnection()->getState() != ConnectionState::CLOSED){
+    if(getPlayerConnection()->getCurrentTargetConnection() == nullptr || getPlayerConnection()->getCurrentTargetConnection()->getState() != ConnectionState::CLOSED){
         if(getPlayerConnection()->getFallbackServers().empty())
             getPlayerConnection()->disconnect(new ChatMessage("§fNative-Proxy:\n§cCant connect to target server."));
         else
@@ -67,7 +69,7 @@ void ServerConnection::handleException(Exception *ex) {
         return;
     if(getState() == ConnectionState::LOGIN){
         if(getPlayerConnection()->getFallbackServers().empty())
-            disconnect(new ChatMessage(string("§fNative-Proxy:\n§cAn exception was thrown.\n§l» §7Message: §5")+ex->what()));
+            getPlayerConnection()->disconnect(new ChatMessage(string("§fNative-Proxy:\n§cAn exception was thrown.\n§l» §7Message: §5")+ex->what()));
     } else {
         getPlayerConnection()->sendMessage(string("§c§l» §7An exception was thrown.\n§6§l» §7Message: §f")+ex->what());
     }
@@ -75,4 +77,11 @@ void ServerConnection::handleException(Exception *ex) {
 
 void ServerConnection::handlePacket(DataBuffer *data) {
     this->phandler->handlePacket(data);
+}
+
+void ServerConnection::closeChannel() {
+    if(this->state == ConnectionState::CLOSED)
+        return;
+    Connection::closeChannel();
+    handleConnectionClosed();
 }

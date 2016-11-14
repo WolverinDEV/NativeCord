@@ -49,6 +49,8 @@ class ServerConnection : public Connection {
             return (ServerPacketHandler*) phandler;
         }
 
+        virtual void closeChannel() override;
+
     protected:
         virtual void handleConnectionClosed() override;
 

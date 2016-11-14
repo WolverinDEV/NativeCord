@@ -247,8 +247,7 @@ bool JavaPluginManagerImpl::flushException() {
     return 0;
 }
 
-void JavaPluginManagerImpl::callEvent(EventType type, DataStorage *storage) {
-    debugMessage("Callevent: "+EventHelper::EventTypeName[type]);
+void JavaPluginManagerImpl::callEvent(EventType type, DataStorage* storage) {
     jobject obj = getEnv()->NewGlobalRef(EventHelper::createJavaInstance(this,type,storage));
 
     for(vector<Plugin*>::iterator it = this->plugins.begin(); it != this->plugins.end();it++){
@@ -257,6 +256,8 @@ void JavaPluginManagerImpl::callEvent(EventType type, DataStorage *storage) {
         JavaPlugin* plugin = (JavaPlugin*) *it;
         plugin->callEvent(type,obj);
     }
+    DataStorage storage1 = getStorageImpl()->fromJavaObject(getEnv()->GetObjectField(obj, getRefelectManager()->f_event_storage));
+    *storage = storage1;
     getEnv()->DeleteGlobalRef(obj);
 }
 

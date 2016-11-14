@@ -9,10 +9,13 @@
 #include <string>
 #include <sstream>
 #include <jni.h>
+#include "../../../log/LogUtils.h"
 
 using namespace std;
 
 struct DataStorage {
+    DataStorage(){}
+
     vector<string> strings;
     vector<uint64_t> longs;
     vector<uint32_t> ints;

@@ -88,6 +88,7 @@ class PlayerConnection : public Connection {
         }
 
         virtual void closeChannel() override;
+        virtual void closeChannel(bool later);
 
         void start(){
             startReaderTask();

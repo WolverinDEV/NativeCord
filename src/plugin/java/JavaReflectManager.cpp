@@ -109,7 +109,7 @@ bool JavaReflectManager::loadFields() {
     f_playerConnection_connectionState = env->GetFieldID(clazz_playerConnection, "connectionState", "Ldev/wolveringer/nativecord/api/player/PlayerConnection$State;");
     f_playerConnection_static_players = env->GetStaticFieldID(clazz_playerConnection, "connections","Ljava/util/ArrayList;");
     f_playerConnection_nativeAdress = env->GetFieldID(clazz_playerConnection, "nativeAdress", "J");
-    f_playerConnection_clientVersion = env->GetFieldID(clazz_playerConnection, "connectionVersion","I");
+    f_playerConnection_clientVersion = env->GetFieldID(clazz_playerConnection, "clientVersion","I");
     f_playerConnection_playerName = env->GetFieldID(clazz_playerConnection, "playerName","Ljava/lang/String;");
     f_playerConnection_uuid = env->GetFieldID(clazz_playerConnection, "uuid", "Ljava/util/UUID;");
 

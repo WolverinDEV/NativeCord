@@ -13,10 +13,11 @@
 class Socket {
     public:
         Socket(int fd) : fd(fd) {
-            connected = true;
             this->pollFd.events = POLL_IN;
-            if(fd > 0)
-                this->pollFd.fd = fd;
+            if(fd > 0){
+                setFD(fd);
+                connected = true;
+            }
         }
 
         Socket(string host, int port) : host(host), port(port), fd(-1){
@@ -53,6 +54,8 @@ class Socket {
         struct pollfd pollFd;
         int32_t fd = -1;
     private:
+        void setFD(int fd);
+
         string host;
         int port = 0;
         bool connected = false;

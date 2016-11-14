@@ -96,6 +96,7 @@ void ServerPacketHandler::handlePacketLogin(int packetId, DataBuffer *buffer) {
             ((ServerConnection*)connection)->getPlayerConnection()->getTabManager()->resetTab();
             ((ServerConnection*)connection)->getPlayerConnection()->getScoreboardManager()->resetScoreboard();
             ((ServerConnection *) connection)->getPlayerConnection()->resetFallbackQueue();
+            EventHelper::callServerConnectedEvent(((ServerConnection*)connection)->getPlayerConnection());
             break;
         case 0x03:
             int t = buffer->readVarInt();
@@ -151,7 +152,6 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
     if(packetId == 0x1A && clientVersion > 47 || packetId == 0x40 && clientVersion == 47) {
         //Kick packet
         if(!((ServerConnection*)connection)->getPlayerConnection()->getFallbackServers().empty()){
-            ((ServerConnection*)connection)->getPlayerConnection()->sendDimswitch();
             PacketPlayDisconnect* disconnect = new PacketPlayDisconnect();
             disconnect->read(((ServerConnection *) connection)->getPlayerConnection()->getClientVersion(), buffer);
             ChatMessage* message = new ChatMessage("§6§l» §7You have been kicked.\n§6§l» §7Reason: §f");
@@ -166,6 +166,8 @@ void ServerPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
             ((ServerConnection*)connection)->closeChannel();
             return;
         }
+        ((ServerConnection*)connection)->closeChannel();
+        return;
     }
     entityRewriteServer(packetId, buffer, (ServerConnection *) connection);
     buffer->setReaderindex(rindex-1); //Packet id

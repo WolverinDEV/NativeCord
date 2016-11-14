@@ -50,7 +50,7 @@ PlayerConnection::~PlayerConnection(){
 }
 
 void PlayerConnection::disconnect(ChatMessage* message, bool deleteMessage = true) {
-    if(message != NULL) {
+    if(message != nullptr) {
         if (getState() == LOGIN) {
             DataBuffer *buffer = new DataBuffer();
             buffer->writeVarInt(0x00);
@@ -58,12 +58,13 @@ void PlayerConnection::disconnect(ChatMessage* message, bool deleteMessage = tru
             writePacket(buffer);
             delete (buffer);
         } else if (getState() == PLAYING) {
+            debugMessage("Disconnection: "+message->toString());
             writePacket(getClientVersion(), new PacketPlayDisconnect(message));
         }
         if(deleteMessage)
-        delete message;
+            delete message;
     }
-    closeChannel();
+    closeChannel(true);
 }
 
 ServerConnection *PlayerConnection::getCurrentTargetConnection() const {
@@ -151,22 +152,41 @@ void PlayerConnection::connect(ServerInfo *target, bool sync) {
         pthread_join(threadHandle, NULL); //Make sync
 }
 
-void* runlater(void* conn){
+void* deletePlayerConnection(void *conn){
     usleep(100*1000);
     PlayerConnection* pconn = (PlayerConnection*) conn;
     delete pconn;
 }
 
+void* runDisconnectLater(void* conn) {
+    PlayerConnection* pconn = (PlayerConnection*) conn;
+    usleep(500*1000);
+    pconn->closing = false;
+    pconn->closeChannel();
+}
+
 void PlayerConnection::closeChannel() {
-    debugMessage("Close player connection!");
+    if(!closing){
+        Connection::closeChannel();
+        pthread_t  thread;
+        pthread_create(&thread, NULL, &deletePlayerConnection, this);
+    }
     if(!this->open)
         return;
     this->open = false;
-    Connection::closeChannel();
     VectorUtils::remove(PlayerConnection::connections, this);
     VectorUtils::remove(PlayerConnection::activeConnections, this);
+}
+
+void PlayerConnection::closeChannel(bool later) {
+    if(!later){
+
+    } else {
+        closing = true;
+    }
+    PlayerConnection::closeChannel();
     pthread_t  thread;
-    pthread_create(&thread,NULL,&runlater,this);
+    pthread_create(&thread, NULL, &runDisconnectLater, this);
 }
 
 const vector<ServerInfo *> PlayerConnection::getFallbackServers() const {
@@ -275,7 +295,7 @@ void PlayerConnection::NATIVE_disconnect0(JNIEnv *env, jobject caller, jstring m
     if(conn == nullptr || conn->getState() == ConnectionState::CLOSED)
         return;
     const char* cmassage = JavaPluginManagerImpl::instance->getEnv()->GetStringUTFChars(message, 0);
-    conn->disconnect(new ChatMessage(string(cmassage)));
+    conn->disconnect(new ChatMessage(json::parse(string(cmassage))));
 }
 
 jboolean PlayerConnection::NATIVE_sendPacket0(JNIEnv *env, jobject caller, jobject jstorage) {

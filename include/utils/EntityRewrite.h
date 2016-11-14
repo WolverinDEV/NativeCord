@@ -10,6 +10,8 @@ public:
         static int getEntityId(int old,int _new, int current){
             if(current == _new)
                 return old;
+            else if(current != _new)
+                return -1;
             return _new;
         }
 
@@ -18,9 +20,10 @@ public:
             return;
         int current = buffer->readVarInt();
         _new = getEntityId(old,_new,current);
+        if(_new == -1)
+            return;
         if(DataBuffer::getVarIntSize(old) != DataBuffer::getVarIntSize(_new)){
             if(DataBuffer::getVarIntSize(old) > DataBuffer::getVarIntSize(_new)){
-                //cout << "Push -1" << endl;
                 buffer->push(-(DataBuffer::getVarIntSize(old) - DataBuffer::getVarIntSize(_new)));
                 buffer->setWriterindex(0);
                 buffer->writeVarInt(pid);
@@ -28,7 +31,6 @@ public:
                 buffer->setWriterindex(buffer->getBufferLength());
                 return;
             } else {
-                //cout << "Push 1" << endl;
                 buffer->push(DataBuffer::getVarIntSize(_new) - DataBuffer::getVarIntSize(old));
                 buffer->setWriterindex(0);
                 buffer->writeVarInt(pid);
@@ -37,7 +39,6 @@ public:
                 return;
             }
         }
-        //cout << "Change " << old << " to " << _new << endl;
         buffer->setWriterindex(0);
         buffer->writeVarInt(pid);
         buffer->writeVarInt(_new);
@@ -81,8 +82,10 @@ public:
 
         if(packetId == 0x1A){
             int current = getEntityId(currentEntityId, targetEntitryId, buffer->readInt());
-            buffer->setWriterindex(currentIndex);
-            buffer->writeInt(current);
+            if(current != -1){
+                buffer->setWriterindex(currentIndex);
+                buffer->writeInt(current);
+            }
         }
 
         buffer->setWriterindex(writerIndex);

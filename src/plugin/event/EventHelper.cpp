@@ -6,6 +6,8 @@
 #include "../../../include/plugin/event/EventHelper.h"
 #include "../../../include/connection/PlayerConnection.h"
 
+#define EVENT_PACKAGE "dev/wolveringer/nativecord/api/event/"
+
 std::string EventHelper::EventTypeName[] = {
         "PLAYER_HANDSCHAKE_EVENT",
         "PLAYER_ENCRIPT_EVENT",
@@ -19,13 +21,13 @@ std::string EventHelper::EventTypeName[] = {
 std::map<string, jclass> EventHelper:: mapping;
 
 std::string EventHelper::JavaClassMapping[] = {
-        "dev/wolveringer/nativecord/api/event/PlayerHandschakeEvent",
+        EVENT_PACKAGE"PlayerHandschakeEvent",
         "",
         "",
         "",
-        "dev/wolveringer/nativecord/api/event/PlayerServerConnectEvent",
-        "dev/wolveringer/nativecord/api/event/PlayerServerConnectedEvent",
-        ""
+        EVENT_PACKAGE"PlayerServerConnectEvent",
+        EVENT_PACKAGE"PlayerServerConnectedEvent",
+        EVENT_PACKAGE"PlayerChatEvent"
 };
 
 jobject EventHelper::createJavaInstance(JavaPluginManagerImpl *impl, EventType type, DataStorage *buffer) {
@@ -35,20 +37,32 @@ jobject EventHelper::createJavaInstance(JavaPluginManagerImpl *impl, EventType t
     jclass cls;
 
     jobject event = impl->getEnv()->AllocObject(impl->getEnv()->FindClass(name.c_str()));
-    jobject  obj = impl->getStorageImpl()->toJavaObject(*buffer);
+    jobject obj = impl->getStorageImpl()->toJavaObject(*buffer);
     impl->getEnv()->SetObjectField(event, impl->getRefelectManager()->f_event_storage, obj);
     return event;
 }
 
 DataStorage& EventHelper::callEvent(EventType t, DataStorage &s) {
     //TODO cxx event
-    JavaPluginManagerImpl::instance->callEvent(t, &s);
-    return s;
+    DataStorage* ptr = &s;
+    JavaPluginManagerImpl::instance->callEvent(t, ptr);
+    return *ptr;
+}
+
+DataStorage EventHelper::createBaseEvent(){
+    DataStorage storage = DataStorage();
+    storage.bytes.push_back(0); //Canceled = false
+    return storage;
+}
+
+DataStorage EventHelper::createPlayerEvent(PlayerConnection* conn){
+    DataStorage storage = createBaseEvent();
+    storage.longs.push_back((uint64_t)conn->getJavaNativeAddress());
+    return storage;
 }
 
 void EventHelper::handleHandshake(PlayerConnection* conn, PacketHandshake * packet) {
-    DataStorage storage;
-    storage.longs.push_back((uint64_t)conn->getJavaNativeAddress());
+    DataStorage storage = EventHelper::createPlayerEvent(conn);
     storage.strings.push_back(packet->getHost());
     storage.ints.push_back(packet->getPort());
     storage.ints.push_back(packet->getClientVersion());
@@ -61,8 +75,7 @@ void EventHelper::handleHandshake(PlayerConnection* conn, PacketHandshake * pack
 }
 
 ServerInfo* EventHelper::callServerConnectEvent(PlayerConnection *con, ServerInfo *ser) {
-    DataStorage storage;
-    storage.longs.push_back((uint64_t)con->getJavaNativeAddress());
+    DataStorage storage = EventHelper::createPlayerEvent(con);
     storage.strings.push_back(ser->getName());
     storage = callEvent(EventType::PLAYER_SERVER_CONNECT_EVENT, storage);
     ServerInfo* out = ser;
@@ -74,8 +87,19 @@ ServerInfo* EventHelper::callServerConnectEvent(PlayerConnection *con, ServerInf
 }
 
 void EventHelper::callServerConnectedEvent(PlayerConnection *con) {
-    DataStorage storage;
-    storage.longs.push_back((uint64_t)con->getJavaNativeAddress());
+    debugMessage("Call server connected event");
+    DataStorage storage = EventHelper::createPlayerEvent(con);
     storage.strings.push_back(con->getCurrentTargetConnection()->getServerInfo()->getName());
-    storage = callEvent(EventType::PLAYER_SERVER_CONNECT_EVENT, storage);
+    storage = callEvent(EventType::PLAYER_SERVER_CONNECTED_EVENT, storage);
+}
+
+
+string EventHelper::callChatEvent(PlayerConnection *conn, std::string &message) {
+    DataStorage storage = EventHelper::createPlayerEvent(conn);
+    storage.strings.push_back(message);
+    storage = callEvent(EventType::PLAYER_CHAT_EVENT, storage);
+    debugMessage("After chat call event: "+storage._toString());
+    if (storage.bytes[0] != 0)
+        return "";
+    return storage.strings[0];
 }

@@ -25,9 +25,13 @@ class EventHelper {
         static jobject createJavaInstance(JavaPluginManagerImpl *impl, EventType type, DataStorage *buffer);
         static DataStorage& callEvent(EventType,DataStorage&);
 
+        static DataStorage createBaseEvent();
+        static DataStorage createPlayerEvent(PlayerConnection* conn);
+
         static void handleHandshake(PlayerConnection*,PacketHandshake*);
         static ServerInfo* callServerConnectEvent(PlayerConnection*,ServerInfo*);
         static void callServerConnectedEvent(PlayerConnection*);
+        static string callChatEvent(PlayerConnection*,std::string&);
     private:
         static std::map <string, jclass> mapping;
 };

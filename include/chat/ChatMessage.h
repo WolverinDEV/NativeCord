@@ -136,9 +136,9 @@ class ChatMessage {
         ChatMessage* clone(){
             ChatMessage* _new = new ChatMessage;
             if(hover != NULL)
-                _new->hover = new ActionEvent(hover->getAction(),hover->getValue());
+                _new->hover = new ActionEvent(string(hover->getAction()),string(hover->getValue()));
             if(click != NULL)
-                _new->click = new ActionEvent(click->getAction(),click->getValue());
+                _new->click = new ActionEvent(string(click->getAction()),string(click->getValue()));
             _new->message = string(message);
             _new->random = random;
             _new->bold = bold;

@@ -3,25 +3,13 @@
 //
 
 #include "../../../include/protocoll/ClientPacketHandler.h"
-#include "../../../include/protocoll/Packets.h"
-#include "../../../include/json/json.hpp"
 #include "../../../include/connection/ServerConnection.h"
-#include "../../../include/connection/Connection.h"
-#include "../../../include/utils/TimeUtils.h"
-#include "../../../include/utils/StringUtil.h"
 #include "../../../include/utils/EntityRewrite.h"
-#include "../../../include/config/Configuration.h"
-#include "../../../include/server/ServerInfo.h"
 #include "../../../include/connection/PlayerConnection.h"
-#include "../../../include/cryption/Cipper.h"
 #include "../../../include/cryption/RSAUtil.h"
 #include "../../../include/utils/Base64Utils.h"
 #import "cpr/cpr.h"
-#include "../../../include/NativeCord.h"
-#include "../../../include/utils/HTTPUtil.h"
-#include "../../../include/plugin/event/EventHelper.h"
 #include "../../../include/plugin/java/JavaPluginManagerImpl.h"
-#include <typeinfo>
 
 // for convenience
 using json = nlohmann::json;
@@ -47,6 +35,8 @@ void ClientPacketHandler::handlePacketHandschake(const int packetId, DataBuffer 
 
             if(JavaPluginManagerImpl::instance != nullptr){
                 EventHelper::handleHandshake(this->pconnection, handshake);
+                JNIEnv* env = JavaPluginManagerImpl::instance->getEnv();
+                env->SetIntField(this->pconnection->getJavaInstance(),JavaPluginManagerImpl::instance->getRefelectManager()->f_playerConnection_clientVersion, (jint) handshake->getClientVersion());
             }
             debugMessage("Client Version: " + to_string(handshake->getClientVersion()));
             debugMessage("State:   " + to_string(handshake->getState()));
@@ -198,12 +188,14 @@ void entityRewrite(int pid,DataBuffer* buffer,ClientPacketHandler* handler){
 void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
     if(pconnection->getClientVersion() >= 107 && packetId == 0x02 || pconnection->getClientVersion() == 47 && packetId == 0x01){
         string message = buffer->readString();
+
         vector<string> parts = StringUtils::split(message," ");
         debugMessage("Having chat message: " + message + " (" + parts[0] + ")");
         if(strcmp(parts[0].c_str(),"/ncord") == 0){
             pconnection->sendMessage("§5§l» §7NativeCord by WolverinDEV version " NATIVECORD_VERSION);
             return;
         }
+
         if(strcmp(parts[0].c_str(),"/server") == 0){
             if(parts.size() == 3){
                 if(strcmp(parts[1].c_str(),"direct") == 0){ //TODO
@@ -280,6 +272,17 @@ void ClientPacketHandler::handlePacketPlay(int packetId, DataBuffer *buffer) {
             pconnection->sendMessage("§6/server list");
             pconnection->sendMessage("§6/server <servername>");
             pconnection->sendMessage("§6/server direct <host[:port]>");
+            return;
+        }
+
+        string _new = EventHelper::callChatEvent(pconnection, message);
+        if(_new != message){
+            if(_new == "") //Canceled :)
+                return;
+            DataBuffer newPacket;
+            newPacket.writeVarInt(packetId);
+            newPacket.writeString(_new);
+            pconnection->getCurrentTargetConnection()->writePacket(&newPacket);
             return;
         }
     }
