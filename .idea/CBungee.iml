@@ -72,7 +72,6 @@
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/cpr/payload.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/cpr/auth.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/cpr/util.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/include/curl/curlbuild.h.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/curl-config.in" isTestSource="false" />
@@ -389,35 +388,12 @@
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/warnless.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/mprintf.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/lib/curlx.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/CMake/Utilities.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/CMake/OtherTests.cmake" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/CMake/Utilities.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/CMake/Macros.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/curl/CMake/FindLibSSH2.cmake" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/mongoose/mongoose.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/mongoose/mongoose.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/mongoose/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/googletest/src/gtest_main.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/googletest/src/gtest-all.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/googletest/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/opt/googletest/cmake/internal_utils.cmake" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/server.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/session_tests.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/options_tests.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/server.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/patch_tests.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/put_tests.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/callback_tests.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/get_tests.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/proxy_tests.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/async_tests.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/error_tests.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/raw_body_tests.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/delete_tests.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/alternating_tests.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/post_tests.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/test/head_tests.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libs/cpr/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/chat/ChatColor.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/chat/ActionEvent.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/chat/ChatMessage.h" isTestSource="false" />
@@ -467,10 +443,10 @@
     <orderEntry type="module-library">
       <library name="Header Search Paths">
         <CLASSES>
+          <root url="file:///usr/include" />
           <root url="file:///usr/lib/jvm/java-8-oracle/include" />
           <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.8/include" />
           <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed" />
-          <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
           <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/CBungee-7d74d14a/7d74d14a/Release/libs/cpr/opt/curl" />
           <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/CBungee-7d74d14a/7d74d14a/Debug/libs/cpr/opt/curl" />
@@ -478,10 +454,10 @@
           <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/CBungee-7d74d14a/7d74d14a/MinSizeRel/libs/cpr/opt/curl" />
         </CLASSES>
         <SOURCES>
+          <root url="file:///usr/include" />
           <root url="file:///usr/lib/jvm/java-8-oracle/include" />
           <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.8/include" />
           <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed" />
-          <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
           <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/CBungee-7d74d14a/7d74d14a/Release/libs/cpr/opt/curl" />
           <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/CBungee-7d74d14a/7d74d14a/Debug/libs/cpr/opt/curl" />

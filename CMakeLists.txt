@@ -16,7 +16,8 @@ set(SOURCE_FILES ${SOURCE_FILES} include/connection/GameProfile.h include/plugin
 
 link_libraries(pthread uuid z crypto) #z = zlib
 
-link_libraries(/usr/local/lib/CXXTerminal/libCXXTerminal.so)
+link_libraries(CXXTerminal)
+#link_libraries(/usr/local/lib/libCXXTerminal.so)
 
 ############################### YAML ################################
 include_directories(libs/yaml-cpp/include/)
@@ -25,7 +26,19 @@ link_libraries(yaml-cpp)
 
 ################################ CPR ################################
 include_directories(${CPR_INCLUDE_DIRS})
-add_subdirectory(libs/cpr)
+
+if(EXISTS libs/cpr/lib/)
+    message("Found builded cpr")
+    link_directories(libs/cpr/lib)
+else()
+    message("Building cpr")
+    if(NOT EXISTS libs/cpr/CMakeLists.txt)
+        message(FATAL_ERROR "Missing cpr. Maybe you havnt init all git submudules yet? 'git submodule update --init --recursive'")
+    endif()
+    set(BUILD_CPR_TESTS false)
+    add_subdirectory(libs/cpr)
+endif()
+link_libraries(${CPR_LIBRARIES})
 #####################################################################
 
 ########################### Java ####################################
@@ -45,4 +58,3 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
 add_definitions(-DNATIVECORD_VERSION="0.5 ALPHA")
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} ${CPR_LIBRARIES})
