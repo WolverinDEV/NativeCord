@@ -180,7 +180,6 @@ void PlayerConnection::closeChannel() {
 
 void PlayerConnection::closeChannel(bool later) {
     if(!later){
-
     } else {
         closing = true;
     }

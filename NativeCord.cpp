@@ -83,13 +83,15 @@ void NativeCord::exitNativeCoord(){
     JavaPluginManagerImpl::instance->disable(); // Close the process
 }
 
-
-int preloadV(){
+void initTerminal (void) __attribute__((constructor(10)));
+void initTerminal(){
     Terminal::setup();
-    return 0;
+    if(!Terminal::isActive()){
+        cerr << "Cant initalisize terminal!\nExit...\n";
+        exit(0);
+    }
+    debugMessage("Terminal init!");
 }
-int preload = preloadV();
-
 
 int main(int argc, char** argv) {
     logMessage("Hello world");

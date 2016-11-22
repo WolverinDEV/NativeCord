@@ -14,7 +14,6 @@
 #endif
 
 namespace NativeCord {
-
     extern void exitNativeCoord();
     extern pthread_t clientAcceptThread;
 }
