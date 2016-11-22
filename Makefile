@@ -50,6 +50,16 @@ CMAKE_BINARY_DIR = /home/wolverindev/ClionProjects/CBungee
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
+
+# Special rule for the target install/strip
+install/strip/fast: install/strip
+.PHONY : install/strip/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -69,6 +79,37 @@ rebuild_cache:
 # Special rule for the target rebuild_cache
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
+
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/bin/cmake -P cmake_install.cmake
+.PHONY : install
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/bin/cmake -P cmake_install.cmake
+.PHONY : install/fast
+
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+.PHONY : list_install_components/fast
+
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: install/local
+.PHONY : install/local/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -114,15 +155,736 @@ NativeCord/fast:
 	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/build
 .PHONY : NativeCord/fast
 
+#=============================================================================
+# Target rules for targets named libcurl
+
+# Build rule for target.
+libcurl: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 libcurl
+.PHONY : libcurl
+
+# fast build rule for target.
+libcurl/fast:
+	$(MAKE) -f libs/cpr/opt/curl/lib/CMakeFiles/libcurl.dir/build.make libs/cpr/opt/curl/lib/CMakeFiles/libcurl.dir/build
+.PHONY : libcurl/fast
+
+#=============================================================================
+# Target rules for targets named curl
+
+# Build rule for target.
+curl: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 curl
+.PHONY : curl
+
+# fast build rule for target.
+curl/fast:
+	$(MAKE) -f libs/cpr/opt/curl/src/CMakeFiles/curl.dir/build.make libs/cpr/opt/curl/src/CMakeFiles/curl.dir/build
+.PHONY : curl/fast
+
+#=============================================================================
+# Target rules for targets named cpr
+
+# Build rule for target.
+cpr: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 cpr
+.PHONY : cpr
+
+# fast build rule for target.
+cpr/fast:
+	$(MAKE) -f libs/cpr/cpr/CMakeFiles/cpr.dir/build.make libs/cpr/cpr/CMakeFiles/cpr.dir/build
+.PHONY : cpr/fast
+
+NativeCord.o: NativeCord.cpp.o
+.PHONY : NativeCord.o
+
+# target to build an object file
+NativeCord.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/NativeCord.cpp.o
+.PHONY : NativeCord.cpp.o
+
+NativeCord.i: NativeCord.cpp.i
+.PHONY : NativeCord.i
+
+# target to preprocess a source file
+NativeCord.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/NativeCord.cpp.i
+.PHONY : NativeCord.cpp.i
+
+NativeCord.s: NativeCord.cpp.s
+.PHONY : NativeCord.s
+
+# target to generate assembly for a file
+NativeCord.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/NativeCord.cpp.s
+.PHONY : NativeCord.cpp.s
+
+src/chat/ChatMessage.o: src/chat/ChatMessage.cpp.o
+.PHONY : src/chat/ChatMessage.o
+
+# target to build an object file
+src/chat/ChatMessage.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/chat/ChatMessage.cpp.o
+.PHONY : src/chat/ChatMessage.cpp.o
+
+src/chat/ChatMessage.i: src/chat/ChatMessage.cpp.i
+.PHONY : src/chat/ChatMessage.i
+
+# target to preprocess a source file
+src/chat/ChatMessage.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/chat/ChatMessage.cpp.i
+.PHONY : src/chat/ChatMessage.cpp.i
+
+src/chat/ChatMessage.s: src/chat/ChatMessage.cpp.s
+.PHONY : src/chat/ChatMessage.s
+
+# target to generate assembly for a file
+src/chat/ChatMessage.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/chat/ChatMessage.cpp.s
+.PHONY : src/chat/ChatMessage.cpp.s
+
+src/config/Configuration.o: src/config/Configuration.cpp.o
+.PHONY : src/config/Configuration.o
+
+# target to build an object file
+src/config/Configuration.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/config/Configuration.cpp.o
+.PHONY : src/config/Configuration.cpp.o
+
+src/config/Configuration.i: src/config/Configuration.cpp.i
+.PHONY : src/config/Configuration.i
+
+# target to preprocess a source file
+src/config/Configuration.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/config/Configuration.cpp.i
+.PHONY : src/config/Configuration.cpp.i
+
+src/config/Configuration.s: src/config/Configuration.cpp.s
+.PHONY : src/config/Configuration.s
+
+# target to generate assembly for a file
+src/config/Configuration.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/config/Configuration.cpp.s
+.PHONY : src/config/Configuration.cpp.s
+
+src/connection/PlayerConnection.o: src/connection/PlayerConnection.cpp.o
+.PHONY : src/connection/PlayerConnection.o
+
+# target to build an object file
+src/connection/PlayerConnection.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/connection/PlayerConnection.cpp.o
+.PHONY : src/connection/PlayerConnection.cpp.o
+
+src/connection/PlayerConnection.i: src/connection/PlayerConnection.cpp.i
+.PHONY : src/connection/PlayerConnection.i
+
+# target to preprocess a source file
+src/connection/PlayerConnection.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/connection/PlayerConnection.cpp.i
+.PHONY : src/connection/PlayerConnection.cpp.i
+
+src/connection/PlayerConnection.s: src/connection/PlayerConnection.cpp.s
+.PHONY : src/connection/PlayerConnection.s
+
+# target to generate assembly for a file
+src/connection/PlayerConnection.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/connection/PlayerConnection.cpp.s
+.PHONY : src/connection/PlayerConnection.cpp.s
+
+src/connection/ServerConnection.o: src/connection/ServerConnection.cpp.o
+.PHONY : src/connection/ServerConnection.o
+
+# target to build an object file
+src/connection/ServerConnection.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/connection/ServerConnection.cpp.o
+.PHONY : src/connection/ServerConnection.cpp.o
+
+src/connection/ServerConnection.i: src/connection/ServerConnection.cpp.i
+.PHONY : src/connection/ServerConnection.i
+
+# target to preprocess a source file
+src/connection/ServerConnection.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/connection/ServerConnection.cpp.i
+.PHONY : src/connection/ServerConnection.cpp.i
+
+src/connection/ServerConnection.s: src/connection/ServerConnection.cpp.s
+.PHONY : src/connection/ServerConnection.s
+
+# target to generate assembly for a file
+src/connection/ServerConnection.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/connection/ServerConnection.cpp.s
+.PHONY : src/connection/ServerConnection.cpp.s
+
+src/connection/Socket.o: src/connection/Socket.cpp.o
+.PHONY : src/connection/Socket.o
+
+# target to build an object file
+src/connection/Socket.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/connection/Socket.cpp.o
+.PHONY : src/connection/Socket.cpp.o
+
+src/connection/Socket.i: src/connection/Socket.cpp.i
+.PHONY : src/connection/Socket.i
+
+# target to preprocess a source file
+src/connection/Socket.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/connection/Socket.cpp.i
+.PHONY : src/connection/Socket.cpp.i
+
+src/connection/Socket.s: src/connection/Socket.cpp.s
+.PHONY : src/connection/Socket.s
+
+# target to generate assembly for a file
+src/connection/Socket.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/connection/Socket.cpp.s
+.PHONY : src/connection/Socket.cpp.s
+
+src/encription/Cipper.o: src/encription/Cipper.cpp.o
+.PHONY : src/encription/Cipper.o
+
+# target to build an object file
+src/encription/Cipper.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/encription/Cipper.cpp.o
+.PHONY : src/encription/Cipper.cpp.o
+
+src/encription/Cipper.i: src/encription/Cipper.cpp.i
+.PHONY : src/encription/Cipper.i
+
+# target to preprocess a source file
+src/encription/Cipper.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/encription/Cipper.cpp.i
+.PHONY : src/encription/Cipper.cpp.i
+
+src/encription/Cipper.s: src/encription/Cipper.cpp.s
+.PHONY : src/encription/Cipper.s
+
+# target to generate assembly for a file
+src/encription/Cipper.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/encription/Cipper.cpp.s
+.PHONY : src/encription/Cipper.cpp.s
+
+src/log/LogUtils.o: src/log/LogUtils.cpp.o
+.PHONY : src/log/LogUtils.o
+
+# target to build an object file
+src/log/LogUtils.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/log/LogUtils.cpp.o
+.PHONY : src/log/LogUtils.cpp.o
+
+src/log/LogUtils.i: src/log/LogUtils.cpp.i
+.PHONY : src/log/LogUtils.i
+
+# target to preprocess a source file
+src/log/LogUtils.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/log/LogUtils.cpp.i
+.PHONY : src/log/LogUtils.cpp.i
+
+src/log/LogUtils.s: src/log/LogUtils.cpp.s
+.PHONY : src/log/LogUtils.s
+
+# target to generate assembly for a file
+src/log/LogUtils.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/log/LogUtils.cpp.s
+.PHONY : src/log/LogUtils.cpp.s
+
+src/plugin/event/EventHelper.o: src/plugin/event/EventHelper.cpp.o
+.PHONY : src/plugin/event/EventHelper.o
+
+# target to build an object file
+src/plugin/event/EventHelper.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/event/EventHelper.cpp.o
+.PHONY : src/plugin/event/EventHelper.cpp.o
+
+src/plugin/event/EventHelper.i: src/plugin/event/EventHelper.cpp.i
+.PHONY : src/plugin/event/EventHelper.i
+
+# target to preprocess a source file
+src/plugin/event/EventHelper.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/event/EventHelper.cpp.i
+.PHONY : src/plugin/event/EventHelper.cpp.i
+
+src/plugin/event/EventHelper.s: src/plugin/event/EventHelper.cpp.s
+.PHONY : src/plugin/event/EventHelper.s
+
+# target to generate assembly for a file
+src/plugin/event/EventHelper.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/event/EventHelper.cpp.s
+.PHONY : src/plugin/event/EventHelper.cpp.s
+
+src/plugin/event/EventType.o: src/plugin/event/EventType.cpp.o
+.PHONY : src/plugin/event/EventType.o
+
+# target to build an object file
+src/plugin/event/EventType.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/event/EventType.cpp.o
+.PHONY : src/plugin/event/EventType.cpp.o
+
+src/plugin/event/EventType.i: src/plugin/event/EventType.cpp.i
+.PHONY : src/plugin/event/EventType.i
+
+# target to preprocess a source file
+src/plugin/event/EventType.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/event/EventType.cpp.i
+.PHONY : src/plugin/event/EventType.cpp.i
+
+src/plugin/event/EventType.s: src/plugin/event/EventType.cpp.s
+.PHONY : src/plugin/event/EventType.s
+
+# target to generate assembly for a file
+src/plugin/event/EventType.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/event/EventType.cpp.s
+.PHONY : src/plugin/event/EventType.cpp.s
+
+src/plugin/handle/CXXPluginManagerImpl.o: src/plugin/handle/CXXPluginManagerImpl.cpp.o
+.PHONY : src/plugin/handle/CXXPluginManagerImpl.o
+
+# target to build an object file
+src/plugin/handle/CXXPluginManagerImpl.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/handle/CXXPluginManagerImpl.cpp.o
+.PHONY : src/plugin/handle/CXXPluginManagerImpl.cpp.o
+
+src/plugin/handle/CXXPluginManagerImpl.i: src/plugin/handle/CXXPluginManagerImpl.cpp.i
+.PHONY : src/plugin/handle/CXXPluginManagerImpl.i
+
+# target to preprocess a source file
+src/plugin/handle/CXXPluginManagerImpl.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/handle/CXXPluginManagerImpl.cpp.i
+.PHONY : src/plugin/handle/CXXPluginManagerImpl.cpp.i
+
+src/plugin/handle/CXXPluginManagerImpl.s: src/plugin/handle/CXXPluginManagerImpl.cpp.s
+.PHONY : src/plugin/handle/CXXPluginManagerImpl.s
+
+# target to generate assembly for a file
+src/plugin/handle/CXXPluginManagerImpl.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/handle/CXXPluginManagerImpl.cpp.s
+.PHONY : src/plugin/handle/CXXPluginManagerImpl.cpp.s
+
+src/plugin/java/JavaPlugin.o: src/plugin/java/JavaPlugin.cpp.o
+.PHONY : src/plugin/java/JavaPlugin.o
+
+# target to build an object file
+src/plugin/java/JavaPlugin.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/java/JavaPlugin.cpp.o
+.PHONY : src/plugin/java/JavaPlugin.cpp.o
+
+src/plugin/java/JavaPlugin.i: src/plugin/java/JavaPlugin.cpp.i
+.PHONY : src/plugin/java/JavaPlugin.i
+
+# target to preprocess a source file
+src/plugin/java/JavaPlugin.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/java/JavaPlugin.cpp.i
+.PHONY : src/plugin/java/JavaPlugin.cpp.i
+
+src/plugin/java/JavaPlugin.s: src/plugin/java/JavaPlugin.cpp.s
+.PHONY : src/plugin/java/JavaPlugin.s
+
+# target to generate assembly for a file
+src/plugin/java/JavaPlugin.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/java/JavaPlugin.cpp.s
+.PHONY : src/plugin/java/JavaPlugin.cpp.s
+
+src/plugin/java/JavaPluginManagerImpl.o: src/plugin/java/JavaPluginManagerImpl.cpp.o
+.PHONY : src/plugin/java/JavaPluginManagerImpl.o
+
+# target to build an object file
+src/plugin/java/JavaPluginManagerImpl.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/java/JavaPluginManagerImpl.cpp.o
+.PHONY : src/plugin/java/JavaPluginManagerImpl.cpp.o
+
+src/plugin/java/JavaPluginManagerImpl.i: src/plugin/java/JavaPluginManagerImpl.cpp.i
+.PHONY : src/plugin/java/JavaPluginManagerImpl.i
+
+# target to preprocess a source file
+src/plugin/java/JavaPluginManagerImpl.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/java/JavaPluginManagerImpl.cpp.i
+.PHONY : src/plugin/java/JavaPluginManagerImpl.cpp.i
+
+src/plugin/java/JavaPluginManagerImpl.s: src/plugin/java/JavaPluginManagerImpl.cpp.s
+.PHONY : src/plugin/java/JavaPluginManagerImpl.s
+
+# target to generate assembly for a file
+src/plugin/java/JavaPluginManagerImpl.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/java/JavaPluginManagerImpl.cpp.s
+.PHONY : src/plugin/java/JavaPluginManagerImpl.cpp.s
+
+src/plugin/java/JavaReflectManager.o: src/plugin/java/JavaReflectManager.cpp.o
+.PHONY : src/plugin/java/JavaReflectManager.o
+
+# target to build an object file
+src/plugin/java/JavaReflectManager.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/java/JavaReflectManager.cpp.o
+.PHONY : src/plugin/java/JavaReflectManager.cpp.o
+
+src/plugin/java/JavaReflectManager.i: src/plugin/java/JavaReflectManager.cpp.i
+.PHONY : src/plugin/java/JavaReflectManager.i
+
+# target to preprocess a source file
+src/plugin/java/JavaReflectManager.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/java/JavaReflectManager.cpp.i
+.PHONY : src/plugin/java/JavaReflectManager.cpp.i
+
+src/plugin/java/JavaReflectManager.s: src/plugin/java/JavaReflectManager.cpp.s
+.PHONY : src/plugin/java/JavaReflectManager.s
+
+# target to generate assembly for a file
+src/plugin/java/JavaReflectManager.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/java/JavaReflectManager.cpp.s
+.PHONY : src/plugin/java/JavaReflectManager.cpp.s
+
+src/plugin/java/jni/DataStorage.o: src/plugin/java/jni/DataStorage.cpp.o
+.PHONY : src/plugin/java/jni/DataStorage.o
+
+# target to build an object file
+src/plugin/java/jni/DataStorage.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/java/jni/DataStorage.cpp.o
+.PHONY : src/plugin/java/jni/DataStorage.cpp.o
+
+src/plugin/java/jni/DataStorage.i: src/plugin/java/jni/DataStorage.cpp.i
+.PHONY : src/plugin/java/jni/DataStorage.i
+
+# target to preprocess a source file
+src/plugin/java/jni/DataStorage.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/java/jni/DataStorage.cpp.i
+.PHONY : src/plugin/java/jni/DataStorage.cpp.i
+
+src/plugin/java/jni/DataStorage.s: src/plugin/java/jni/DataStorage.cpp.s
+.PHONY : src/plugin/java/jni/DataStorage.s
+
+# target to generate assembly for a file
+src/plugin/java/jni/DataStorage.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/java/jni/DataStorage.cpp.s
+.PHONY : src/plugin/java/jni/DataStorage.cpp.s
+
+src/plugin/java/jni/DataStorageImpl.o: src/plugin/java/jni/DataStorageImpl.cpp.o
+.PHONY : src/plugin/java/jni/DataStorageImpl.o
+
+# target to build an object file
+src/plugin/java/jni/DataStorageImpl.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/java/jni/DataStorageImpl.cpp.o
+.PHONY : src/plugin/java/jni/DataStorageImpl.cpp.o
+
+src/plugin/java/jni/DataStorageImpl.i: src/plugin/java/jni/DataStorageImpl.cpp.i
+.PHONY : src/plugin/java/jni/DataStorageImpl.i
+
+# target to preprocess a source file
+src/plugin/java/jni/DataStorageImpl.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/java/jni/DataStorageImpl.cpp.i
+.PHONY : src/plugin/java/jni/DataStorageImpl.cpp.i
+
+src/plugin/java/jni/DataStorageImpl.s: src/plugin/java/jni/DataStorageImpl.cpp.s
+.PHONY : src/plugin/java/jni/DataStorageImpl.s
+
+# target to generate assembly for a file
+src/plugin/java/jni/DataStorageImpl.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/plugin/java/jni/DataStorageImpl.cpp.s
+.PHONY : src/plugin/java/jni/DataStorageImpl.cpp.s
+
+src/protocoll/Buffers/DataBuffer.o: src/protocoll/Buffers/DataBuffer.cpp.o
+.PHONY : src/protocoll/Buffers/DataBuffer.o
+
+# target to build an object file
+src/protocoll/Buffers/DataBuffer.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/protocoll/Buffers/DataBuffer.cpp.o
+.PHONY : src/protocoll/Buffers/DataBuffer.cpp.o
+
+src/protocoll/Buffers/DataBuffer.i: src/protocoll/Buffers/DataBuffer.cpp.i
+.PHONY : src/protocoll/Buffers/DataBuffer.i
+
+# target to preprocess a source file
+src/protocoll/Buffers/DataBuffer.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/protocoll/Buffers/DataBuffer.cpp.i
+.PHONY : src/protocoll/Buffers/DataBuffer.cpp.i
+
+src/protocoll/Buffers/DataBuffer.s: src/protocoll/Buffers/DataBuffer.cpp.s
+.PHONY : src/protocoll/Buffers/DataBuffer.s
+
+# target to generate assembly for a file
+src/protocoll/Buffers/DataBuffer.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/protocoll/Buffers/DataBuffer.cpp.s
+.PHONY : src/protocoll/Buffers/DataBuffer.cpp.s
+
+src/protocoll/Buffers/StreamedDataBuffer.o: src/protocoll/Buffers/StreamedDataBuffer.cpp.o
+.PHONY : src/protocoll/Buffers/StreamedDataBuffer.o
+
+# target to build an object file
+src/protocoll/Buffers/StreamedDataBuffer.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/protocoll/Buffers/StreamedDataBuffer.cpp.o
+.PHONY : src/protocoll/Buffers/StreamedDataBuffer.cpp.o
+
+src/protocoll/Buffers/StreamedDataBuffer.i: src/protocoll/Buffers/StreamedDataBuffer.cpp.i
+.PHONY : src/protocoll/Buffers/StreamedDataBuffer.i
+
+# target to preprocess a source file
+src/protocoll/Buffers/StreamedDataBuffer.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/protocoll/Buffers/StreamedDataBuffer.cpp.i
+.PHONY : src/protocoll/Buffers/StreamedDataBuffer.cpp.i
+
+src/protocoll/Buffers/StreamedDataBuffer.s: src/protocoll/Buffers/StreamedDataBuffer.cpp.s
+.PHONY : src/protocoll/Buffers/StreamedDataBuffer.s
+
+# target to generate assembly for a file
+src/protocoll/Buffers/StreamedDataBuffer.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/protocoll/Buffers/StreamedDataBuffer.cpp.s
+.PHONY : src/protocoll/Buffers/StreamedDataBuffer.cpp.s
+
+src/protocoll/packet/ClientPacketHandler.o: src/protocoll/packet/ClientPacketHandler.cpp.o
+.PHONY : src/protocoll/packet/ClientPacketHandler.o
+
+# target to build an object file
+src/protocoll/packet/ClientPacketHandler.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/protocoll/packet/ClientPacketHandler.cpp.o
+.PHONY : src/protocoll/packet/ClientPacketHandler.cpp.o
+
+src/protocoll/packet/ClientPacketHandler.i: src/protocoll/packet/ClientPacketHandler.cpp.i
+.PHONY : src/protocoll/packet/ClientPacketHandler.i
+
+# target to preprocess a source file
+src/protocoll/packet/ClientPacketHandler.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/protocoll/packet/ClientPacketHandler.cpp.i
+.PHONY : src/protocoll/packet/ClientPacketHandler.cpp.i
+
+src/protocoll/packet/ClientPacketHandler.s: src/protocoll/packet/ClientPacketHandler.cpp.s
+.PHONY : src/protocoll/packet/ClientPacketHandler.s
+
+# target to generate assembly for a file
+src/protocoll/packet/ClientPacketHandler.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/protocoll/packet/ClientPacketHandler.cpp.s
+.PHONY : src/protocoll/packet/ClientPacketHandler.cpp.s
+
+src/protocoll/packet/ServerPacketHandler.o: src/protocoll/packet/ServerPacketHandler.cpp.o
+.PHONY : src/protocoll/packet/ServerPacketHandler.o
+
+# target to build an object file
+src/protocoll/packet/ServerPacketHandler.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/protocoll/packet/ServerPacketHandler.cpp.o
+.PHONY : src/protocoll/packet/ServerPacketHandler.cpp.o
+
+src/protocoll/packet/ServerPacketHandler.i: src/protocoll/packet/ServerPacketHandler.cpp.i
+.PHONY : src/protocoll/packet/ServerPacketHandler.i
+
+# target to preprocess a source file
+src/protocoll/packet/ServerPacketHandler.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/protocoll/packet/ServerPacketHandler.cpp.i
+.PHONY : src/protocoll/packet/ServerPacketHandler.cpp.i
+
+src/protocoll/packet/ServerPacketHandler.s: src/protocoll/packet/ServerPacketHandler.cpp.s
+.PHONY : src/protocoll/packet/ServerPacketHandler.s
+
+# target to generate assembly for a file
+src/protocoll/packet/ServerPacketHandler.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/protocoll/packet/ServerPacketHandler.cpp.s
+.PHONY : src/protocoll/packet/ServerPacketHandler.cpp.s
+
+src/server/ScoreboardManager.o: src/server/ScoreboardManager.cpp.o
+.PHONY : src/server/ScoreboardManager.o
+
+# target to build an object file
+src/server/ScoreboardManager.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/server/ScoreboardManager.cpp.o
+.PHONY : src/server/ScoreboardManager.cpp.o
+
+src/server/ScoreboardManager.i: src/server/ScoreboardManager.cpp.i
+.PHONY : src/server/ScoreboardManager.i
+
+# target to preprocess a source file
+src/server/ScoreboardManager.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/server/ScoreboardManager.cpp.i
+.PHONY : src/server/ScoreboardManager.cpp.i
+
+src/server/ScoreboardManager.s: src/server/ScoreboardManager.cpp.s
+.PHONY : src/server/ScoreboardManager.s
+
+# target to generate assembly for a file
+src/server/ScoreboardManager.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/server/ScoreboardManager.cpp.s
+.PHONY : src/server/ScoreboardManager.cpp.s
+
+src/server/ServerInfo.o: src/server/ServerInfo.cpp.o
+.PHONY : src/server/ServerInfo.o
+
+# target to build an object file
+src/server/ServerInfo.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/server/ServerInfo.cpp.o
+.PHONY : src/server/ServerInfo.cpp.o
+
+src/server/ServerInfo.i: src/server/ServerInfo.cpp.i
+.PHONY : src/server/ServerInfo.i
+
+# target to preprocess a source file
+src/server/ServerInfo.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/server/ServerInfo.cpp.i
+.PHONY : src/server/ServerInfo.cpp.i
+
+src/server/ServerInfo.s: src/server/ServerInfo.cpp.s
+.PHONY : src/server/ServerInfo.s
+
+# target to generate assembly for a file
+src/server/ServerInfo.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/server/ServerInfo.cpp.s
+.PHONY : src/server/ServerInfo.cpp.s
+
+src/server/TabManager.o: src/server/TabManager.cpp.o
+.PHONY : src/server/TabManager.o
+
+# target to build an object file
+src/server/TabManager.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/server/TabManager.cpp.o
+.PHONY : src/server/TabManager.cpp.o
+
+src/server/TabManager.i: src/server/TabManager.cpp.i
+.PHONY : src/server/TabManager.i
+
+# target to preprocess a source file
+src/server/TabManager.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/server/TabManager.cpp.i
+.PHONY : src/server/TabManager.cpp.i
+
+src/server/TabManager.s: src/server/TabManager.cpp.s
+.PHONY : src/server/TabManager.s
+
+# target to generate assembly for a file
+src/server/TabManager.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/server/TabManager.cpp.s
+.PHONY : src/server/TabManager.cpp.s
+
+src/utils/Base64Utils.o: src/utils/Base64Utils.cpp.o
+.PHONY : src/utils/Base64Utils.o
+
+# target to build an object file
+src/utils/Base64Utils.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/utils/Base64Utils.cpp.o
+.PHONY : src/utils/Base64Utils.cpp.o
+
+src/utils/Base64Utils.i: src/utils/Base64Utils.cpp.i
+.PHONY : src/utils/Base64Utils.i
+
+# target to preprocess a source file
+src/utils/Base64Utils.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/utils/Base64Utils.cpp.i
+.PHONY : src/utils/Base64Utils.cpp.i
+
+src/utils/Base64Utils.s: src/utils/Base64Utils.cpp.s
+.PHONY : src/utils/Base64Utils.s
+
+# target to generate assembly for a file
+src/utils/Base64Utils.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/utils/Base64Utils.cpp.s
+.PHONY : src/utils/Base64Utils.cpp.s
+
+src/utils/UtilImplement.o: src/utils/UtilImplement.cpp.o
+.PHONY : src/utils/UtilImplement.o
+
+# target to build an object file
+src/utils/UtilImplement.cpp.o:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/utils/UtilImplement.cpp.o
+.PHONY : src/utils/UtilImplement.cpp.o
+
+src/utils/UtilImplement.i: src/utils/UtilImplement.cpp.i
+.PHONY : src/utils/UtilImplement.i
+
+# target to preprocess a source file
+src/utils/UtilImplement.cpp.i:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/utils/UtilImplement.cpp.i
+.PHONY : src/utils/UtilImplement.cpp.i
+
+src/utils/UtilImplement.s: src/utils/UtilImplement.cpp.s
+.PHONY : src/utils/UtilImplement.s
+
+# target to generate assembly for a file
+src/utils/UtilImplement.cpp.s:
+	$(MAKE) -f CMakeFiles/NativeCord.dir/build.make CMakeFiles/NativeCord.dir/src/utils/UtilImplement.cpp.s
+.PHONY : src/utils/UtilImplement.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
+	@echo "... install/strip"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... install"
+	@echo "... list_install_components"
 	@echo "... NativeCord"
+	@echo "... install/local"
+	@echo "... libcurl"
+	@echo "... curl"
+	@echo "... cpr"
+	@echo "... NativeCord.o"
+	@echo "... NativeCord.i"
+	@echo "... NativeCord.s"
+	@echo "... src/chat/ChatMessage.o"
+	@echo "... src/chat/ChatMessage.i"
+	@echo "... src/chat/ChatMessage.s"
+	@echo "... src/config/Configuration.o"
+	@echo "... src/config/Configuration.i"
+	@echo "... src/config/Configuration.s"
+	@echo "... src/connection/PlayerConnection.o"
+	@echo "... src/connection/PlayerConnection.i"
+	@echo "... src/connection/PlayerConnection.s"
+	@echo "... src/connection/ServerConnection.o"
+	@echo "... src/connection/ServerConnection.i"
+	@echo "... src/connection/ServerConnection.s"
+	@echo "... src/connection/Socket.o"
+	@echo "... src/connection/Socket.i"
+	@echo "... src/connection/Socket.s"
+	@echo "... src/encription/Cipper.o"
+	@echo "... src/encription/Cipper.i"
+	@echo "... src/encription/Cipper.s"
+	@echo "... src/log/LogUtils.o"
+	@echo "... src/log/LogUtils.i"
+	@echo "... src/log/LogUtils.s"
+	@echo "... src/plugin/event/EventHelper.o"
+	@echo "... src/plugin/event/EventHelper.i"
+	@echo "... src/plugin/event/EventHelper.s"
+	@echo "... src/plugin/event/EventType.o"
+	@echo "... src/plugin/event/EventType.i"
+	@echo "... src/plugin/event/EventType.s"
+	@echo "... src/plugin/handle/CXXPluginManagerImpl.o"
+	@echo "... src/plugin/handle/CXXPluginManagerImpl.i"
+	@echo "... src/plugin/handle/CXXPluginManagerImpl.s"
+	@echo "... src/plugin/java/JavaPlugin.o"
+	@echo "... src/plugin/java/JavaPlugin.i"
+	@echo "... src/plugin/java/JavaPlugin.s"
+	@echo "... src/plugin/java/JavaPluginManagerImpl.o"
+	@echo "... src/plugin/java/JavaPluginManagerImpl.i"
+	@echo "... src/plugin/java/JavaPluginManagerImpl.s"
+	@echo "... src/plugin/java/JavaReflectManager.o"
+	@echo "... src/plugin/java/JavaReflectManager.i"
+	@echo "... src/plugin/java/JavaReflectManager.s"
+	@echo "... src/plugin/java/jni/DataStorage.o"
+	@echo "... src/plugin/java/jni/DataStorage.i"
+	@echo "... src/plugin/java/jni/DataStorage.s"
+	@echo "... src/plugin/java/jni/DataStorageImpl.o"
+	@echo "... src/plugin/java/jni/DataStorageImpl.i"
+	@echo "... src/plugin/java/jni/DataStorageImpl.s"
+	@echo "... src/protocoll/Buffers/DataBuffer.o"
+	@echo "... src/protocoll/Buffers/DataBuffer.i"
+	@echo "... src/protocoll/Buffers/DataBuffer.s"
+	@echo "... src/protocoll/Buffers/StreamedDataBuffer.o"
+	@echo "... src/protocoll/Buffers/StreamedDataBuffer.i"
+	@echo "... src/protocoll/Buffers/StreamedDataBuffer.s"
+	@echo "... src/protocoll/packet/ClientPacketHandler.o"
+	@echo "... src/protocoll/packet/ClientPacketHandler.i"
+	@echo "... src/protocoll/packet/ClientPacketHandler.s"
+	@echo "... src/protocoll/packet/ServerPacketHandler.o"
+	@echo "... src/protocoll/packet/ServerPacketHandler.i"
+	@echo "... src/protocoll/packet/ServerPacketHandler.s"
+	@echo "... src/server/ScoreboardManager.o"
+	@echo "... src/server/ScoreboardManager.i"
+	@echo "... src/server/ScoreboardManager.s"
+	@echo "... src/server/ServerInfo.o"
+	@echo "... src/server/ServerInfo.i"
+	@echo "... src/server/ServerInfo.s"
+	@echo "... src/server/TabManager.o"
+	@echo "... src/server/TabManager.i"
+	@echo "... src/server/TabManager.s"
+	@echo "... src/utils/Base64Utils.o"
+	@echo "... src/utils/Base64Utils.i"
+	@echo "... src/utils/Base64Utils.s"
+	@echo "... src/utils/UtilImplement.o"
+	@echo "... src/utils/UtilImplement.i"
+	@echo "... src/utils/UtilImplement.s"
 .PHONY : help
 
 

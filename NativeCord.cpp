@@ -21,7 +21,10 @@
 using namespace std;
 
 void error(const char* message){
-    cerr << message << endl;
+    if (Terminal::isActive())
+        logFatal(message);
+    else
+        cerr << "FATAL: " << message << endl;
     exit(-1);
 }
 
@@ -29,10 +32,14 @@ int ssockfd = 0;
 sockaddr_in* cli_addr = nullptr;
 
 void shutdownHook(void){
-    cout << "Closing socket" << endl;
+    debugMessage("Close socket.");
     close(ssockfd);
     if(cli_addr != nullptr)
         delete cli_addr;
+}
+
+bool NativeCord::isRunning() { //TODO
+    return true;
 }
 
 void clientConnect(){
@@ -44,26 +51,35 @@ void clientConnect(){
                 error("Cant create socket.");
             }
         }
-        while (1) {
+        while (NativeCord::isRunning()) {
             cli_addr = new sockaddr_in();
             socklen_t clilen = sizeof(*cli_addr);
             int newsockfd = accept(ssockfd, (struct sockaddr *) cli_addr, &clilen);
-            if (newsockfd < 0)
-                error("ERROR on accept");
+            if (newsockfd < 0){
+                logError("Cant accept clien. SockFD < 0. Code: "+errno);
+                delete cli_addr;
+                continue;
+            }
 
             Socket *connection = new Socket(newsockfd);
             PlayerConnection *playerConnection = new PlayerConnection(cli_addr ,connection);
             playerConnection->start();
             //pthread_join((handler->getThreadHandle()),NULL);
         }
-    }catch (Exception* e){
-        cout << "Exception message: " << e->what() << endl;
+    }catch (Exception& e){
+        logFatal("Having exception in accept thread: "+string(e.what()));
+        logFatal("Exiting NativeCord!");
+        NativeCord::stopNativeCord();
+    }catch (...){
+        logFatal("Having unknown exception in accept thread");
+        logFatal("Exiting NativeCord!");
+        NativeCord::stopNativeCord();
     }
 }
 
 pthread_t NativeCord::clientAcceptThread;
 
-void NativeCord::exitNativeCoord(){
+void NativeCord::stopNativeCord(){
     vector<PlayerConnection*> connections (PlayerConnection::activeConnections);
 
     ChatMessage disconnectMessage ("Nativecord is shutting down.");
@@ -83,7 +99,7 @@ void NativeCord::exitNativeCoord(){
     JavaPluginManagerImpl::instance->disable(); // Close the process
 }
 
-void initTerminal (void) __attribute__((constructor(10)));
+void initTerminal (void) __attribute__((constructor(200)));
 void initTerminal(){
     Terminal::setup();
     if(!Terminal::isActive()){
@@ -122,8 +138,6 @@ int main(int argc, char** argv) {
         logMessage(ss.str());
         JavaPluginManagerImpl::instance->enablePlugin(*it);
     }
-    //manager->disable();
-    //delete manager;
 
     try {
         string filename = string("config.yml");
@@ -152,13 +166,14 @@ int main(int argc, char** argv) {
             logMessage("§aHaving command "+command);
 
             if(command.compare("end") == 0){
-                NativeCord::exitNativeCoord();
+                NativeCord::stopNativeCord();
                 return 0;
             }
         }
-    }catch(Exception* ex){
-        logFatal("Having error on main thread: "+string(ex->what()));
-        logMessage("Exiting");
+    }catch(Exception& ex){
+        logFatal("Having error on main thread: "+string(ex.what()));
+        logFatal("Exiting NativeCord");
+        NativeCord::stopNativeCord();
         return 1;
     }
     return 0;

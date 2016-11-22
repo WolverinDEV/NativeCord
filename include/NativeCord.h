@@ -14,8 +14,10 @@
 #endif
 
 namespace NativeCord {
-    extern void exitNativeCoord();
+    extern void stopNativeCord();
     extern pthread_t clientAcceptThread;
+
+    extern bool isRunning();
 }
 
 #endif //NATIVECORD_NATIVECORD_H

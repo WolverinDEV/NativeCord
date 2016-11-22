@@ -18,9 +18,7 @@ set(SOURCE_FILES ${SOURCE_FILES} src/protocoll/Buffers/DataBuffer.cpp src/connec
 set(SOURCE_FILES ${SOURCE_FILES} include/connection/GameProfile.h include/plugin/cxx/CXXPlugin.h include/plugin/Plugin.h src/plugin/java/JavaPluginManagerImpl.cpp include/plugin/java/JavaPluginManagerImpl.h include/plugin/java/JavaPlugin.h include/plugin/PluginManager.h src/plugin/handle/CXXPluginManagerImpl.cpp src/plugin/handle/CXXPluginManagerImpl.h include/log/LogUtils.h src/log/LogUtils.cpp src/plugin/java/jni/DataStorageImpl.cpp include/plugin/java/jni/DataStorageImpl.h src/plugin/java/jni/DataStorage.cpp include/plugin/java/jni/DataStorage.h include/plugin/event/PlayerConnectEvent.h include/plugin/event/Event.h include/plugin/event/EventType.h src/plugin/java/JavaPlugin.cpp src/plugin/java/JavaReflectManager.cpp include/plugin/java/JavaReflectManager.h src/plugin/event/EventType.cpp include/plugin/event/EventHelper.h src/plugin/event/EventHelper.cpp include/NativeCord.h include/utils/VectorUtils.h)
 
 link_libraries(pthread uuid z crypto) #z = zlib
-
 link_libraries(CXXTerminal)
-#link_libraries(/usr/local/lib/libCXXTerminal.so)
 
 ############################### YAML ################################
 include_directories(libs/yaml-cpp/include/)
