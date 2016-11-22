@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.2.2)
 
 project(NativeCord)
 
+FIND_PACKAGE(CURL)
+
 message("Project name: ${PROJECT_NAME}")
 message("cpr include path: ${CPR_INCLUDE_DIRS}")
 message("cpr libs: ${CPR_LIBRARIES}")
@@ -25,23 +27,31 @@ link_libraries(yaml-cpp)
 #####################################################################
 
 ################################ CPR ################################
-include_directories(${CPR_INCLUDE_DIRS})
-
-if(EXISTS lib/)
-    message("Found builded cpr")
-    link_directories(lib)
-else()
-    message("Building cpr")
-    if(NOT EXISTS libs/cpr/CMakeLists.txt)
-        if(EXISTS libs/cpr/CMakeFiles AND NOT EXISTS libs/cpr/CMakeLists.txt)
-            message(FATAL_ERROR "Missing cpr. Maybe you havnt init all git submudules yet?\nRun command: 'rm -r libs/* && git submodule update --init --recursive'")
-        else()
-            message(FATAL_ERROR "Missing cpr. Maybe you havnt init all git submudules yet?\nRun command: 'git submodule update --init --recursive'")
+if(${CPR_INCLUDE_DIRS})
+    if(EXISTS lib/)
+        message("Found builded cpr")
+        link_directories(lib)
+    else()
+        message("Building cpr")
+        if(NOT EXISTS libs/cpr/CMakeLists.txt)
+            if(EXISTS libs/cpr/CMakeFiles AND NOT EXISTS libs/cpr/CMakeLists.txt)
+                message(FATAL_ERROR "Missing cpr. Maybe you havnt init all git submudules yet?\nRun command: 'rm -r libs/* && git submodule update --init --recursive'")
+            else()
+                message(FATAL_ERROR "Missing cpr. Maybe you havnt init all git submudules yet?\nRun command: 'git submodule update --init --recursive'")
+            endif()
         endif()
+        set(BUILD_CPR_TESTS false)
+        #add_subdirectory(libs/cpr)
     endif()
-    set(BUILD_CPR_TESTS false)
-    add_subdirectory(libs/cpr)
 endif()
+
+if(NOT ${CPR_INCLUDE_DIRS})
+    message("Linking directories: ${CPR_INCLUDE_DIRS}/../lib/")
+    link_directories(${CPR_INCLUDE_DIRS}/../lib/)
+endif()
+
+include_directories(${CPR_INCLUDE_DIRS})
+link_libraries(${CURL_LIBRARIES})
 link_libraries(${CPR_LIBRARIES})
 #####################################################################
 
