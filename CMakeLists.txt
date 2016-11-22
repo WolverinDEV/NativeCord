@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.2.2)
 project(NativeCord)
 
 FIND_PACKAGE(CURL)
+FIND_PACKAGE(CPR)
 
 message("Project name: ${PROJECT_NAME}")
 message("cpr include path: ${CPR_INCLUDE_DIRS}")
@@ -27,7 +28,7 @@ link_libraries(yaml-cpp)
 #####################################################################
 
 ################################ CPR ################################
-if(EXISTS lib/)
+if(EXISTS lib/ AND EXISTS lib/libcpr.a)
     message("Found builded cpr")
     link_directories(lib)
 else()
@@ -40,14 +41,13 @@ else()
         endif()
     endif()
     set(BUILD_CPR_TESTS false)
-    #add_subdirectory(libs/cpr)
+    add_subdirectory(libs/cpr)
 endif()
 
 if(NOT ${CPR_INCLUDE_DIRS})
     message("Linking directories: ${CPR_INCLUDE_DIRS}/../lib/")
     link_directories(${CPR_INCLUDE_DIRS}/../lib/)
 endif()
-
 include_directories(${CPR_INCLUDE_DIRS})
 link_libraries(${CURL_LIBRARIES})
 link_libraries(${CPR_LIBRARIES})
