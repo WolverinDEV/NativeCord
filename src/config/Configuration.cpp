@@ -2,13 +2,12 @@
 // Created by wolverindev on 28.08.16.
 //
 
+#define UNSAVE_JPLUGINMANAGER_FILE "JavaAdapter.jar"
+
 #include "../../include/config/Configuration.h"
 #include "../../include/log/LogUtils.h"
 #include "../../include/server/ServerInfo.h"
 #include <sys/stat.h>
-#include <netdb.h>
-#include <algorithm>
-#include <unistd.h>
 
 Configuration *Configuration::instance = NULL;
 
@@ -201,6 +200,12 @@ void Configuration::loadConfig() {
     if(!checkNumberValid(config["network"]["connection_throttle"],128,8192))
         errors.push_back(string("Invalid network compression threshold. (Expression rule: 128 <= compression_threshold(").append(config["network"]["compression_threshold"].as<string>()).append(") <= 8192)"));
 
+    if(!config["unsave"].IsNull()){
+        unsaveConfig.config = YAML::Node(config["unsave"]);
+    }
+    else;
+        unsaveConfig.config = YAML::Node();
+
     //TODO check permissions!
 }
 void Configuration::saveConfig() {
@@ -217,4 +222,16 @@ void Configuration::saveConfig() {
         logError("Cant write to configuration file!");
         return;
     }
+}
+
+/**
+    The unsave config
+ */
+
+std::string UnsaveConfiguration::getJavaBossManager() {
+    if(config.IsNull())
+        return "error";
+    if(!config["plugin"]["loader"].IsNull())
+        return string(UNSAVE_JPLUGINMANAGER_FILE);
+    return this->config["plugin"]["loader"].as<string>();
 }

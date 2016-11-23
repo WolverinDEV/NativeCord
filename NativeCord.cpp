@@ -112,6 +112,27 @@ void initTerminal(){
 int main(int argc, char** argv) {
     logMessage("Hello world");
 
+    try{
+        string filename = string("config.yml");
+        Configuration::instance = new Configuration(filename);
+        Configuration::instance->loadConfig();
+        cout << "Loading configuration" << endl;
+        if(!Configuration::instance->isValid()){
+            logFatal("Configuration not valid!");
+            vector<string> errors = Configuration::instance->getErrors();
+            if(errors.size() == 1)
+                logError("Error:");
+            else
+                logError("Errors (" + to_string(errors.size()) + "):");
+            for(vector<string>::iterator it = errors.begin();it!=errors.end();it++){
+                logError((errors.size() != 1 ? " - " : "") + *it);
+            }
+            return 0;
+        }
+    }catch (exception& e){
+        return 0;
+    }
+
     JavaPluginManagerImpl* manager = new JavaPluginManagerImpl();
     if(!manager->enable()){
         logError("Cant enable plugin manager!");
@@ -140,22 +161,6 @@ int main(int argc, char** argv) {
     }
 
     try {
-        string filename = string("config.yml");
-        Configuration::instance = new Configuration(filename);
-        Configuration::instance->loadConfig();
-        cout << "Loading configuration" << endl;
-        if(!Configuration::instance->isValid()){
-            logFatal("Configuration not valid!");
-            vector<string> errors = Configuration::instance->getErrors();
-            if(errors.size() == 1)
-                logError("Error:");
-            else
-                logError("Errors (" + to_string(errors.size()) + "):");
-            for(vector<string>::iterator it = errors.begin();it!=errors.end();it++){
-                logError((errors.size() != 1 ? " - " : "") + *it);
-            }
-            return 0;
-        }
         ServerInfo::loadServers();
         logMessage("Configuration successfull loaded.");
         pthread_create(&(NativeCord::clientAcceptThread),NULL,(void* (*)(void*)) &clientConnect,NULL);

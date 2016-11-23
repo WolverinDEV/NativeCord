@@ -13,6 +13,19 @@
 
 using namespace std;
 
+class UnsaveConfiguration {
+    public:
+        UnsaveConfiguration(){}
+        ~UnsaveConfiguration(){}
+
+        YAML::Node config;
+
+        bool isValid();
+        void loadConfig();
+
+        std::string getJavaBossManager();
+};
+
 class Configuration {
     public:
         static Configuration *instance;
@@ -38,6 +51,7 @@ class Configuration {
         }
 
         YAML::Node config;
+        UnsaveConfiguration unsaveConfig;
     private:
         string &fileName;
         vector<string> errors;

@@ -6,9 +6,7 @@ FIND_PACKAGE(CURL)
 FIND_PACKAGE(CPR)
 
 message("Project name: ${PROJECT_NAME}")
-message("cpr include path: ${CPR_INCLUDE_DIRS}")
-message("cpr libs: ${CPR_LIBRARIES}")
-message("curl libs: ${CURL_LIBRARIES}")
+message("Cpr include path: ${CPR_INCLUDE_DIRS}")
 message("System arch: ${CMAKE_OSX_ARCHITECTURES}")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-conversion-null -Wno-pointer-arith -Wno-deprecated -Wno-return-local-addr -Wno-write-strings")
@@ -20,6 +18,7 @@ set(SOURCE_FILES ${SOURCE_FILES} include/connection/GameProfile.h include/plugin
 link_libraries(pthread uuid z crypto) #z = zlib
 link_libraries(CXXTerminal)
 
+#TODO
 ############################### YAML ################################
 include_directories(libs/yaml-cpp/include/)
 link_libraries(yaml-cpp)
@@ -54,7 +53,7 @@ link_libraries(${CPR_LIBRARIES})
 ########################### Java ####################################
 message("Sarching vor jni")
 find_package(JNI)
-message("JNI inclide dir: ${JNI_INCLUDE_DIRS}")
+message("JNI inclide dir: ${JNI_INCLUDE_DIRS} AND ${JAVA_INCLUDE_PATH2}")
 message("JNI server so: ${JAVA_JVM_LIBRARY}")
 
 include_directories(${JNI_INCLUDE_DIRS})

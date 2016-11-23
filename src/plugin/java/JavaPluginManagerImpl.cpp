@@ -4,6 +4,7 @@
 
 #include "../../../include/plugin/java/JavaPluginManagerImpl.h"
 #include "../../../include/plugin/java/JavaPlugin.h"
+#include "jni.h"
 #include <sys/types.h>
 
 struct EnvThreadLocal {
@@ -48,8 +49,8 @@ bool JavaPluginManagerImpl::startJavaVM() {
 #ifdef JNI_VERSION_1_2
     JavaVMInitArgs vm_args;
     JavaVMOption options[2];
-    options[0].optionString = "-Djava.class.path=/home/wolverindev/ClionProjects/CBungee/java/JavaPluginManager/target/JavaImplementation-1.0-SNAPSHOT.jar"; //TODO add java plugin manager
-    options[1].optionString = "-verbose:sizes";
+    options[0].optionString = (char*) ("-Djava.class.path="+Configuration::instance->unsaveConfig.getJavaBossManager()).c_str(); //TODO add java plugin manager
+    options[1].optionString = (char*) string("-verbose:sizes").c_str();
     vm_args.version = 0x00010002;
     vm_args.options = options;
     vm_args.nOptions = 2;
@@ -57,20 +58,11 @@ bool JavaPluginManagerImpl::startJavaVM() {
     /* Create the Java VM */
     res = JNI_CreateJavaVM(&jvm, (void **) &env, &vm_args);
 #else
-    JDK1_1InitArgs vm_args;
-    char classpath[1024];
-    vm_args.version = 0x00010001;
-    JNI_GetDefaultJavaVMInitArgs(&vm_args);
-    /* Append USER_CLASSPATH to the default system class path */
-    sprintf(classpath, "%s%c%s",
-            vm_args.classpath, PATH_SEPARATOR, USER_CLASSPATH);
-    vm_args.classpath = classpath;
-    /* Create the Java VM */
-    res = JNI_CreateJavaVM(&jvm, &env, &vm_args);
+    #error "Dont support JNI_VERSION < 1.2"
 #endif
 
     if (res < 0) {
-        fprintf(stderr, "Can't create Java VM\n");
+        logFatal("Cant create jvm!");
         return 0;
     }
     this->reflectManager = new JavaReflectManager(*this);
