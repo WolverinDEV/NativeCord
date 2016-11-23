@@ -26,6 +26,7 @@ link_libraries(yaml-cpp)
 #####################################################################
 
 ################################ CPR ################################
+set(BUILD_CPR_TESTS false)
 if(EXISTS lib/ AND EXISTS lib/libcpr.a)
     message("Found builded cpr")
     link_directories(lib)
@@ -38,7 +39,6 @@ else()
             message(FATAL_ERROR "Missing cpr. Maybe you havnt init all git submudules yet?\nRun command: 'git submodule update --init --recursive'")
         endif()
     endif()
-    set(BUILD_CPR_TESTS false)
     add_subdirectory(libs/cpr)
 endif()
 
@@ -52,10 +52,13 @@ link_libraries(${CPR_LIBRARIES})
 #####################################################################
 
 ########################### Java ####################################
-include_directories(/usr/lib/jvm/java-8-oracle/include/)
-include_directories(/usr/lib/jvm/java-8-oracle/include/linux)
+message("Sarching vor jni")
+find_package(JNI)
+message("JNI inclide dir: ${JNI_INCLUDE_DIRS}")
+message("JNI server so: ${JAVA_JVM_LIBRARY}")
 
-link_libraries(/usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so) #TODO detect automatic
+include_directories(${JNI_INCLUDE_DIRS})
+link_libraries(${JAVA_JVM_LIBRARY})
 #####################################################################
 
 ################### 32 Bit [DONT WORK :/] ###########################
